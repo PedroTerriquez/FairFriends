@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useContext, createContext, type PropsWithChildren } from 'react';
+import { useState, useContext, createContext, type PropsWithChildren, useEffect } from 'react';
 import { getToken, saveToken, deleteToken } from './useStorage';
 import axios from 'axios';
 
@@ -25,7 +25,7 @@ export function useSession() {
   return value;
 }
 
-function login(email: string, password: string) {
+function signIn(email: string, password: string) {
   axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password },)
     .then((response) => {
       saveToken(response.data.auth_token).then(res => {
@@ -42,12 +42,22 @@ function signout() {
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
-  const session = getToken();
+  const [session, setSession] = useState(null);
+  useEffect(() => {
+    const fetchToken = async () => {
+      console.log('Fetching session...');
+      const token = await getToken();
+      console.log('Session:', token);
+      setSession(token);
+    };
+
+    fetchToken();
+  },[]);
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: login,
+        signIn: signIn,
         signOut: signout,
         session
       }}>

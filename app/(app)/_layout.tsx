@@ -5,6 +5,7 @@ import { useSession } from '../../services/authContext';
 
 export default function AppLayout() {
   const { session } = useSession();
+  console.log("layout : ", session)
 
   if (session == null) {
     return <Text>Loading...</Text>;
