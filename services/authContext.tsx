@@ -4,7 +4,7 @@ import { getToken, saveToken, deleteToken } from './useStorage';
 import axios from 'axios';
 
 const AuthContext = createContext<{
-  signIn: (email: string, password: string) => void;
+  signIn: (email: any, password: any) => void;
   signOut: () => void;
   session?: object | null;
 }>({
@@ -45,9 +45,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState(null);
   useEffect(() => {
     const fetchToken = async () => {
-      console.log('Fetching session...');
       const token = await getToken();
-      console.log('Session:', token);
       setSession(token);
     };
 
