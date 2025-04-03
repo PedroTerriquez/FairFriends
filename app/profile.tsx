@@ -47,12 +47,12 @@ export default function Profile() {
       <Text style={{ fontSize: 14, marginVertical: 20 }}>
         Member since {info.created_at}
       </Text>
-      <Text style={baseStyles.label}>Start a promise or a balance with {info.name}</Text>
       {info.me == 1 && (<Pressable style={[baseStyles.button, baseStyles.cancelButton]} onPress={logout} >
         <Text style={baseStyles.buttonText}>Log out</Text>
       </Pressable>)}
       {info.me != 1 && (
         <View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
+          <Text style={baseStyles.label}>Start a promise or a balance with {info.name}</Text>
           <TouchableOpacity
             style={[baseStyles.circleButton, baseStyles.green]}
             onPress={() => router.push({

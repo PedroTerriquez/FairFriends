@@ -1,10 +1,8 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useSession } from '../services/authContext';
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function Login() {
-  const { signIn } = useSession();
+export default function SignUp() {
   const router = useRouter();
 
   return (
@@ -15,20 +13,20 @@ export default function Login() {
         <Text style={styles.tagline}>Split expenses with friends</Text>
       </View>
 
-      <View style={styles.loginContainer}>
+      <View style={styles.signupContainer}>
         <TouchableOpacity 
-          style={styles.loginButton}
-          onPress={() => signIn(process.env.EXPO_PUBLIC_USER, process.env.EXPO_PUBLIC_PASSWORD)}
+          style={styles.signupButton}
+          onPress={() => router.push('/login')}
         >
-          <Ionicons name="log-in" size={24} color="white" />
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Ionicons name="person-add" size={24} color="white" />
+          <Text style={styles.signupButtonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => router.push('/signup')}>
-          <Text style={styles.signupLink}>Sign Up</Text>
+        <Text style={styles.footerText}>Already have an account?</Text>
+        <TouchableOpacity onPress={() => router.push('/login')}>
+          <Text style={styles.loginLink}>Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -59,12 +57,12 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 10,
   },
-  loginContainer: {
+  signupContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loginButton: {
+  signupButton: {
     flexDirection: 'row',
     backgroundColor: '#2F66FF',
     paddingHorizontal: 30,
@@ -77,7 +75,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  loginButtonText: {
+  signupButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
@@ -91,10 +89,10 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 14,
   },
-  signupLink: {
+  loginLink: {
     color: '#2F66FF',
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 5,
   },
-});
+}); 
