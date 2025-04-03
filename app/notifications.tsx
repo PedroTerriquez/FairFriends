@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
+import baseStyles from "@/presentational/BaseStyles";
 
-export default function Notification() {
+export default function Notifications() {
     const [notifications, setNotifications] = useState([])
     const { session } = useSession();
 
@@ -46,14 +47,8 @@ export default function Notification() {
     }, []);
 
     return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {renderNotifications()}
+    <View style={baseStyles.center} >
+            {notifications.length > 0 ? renderNotifications() : <Text>No notifications</Text>}
     </View>
     );
 }

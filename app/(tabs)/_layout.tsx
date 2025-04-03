@@ -21,6 +21,7 @@ export default function AppLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -28,6 +29,7 @@ export default function AppLayout() {
         options={{
           title: "Contacts",
           tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -35,6 +37,7 @@ export default function AppLayout() {
         options={{
           title: "Balances",
           tabBarIcon: ({ color, size }) => <FontAwesome name="balance-scale" color={color} size={size} />,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -42,6 +45,7 @@ export default function AppLayout() {
         options={{
           title: "Promises",
           tabBarIcon: ({ color, size }) => <MaterialIcons name="attach-money" color={color} size={size} />,
+          headerShown: false
         }}
       />
     </Tabs>

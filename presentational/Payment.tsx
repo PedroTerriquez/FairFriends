@@ -74,7 +74,7 @@ export default function Payment({
   return (
     <Pressable
       onPress={() => handleShow() }
-      style={baseStyles.card}>
+      style={[baseStyles.card, status == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={ creatorName[0] } />

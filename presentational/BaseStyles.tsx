@@ -20,6 +20,14 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
+    cardPending: {
+        backgroundColor: "#fffcf4",
+        borderWidth: 2,
+        borderColor: "#ffc107",
+        shadowColor: "#ffc107",
+        shadowOpacity: 0.3, 
+        shadowRadius: 8,
+    },
     cardNoBorder: {
         backgroundColor: "white",
         padding: 16,
@@ -177,6 +185,9 @@ const baseStyles = StyleSheet.create({
     },
     green: {
         backgroundColor: 'green',
+    },
+    blue: {
+        backgroundColor: '#007aff',
     }
 });
 

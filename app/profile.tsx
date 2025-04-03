@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
+import { FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Profile() {
   const [info, setInfo] = useState<any>(null);
@@ -45,10 +47,40 @@ export default function Profile() {
       <Text style={{ fontSize: 14, marginVertical: 20 }}>
         Member since {info.created_at}
       </Text>
+      <Text style={baseStyles.label}>Start a promise or a balance with {info.name}</Text>
       {info.me == 1 && (<Pressable style={[baseStyles.button, baseStyles.cancelButton]} onPress={logout} >
-
         <Text style={baseStyles.buttonText}>Log out</Text>
       </Pressable>)}
+      {info.me != 1 && (
+        <View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
+          <TouchableOpacity
+            style={[baseStyles.circleButton, baseStyles.green]}
+            onPress={() => router.push({
+              pathname: '/formPromise',
+              params: { administrator_id: info.id, administrator_name: info.name }
+            })}
+          >
+            <MaterialIcons name="attach-money" size={20} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
+            onPress={() => {
+              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: info.id }, session)
+                .then((response) => {
+                  router.push({
+                    pathname: '/balance', 
+                    params: { paymentable_id: response.data.id }
+                  })
+                })
+                .catch((error) => {
+                  console.log(error);
+                })
+            }}
+          >
+            <FontAwesome name="balance-scale" size={20} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
