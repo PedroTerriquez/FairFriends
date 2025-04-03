@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -49,13 +49,19 @@ export default function Contacts() {
     }
 
     const startPromise = (id) => {
-        navigation.navigate('formPromise', { administrator: id })
+        router.push({
+            pathname: '/formPromise',
+            params: { administrator: id }
+        })
     }
 
     const startBalance = (id) => {
         axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: id }, session)
             .then((response) => {
-                navigation.navigate('balance', { paymentable_id: response.data.id })
+                router.push({
+                    pathname: '/balance',
+                    params: { paymentable_id: response.data.id }
+                })
             })
             .catch((error) => {
             })
@@ -82,8 +88,9 @@ export default function Contacts() {
             <ScrollView style={baseStyles.viewContainer}>
                 {renderContacts(friends)}
             </ScrollView>
-            <TouchableOpacity style={baseStyles.floatingButton} >
-                <Ionicons name="add" size={32} color="white" />
+            <TouchableOpacity style={baseStyles.floatingButton}
+                onPress={() => { router.push({ pathname: "/addContact", }) }}>
+                        <Ionicons name="add" size={32} color="white" />
             </TouchableOpacity>
         </View>
     );

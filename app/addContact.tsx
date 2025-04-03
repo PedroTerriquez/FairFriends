@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import Person from '../../presentational/Person';
+import Person from '@/presentational/Person';
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 

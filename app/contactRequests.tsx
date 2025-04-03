@@ -4,7 +4,7 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { useSession } from "@/services/authContext";
-import Person from '../../presentational/Person';
+import Person from '@/presentational/Person';
 import baseStyles from "@/presentational/BaseStyles";
 
 export default function contactRequests() {

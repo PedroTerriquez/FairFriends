@@ -4,9 +4,9 @@ import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity } from "re
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import baseStyles from '../../presentational/BaseStyles';
+import baseStyles from '@/presentational/BaseStyles';
 import { useSession } from "@/services/authContext";
-import Payment from '../../presentational/Payment';
+import Payment from '@/presentational/Payment';
 import PromiseGraph from "@/presentational/PromiseGraph";
 
 export default function Promise() {

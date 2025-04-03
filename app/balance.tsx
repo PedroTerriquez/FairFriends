@@ -4,10 +4,10 @@ import { ScrollView, TouchableOpacity, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import baseStyles from '../../presentational/BaseStyles' 
+import baseStyles from '@/presentational/BaseStyles' 
 import { useSession } from "@/services/authContext";
-import Payment from '../../presentational/Payment';
-import BalanceCard from '../../presentational/BalanceCard';
+import Payment from '../presentational/Payment';
+import BalanceCard from '../presentational/BalanceCard';
 
 export default function Balance() {
     const [payments, setPayments] = useState([])
