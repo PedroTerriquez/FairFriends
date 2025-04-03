@@ -5,11 +5,12 @@ import { View, Text, TextInput, Picker, ScrollView, Pressable } from "react-nati
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import { useLocalSearchParams, useNavigation } from "expo-router";
+import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
 
 export default function formPromise() {
     const { session } = useSession();
     const navigation = useNavigation();
-    const { administrator, paymentable_id } = useLocalSearchParams();
+    const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
     const [promise, setPromise] = useState({})
 
     const handleChange = (field, value) => {
@@ -32,7 +33,8 @@ export default function formPromise() {
                     title: 'Title',
                     interest: 1,
                     total: 0,
-                    administrator_id: administrator,
+                    administrator_id: administrator_id,
+                    administrator_name: administrator_name,
                 })
             })
     }
@@ -72,23 +74,18 @@ export default function formPromise() {
     
     return (
         <ScrollView style={baseStyles.card}>
-            <Text style={baseStyles.title}>{paymentable_id ? 'Editing Promise' : 'New Promise'}</Text>
-            <Text style={baseStyles.title}>{administrator ? administrator : 'NO ID'}</Text>
-            <View style={baseStyles.inputContainer}>
-                <Text style={baseStyles.label}>Concept</Text>
-                <TextInput style={baseStyles.input} value={promise.title} onChangeText={(title) => handleChange('title', title)} />
-            </View>
-            <View style={baseStyles.inputContainer}>
-                <Text style={baseStyles.label}>Total</Text>
-                <TextInput style={baseStyles.input} value={promise.total} onChangeText={(total) => handleChange('total', total)} keyboardType="numeric" />
-            </View>
+            { paymentable_id ? <AvatarInfoHeader user={promise.admin_name} text={`Editing Promise made to ${promise.admin_name}`} /> :  <AvatarInfoHeader user={promise.administrator_name} text={`New Promise made to ${promise.administrator_name}`} /> }
+            <Text style={baseStyles.label}>Concept</Text>
+            <TextInput style={baseStyles.input} value={promise.title} onChangeText={(title) => handleChange('title', title)} editable={promise.mine} />
+            <Text style={baseStyles.label}>Total</Text>
+            <TextInput style={baseStyles.input} value={promise.total} onChangeText={(total) => handleChange('total', total)} keyboardType="numeric" />
 
-            <View style={baseStyles.inputContainer}>
+            <View>
                 <Text style={baseStyles.label}>Payment Amount</Text>
-                <TextInput style={baseStyles.input} value={promise.amount_payments} onChangeText={(amountPayments) => handleChange('amount_payments', amountPayments)} keyboardType="numeric" />
+                <TextInput style={baseStyles.input} value={promise.amount_payments} onChangeText={(amountPayments) => handleChange('amount_payments', amountPayments)} keyboardType="numeric" editable={promise.mine} />
             </View>
 
-            <View style={baseStyles.inputContainer}>
+            <View>
                 <Text style={baseStyles.label}>Payment Period</Text>
                 <Picker selectedValue={promise.period} onValueChange={(period) => handleChange('period', period)} style={baseStyles.picker}>
                     <Picker.Item label="Day" value="day" />
@@ -98,17 +95,17 @@ export default function formPromise() {
                 </Picker>
             </View>
 
-            <View style={baseStyles.inputContainer}>
+            <View>
                 <Text style={baseStyles.label}>Interest (%)</Text>
                 <TextInput style={baseStyles.input} value={promise.interest} onChangeText={(interest) => handleChange('interest', interest)} keyboardType="numeric" />
             </View>
 
-            <View style={baseStyles.inputContainer}>
+            <View>
                 <Text style={baseStyles.label}>Total With Interest</Text>
                 <TextInput style={[baseStyles.input, baseStyles.disabledInput]} value={(promise.total * percent_interest).toFixed(1)} editable={false} />
             </View>
 
-            <View style={baseStyles.inputContainer}>
+            <View>
                 <Text style={baseStyles.label}>Total Payments</Text>
                 <TextInput style={[baseStyles.input, baseStyles.disabledInput]} value={Math.ceil(promise.total * percent_interest / promise.amount_payments)} editable={false} />
             </View>

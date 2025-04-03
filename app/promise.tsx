@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -14,7 +14,6 @@ export default function Promise() {
     const [promise, setPromise] = useState(null)
     const { paymentable_id } = useLocalSearchParams();
     const { session } = useSession();
-    const navigation = useNavigation();
 
     const fetchPayments = async () => {
         axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${paymentable_id}`, session)
@@ -53,25 +52,32 @@ export default function Promise() {
         fetchPayments();
     }, [paymentable_id]);
 
-    return (
+    return promise ? (
         <ScrollView>
-            <View style={styles.card}>
-                {promise && <View style={baseStyles.viewContainer}>
+            <View style={baseStyles.cardNoBorder}>
+                <View style={baseStyles.viewContainer}>
                     <Text style={baseStyles.title}>{promise.title}</Text>
+                    <Text style={baseStyles.title}>${promise.total}</Text>
                     <PromiseGraph percentage={(promise.paid_amount / 100 * promise.total) + "%"} />
+                    {promise.status === "pending" && (
+                        <Pressable
+                            style={[baseStyles.button, baseStyles.saveButton]}
+                            onPress={() => router.push({
+                                pathname: "/formPromise", params: {
+                                    paymentable_id,
+                                    mine: promise.mine
+                                }
+                            })}
+                        >
+                            <Text style={baseStyles.buttonText}>Edit</Text>
+                        </Pressable>
+                    )}
                 </View>
-                }
-                {promise && promise.status === "pending" && (
-                    <Button
-                        title="Edit"
-                        onPress={() => navigation.navigate("formPromise", { paymentable_id })}
-                    />
-                )}
             </View>
-            <View style={styles.card}>
+            <View style={baseStyles.cardNoBorder}>
                 {renderPayments()}
             </View>
-            <TouchableOpacity
+            {promise.status != 'pending' && <TouchableOpacity
                 style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
                 onPress={() => {
                     if (promise) {
@@ -80,7 +86,7 @@ export default function Promise() {
                             params: {
                                 paymentable_id: paymentable_id,
                                 type: 'Promise',
-                                recipient_name: promise.creator_name,
+                                recipient_name: promise.admin_name,
                                 recipient_id: promise.administrator_id
                             }
                         });
@@ -89,31 +95,7 @@ export default function Promise() {
             >
                 <Ionicons name="add" size={32} color="white" />
             </TouchableOpacity>
+            }
         </ScrollView>
-    )
+    ) : <View></View>
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 8,
-    elevation: 3,
-  },
-  body: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#ddd",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    textAlign: "center",
-    marginVertical: 8,
-  },
-});

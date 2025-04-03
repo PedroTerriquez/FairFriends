@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSession } from '@/services/authContext';
 import Avatar from '@/presentational/Avatar';
 import baseStyles from '@/presentational/BaseStyles';
+import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
 
 export default function addPayment() {
   const router = useRouter();
@@ -13,7 +14,10 @@ export default function addPayment() {
   const params = useLocalSearchParams();
   
   const [title, setTitle] = useState(params.title || '');
-  const [amount, setAmount] = useState(params.amount || '');
+  const [amount, setAmount] = useState(() => {
+    if (!params.amount) return 0;
+    return parseFloat(params.amount.replace(/[$,]/g, '')) || 0;
+  });
 
   const paymentCreationValues = () => {
     return {
@@ -40,7 +44,6 @@ export default function addPayment() {
     }
 
     try {
-        debugger
       if (params.payment_id) {
         await axios.patch(
           `${process.env.EXPO_PUBLIC_API}/payments/${params.payment_id}`,
@@ -62,12 +65,7 @@ export default function addPayment() {
 
   return (
     <View style={[baseStyles.viewContainer, baseStyles.card]}>
-      <View style={[baseStyles.card, baseStyles.rightColumn, { marginBottom: 40 }]}>
-        <Avatar name={params.recipient_name[0] || '?'} />
-        <Text style={[styles.marginTop10, baseStyles.marginLeft]}>
-          Sending payment to {params.recipient_name}
-        </Text>
-      </View>
+      <AvatarInfoHeader user={params.recipient_name} text={`Sending payment to ${params.recipient_name}`} />
       
       <TextInput
         autoFocus
@@ -91,7 +89,7 @@ export default function addPayment() {
       <View style={styles.inlineElements}>
         <TouchableOpacity
           style={[baseStyles.button, baseStyles.saveButton]}
-          onPress={handleSubmit}
+          onPress={() => handleSubmit()}
         >
           <Text style={baseStyles.buttonText}>
             {params.payment_id ? 'Update Payment' : 'Cool Pay'}

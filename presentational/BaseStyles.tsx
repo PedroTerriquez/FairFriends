@@ -20,6 +20,12 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
+    cardNoBorder: {
+        backgroundColor: "white",
+        padding: 16,
+        borderRadius: 8,
+        elevation: 3,
+    },
     cardContent: {
         flex: 1,
         flexDirection: "row",

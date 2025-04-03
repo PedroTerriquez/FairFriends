@@ -66,7 +66,7 @@ export default function addContact() {
                     autoFocus={true}
                 />
                 <TouchableOpacity style={[baseStyles.button, baseStyles.searchBarCancelButton]} onPress={() => setText('')}>
-                    <Text>Cancel</Text>
+                    <Text>Clean</Text>
                 </TouchableOpacity>
             </View>
             <ScrollView>{renderPeople()}</ScrollView>

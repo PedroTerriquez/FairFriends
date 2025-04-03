@@ -23,7 +23,7 @@ export default function Notification() {
     const renderNotifications = () => {
         if (notifications.length == 0) return
 
-        return notifications.map(notificaiton => (
+        return notifications.map(notification => (
             <NotificationCard
                 id={notification.id}
                 key={notification.id}

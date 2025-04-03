@@ -36,10 +36,10 @@ export default function Contacts() {
             <Person person={friend} onClick={navigateProfile} >
                 {friend.id && (
                     <View style={baseStyles.rowCenter}>
-                        <TouchableOpacity style={[baseStyles.circleButton]} onPress={() => startPromise(friend.id)}>
+                        <TouchableOpacity style={[baseStyles.circleButton]} onPress={() => startPromise(friend.id, friend.first_name)}>
                             <MaterialIcons name="attach-money" size={20} color="white" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={[baseStyles.circleButton, baseStyles.marginLeft]} onPress={() => startBalance(friend.id)}>
+                        <TouchableOpacity style={[baseStyles.circleButton, baseStyles.marginLeft]} onPress={() => startBalance(friend.id, friend.first_name)}>
                             <FontAwesome name="balance-scale" size={20} color="white" />
                         </TouchableOpacity>
                     </View>
@@ -48,14 +48,14 @@ export default function Contacts() {
         ))
     }
 
-    const startPromise = (id) => {
+    const startPromise = (id, name) => {
         router.push({
             pathname: '/formPromise',
-            params: { administrator: id }
+            params: { administrator_id: id, administrator_name: name }
         })
     }
 
-    const startBalance = (id) => {
+    const startBalance = (id, name) => {
         axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: id }, session)
             .then((response) => {
                 router.push({
