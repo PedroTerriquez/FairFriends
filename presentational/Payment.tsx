@@ -23,6 +23,7 @@ export default function Payment({
   const navigation = useNavigation();
   const { session } = useSession();
   const [realStatus, setRealStatus] = useState(status)
+  const [pendingDecision, setPendingDecision] = useState(false)
   
   const pending = !mine && realStatus === "pending";
   const editable = mine && realStatus === "pending";
@@ -58,6 +59,8 @@ export default function Payment({
       return;
     }
 
+    setPendingDecision(false)
+
     axios.patch(
       `${process.env.EXPO_PUBLIC_API}/payments/${id}/accept`,
       { status: 'accepted' },
@@ -76,7 +79,7 @@ export default function Payment({
       onPress={() => handleShow() }
       style={[baseStyles.card, status == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
-        <View style={baseStyles.rowCenter}>
+        <View style={[baseStyles.rowCenter, baseStyles.viewContainerTwo]}>
           <Avatar name={ creatorName[0] } />
           <View style={baseStyles.marginLeft}>
             <Text style={baseStyles.cardTitle}>{paymentName}</Text>
@@ -84,10 +87,20 @@ export default function Payment({
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>
-        <View style={baseStyles.rightColumn}>
+        <View style={[baseStyles.rightColumn]}>
           <Text style={moneyColor}>{amount}</Text>
-          {pending && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.buttonWarning]} onPress={() => acceptPaymentButton(id)}>
+          {pendingDecision && (
+            <View style={baseStyles.rowCenter}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]} onPress={() => acceptPaymentButton(id)}>
+                <Text style={baseStyles.buttonText}>✔</Text>
+              </Pressable>
+              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]} onPress={() => setPendingDecision(false)}>
+                <Text style={baseStyles.buttonText}>✖</Text>
+              </Pressable>
+            </View>
+          )}
+          {pending && !pendingDecision && (
+            <Pressable style={[baseStyles.circleButton, baseStyles.buttonWarning]} onPress={() => setPendingDecision(true)}>
               <Ionicons name="warning" size={20} color="white" />
             </Pressable>
           )}

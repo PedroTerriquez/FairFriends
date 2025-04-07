@@ -4,6 +4,15 @@ const baseStyles = StyleSheet.create({
     viewContainer: {
         flex: 1
     },
+    viewContainerTwo: {
+        flex: 2,
+    },
+    viewContainerThree: {
+        flex: 3,
+    },
+    viewContainerFour: {
+        flex: 4,
+    },
     viewBackground: {
       flexDirection: "row",
       justifyContent: "space-around",
@@ -20,9 +29,25 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
+    cardAccepted: {
+        backgroundColor: "#f4fff6",
+        borderWidth: 1,
+        borderColor: "#7ECC10",
+        shadowColor: "#7ECC10",
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+    },
+    cardClose: {
+        backgroundColor: "#fff4f4", 
+        borderWidth: 1,
+        borderColor: "#dc3545",
+        shadowColor: "#dc3545",
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+    },
     cardPending: {
         backgroundColor: "#fffcf4",
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: "#ffc107",
         shadowColor: "#ffc107",
         shadowOpacity: 0.3, 
@@ -67,6 +92,9 @@ const baseStyles = StyleSheet.create({
     },
     marginLeft: {
         marginLeft: 10,
+    },
+    marginLeft5: {
+        marginLeft: 5,
     },
     buttonContainer: {
         flexDirection: "row",

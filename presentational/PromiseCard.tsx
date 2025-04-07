@@ -12,12 +12,25 @@ export default function PromiseCard({ id, title, percentage, user, status }) {
     <TouchableOpacity 
       onPress={() => router.push({ pathname: "/promise", params: { paymentable_id: id } })}
       style={[
-        baseStyles.card, status == 'pending' ? baseStyles.cardPending : null,
+        baseStyles.card,
+        status === 'pending' ? baseStyles.cardPending : 
+        status === 'close' ? baseStyles.cardClose :
+        status === 'accepted' ? baseStyles.cardAccepted : null
       ]}
     >
       {status == 'pending' && <Pressable style={baseStyles.floatingIconForCard}>
         <MaterialIcons name="edit" size={20} color="orange" />
         <Text style={baseStyles.email}>Pending</Text>
+      </Pressable>
+      }
+      {status == 'accepted' && <Pressable style={baseStyles.floatingIconForCard}>
+        <MaterialIcons name="edit" size={20} color="green" />
+        <Text style={baseStyles.email}>Open</Text>
+      </Pressable>
+      }
+      {status == 'close' && <Pressable style={baseStyles.floatingIconForCard}>
+        <MaterialIcons name="close" size={20} color="red" />  
+        <Text style={baseStyles.email}>Closed</Text>
       </Pressable>
       }
       <View style={baseStyles.cardContent}>

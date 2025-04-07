@@ -57,7 +57,7 @@ export default function Profile() {
             style={[baseStyles.circleButton, baseStyles.green]}
             onPress={() => router.push({
               pathname: '/formPromise',
-              params: { administrator_id: info.id, administrator_name: info.name }
+              params: { administrator_id: id, administrator_name: info.name }
             })}
           >
             <MaterialIcons name="attach-money" size={20} color="white" />
@@ -65,7 +65,7 @@ export default function Profile() {
           <TouchableOpacity
             style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
             onPress={() => {
-              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: info.id }, session)
+              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: id }, session)
                 .then((response) => {
                   router.push({
                     pathname: '/balance', 
