@@ -85,9 +85,9 @@ const baseStyles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'gray',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 10,
     },
     saveButton: {
         backgroundColor: "#3e8c41",
@@ -121,6 +121,10 @@ const baseStyles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 20,
+    },
+    email: {
+        fontSize: 14,
+        color: 'gray',
     },
     disabledInput: {
         backgroundColor: "#f0f0f0"
@@ -188,7 +192,32 @@ const baseStyles = StyleSheet.create({
     },
     blue: {
         backgroundColor: '#007aff',
-    }
+    },
+    cardTitle: {
+        fontSize: 15,
+        fontWeight: "bold",
+        marginBottom: 2,
+    },
+    cardSubtitle: {
+        fontSize: 14,
+    },
+    cardDate: {
+        fontSize: 13,
+        color: 'gray',
+    },
+    buttonWarning: {
+        backgroundColor: "#f8c146",
+    },
+    buttonSuccess: {
+        backgroundColor: "#4CAF50",
+    },
+    buttonDanger: {
+        backgroundColor: "#E53935",
+    },
+    boldText: { fontWeight: "bold", },
+    greenText: { color: "green", fontWeight: "bold" },
+    redText: { color: "red", fontWeight: "bold" },
+    orangeText: { color: "orange", fontWeight: "bold" },
 });
 
 export default baseStyles

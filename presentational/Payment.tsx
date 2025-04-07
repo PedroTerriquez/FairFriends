@@ -29,13 +29,13 @@ export default function Payment({
   const accepted = realStatus === "accepted";
   const rejected = realStatus === "rejected";
 
-  let moneyColor = styles.boldText;
+  let moneyColor = baseStyles.boldText;
   if (mine && accepted) {
-    moneyColor = styles.greenText;
+    moneyColor = baseStyles.greenText;
   } else if (rejected) {
-    moneyColor = styles.redText;
+    moneyColor = baseStyles.redText;
   } else if (pending || editable) {
-    moneyColor = styles.orangeText;
+    moneyColor = baseStyles.orangeText;
   }
 
   const paymentName = parentTitle ? `${creatorName} - ${parentTitle}` : creatorName;
@@ -79,21 +79,21 @@ export default function Payment({
         <View style={baseStyles.rowCenter}>
           <Avatar name={ creatorName[0] } />
           <View style={baseStyles.marginLeft}>
-            <Text style={styles.boldText}>{paymentName}</Text>
-            <Text>{title}</Text>
-            <Text style={styles.note}>{formattedDate}</Text>
+            <Text style={baseStyles.cardTitle}>{paymentName}</Text>
+            <Text style={baseStyles.cardSubtitle}>{title}</Text>
+            <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>
         <View style={baseStyles.rightColumn}>
           <Text style={moneyColor}>{amount}</Text>
           {pending && (
-            <Pressable style={[styles.button, styles.warning]} onPress={() => acceptPaymentButton(id)}>
+            <Pressable style={[baseStyles.circleButton, baseStyles.buttonWarning]} onPress={() => acceptPaymentButton(id)}>
               <Ionicons name="warning" size={20} color="white" />
             </Pressable>
           )}
           {editable && (
             <Pressable
-              style={[styles.button, styles.warning]}
+              style={[baseStyles.circleButton, baseStyles.buttonWarning]}
               onPressIn={() => router.push({
                 pathname: "/formPayment",
                 params: {
@@ -107,17 +107,17 @@ export default function Payment({
               })}
               onPress={() => navigation.navigate("formPayment", { payment_id: id,  })}
             >
-              <Text style={styles.buttonText}>✎</Text>
+              <Text style={baseStyles.buttonText}>✎</Text>
             </Pressable>
           )}
           {accepted && (
-            <Pressable style={[styles.button, styles.success]}>
-              <Text style={styles.buttonText}>✔</Text>
+            <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]}>
+              <Text style={baseStyles.buttonText}>✔</Text>
             </Pressable>
           )}
           {rejected && (
-            <Pressable style={[styles.button, styles.danger]}>
-              <Text style={styles.buttonText}>✖</Text>
+            <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger]}>
+              <Text style={baseStyles.buttonText}>✖</Text>
             </Pressable>
           )}
         </View>
@@ -125,42 +125,3 @@ export default function Payment({
     </Pressable>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-  boldText: {
-    fontWeight: "bold",
-  },
-  note: {
-    color: "#888",
-  },
-  right: {
-    alignItems: "center",
-  },
-  button: {
-    height: 40,
-    width: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
-    marginTop: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
-  },
-  warning: {
-    backgroundColor: "#f8c146",
-  },
-  success: {
-    backgroundColor: "#4CAF50",
-  },
-  danger: {
-    backgroundColor: "#E53935",
-  },
-  greenText: { color: "green", fontWeight: "bold" },
-  redText: { color: "red", fontWeight: "bold" },
-  orangeText: { color: "orange", fontWeight: "bold" },
-});
-

@@ -40,9 +40,9 @@ export default function NotificationCard({
         <View style={baseStyles.rowCenter}>
           <Avatar name={creatorName[0]} />
           <View style={baseStyles.marginLeft}>
-            <Text style={styles.boldText}>{creatorName}</Text>
-            <Text>{message}</Text>
-            <Text style={styles.note}>{formattedDate}</Text>
+            <Text style={baseStyles.label}>{creatorName}</Text>
+            <Text style={baseStyles.email}>{message}</Text>
+            <Text>{formattedDate}</Text>
           </View>
         </View>
         <View style={baseStyles.rightColumn}>

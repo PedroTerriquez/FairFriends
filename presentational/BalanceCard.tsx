@@ -45,7 +45,7 @@ export default BalanceCard = ({ id, counterpart, name1, name2, total1, total2 })
         absolute
       />
       <View style={[baseStyles.center, { marginTop: 5 }]}>
-        { total1 == total2 ? <Text>Friendship in balance</Text> : <Text>{lessPaid} need to pay {difference}</Text> }
+        { total1 == total2 ? <Text>Friendship in balance</Text> : <Text style={baseStyles.boldText}>{lessPaid} needs to pay {difference}</Text> }
       </View>
     </TouchableOpacity>
   );

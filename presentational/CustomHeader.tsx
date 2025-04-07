@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles';
 
 export default function CustomHeader() {
@@ -30,13 +30,19 @@ export default function CustomHeader() {
             style={styles.iconButton}
             onPressIn={() => router.push('/profile')}
           >
-            <Ionicons name="person" size={24} color="black" />
+            <MaterialIcons name="account-circle" size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.iconButton}
             onPressIn={() => router.push('/notifications')}
           >
             <Ionicons name="notifications" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPressIn={() => router.push('/contactRequests')}
+          >
+            <Ionicons name="person-add" size={24} color="black" />
           </TouchableOpacity>
         </View>
       </View>

@@ -16,8 +16,8 @@ export default function PromiseCard({ id, title, percentage, user, status }) {
       ]}
     >
       {status == 'pending' && <Pressable style={baseStyles.floatingIconForCard}>
-        <MaterialIcons name="warning" size={20} color="orange" />
-        <Text style={baseStyles}>Pending</Text>
+        <MaterialIcons name="edit" size={20} color="orange" />
+        <Text style={baseStyles.email}>Pending</Text>
       </Pressable>
       }
       <View style={baseStyles.cardContent}>

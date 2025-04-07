@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
@@ -47,8 +47,10 @@ export default function Notifications() {
     }, []);
 
     return (
-    <View style={baseStyles.center} >
-            {notifications.length > 0 ? renderNotifications() : <Text>No notifications</Text>}
-    </View>
+        <View style={baseStyles.viewContainer}>
+            <ScrollView contentContainerStyle={[baseStyles.viewContainer]} >
+                {notifications.length > 0 ? renderNotifications() : <Text>No notifications</Text>}
+            </ScrollView>
+        </View>
     );
 }

@@ -14,7 +14,7 @@ export default Person = ({ person, children, onClick = () => {}}) => {
             <Text style={baseStyles.label}>
               {person.first_name} {person.last_name}
             </Text>
-            < Text style={styles.email} >{person.email}</Text>
+            < Text style={baseStyles.email} >{person.email}</Text>
           </View>
         </View>
         {children}
@@ -22,10 +22,3 @@ export default Person = ({ person, children, onClick = () => {}}) => {
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  email: {
-    fontSize: 14,
-    color: 'gray',
-  },
-});
