@@ -74,6 +74,27 @@ export default function Payment({
     });
   }
 
+  const rejectPaymentButton = (id) => {
+    if (!session) {
+      console.error('No session available');
+      return;
+    }
+
+    setPendingDecision(false)
+
+    axios.patch(
+      `${process.env.EXPO_PUBLIC_API}/payments/${id}/reject`,
+      { status: 'rejected' },
+      session
+    )
+      .then((response) => {
+        setRealStatus('rejected')
+      })
+      .catch((error) => {
+        console.error('Error rejecting payment:', error);
+      });
+  }
+
   return (
     <Pressable
       onPress={() => handleShow() }
@@ -94,7 +115,7 @@ export default function Payment({
               <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]} onPress={() => acceptPaymentButton(id)}>
                 <Text style={baseStyles.buttonText}>✔</Text>
               </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]} onPress={() => setPendingDecision(false)}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
                 <Text style={baseStyles.buttonText}>✖</Text>
               </Pressable>
             </View>

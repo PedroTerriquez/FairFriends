@@ -65,12 +65,30 @@ export default function contactRequests() {
   const renderRequests = (contacts, type) => {
     if (contacts.length == 0) return <View style={[baseStyles.viewContainer, baseStyles.center]}><Text>No friendships pending</Text></View>
 
-    contacts.length == 0
     if (type == 'pending') {
-      return contacts.map(contact => (
-        <Person person={contact} >
-          {contact.friendship_id && (
-            <View style={baseStyles.rowCenter}>
+      return renderPendingContacts(contacts)
+    } else if (type == 'sent') {
+      return renderSentContacts(contacts)
+    }
+  }
+
+  const renderSentContacts = (contacts) => {
+    return contacts.map(contact => (
+      <Person person={contact} >
+        {contact.friendship_id && (
+          <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => cancelRequest(contact.friendship_id)}>
+            <MaterialCommunityIcons name="cancel" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </Person>
+    ))
+  }
+
+  const renderPendingContacts = (contacts) => {
+    return contacts.map(contact => (
+      <Person person={contact} >
+        {contact.friendship_id && (
+          <View style={baseStyles.rowCenter}>
               <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => rejectRequest(contact.friendship_id)}>
                 <MaterialIcons name="close" size={24} color="white" />
               </TouchableOpacity>
@@ -81,17 +99,6 @@ export default function contactRequests() {
           )}
           </Person>
       ))
-    } else if (type == 'sent') {
-      return contacts.map(contact => (
-        <Person person={contact} >
-          {contact.friendship_id && (
-            <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => cancelRequest(contact.friendship_id)}>
-              <MaterialCommunityIcons name="cancel" size={24} color="white" />
-            </TouchableOpacity>
-          )}
-        </Person>
-      ))
-    }
   }
 
   useEffect(() => {
@@ -100,14 +107,7 @@ export default function contactRequests() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-around", padding: 10, backgroundColor: "#eee" }}>
-        <Pressable onPress={() => setActiveTab("Pending")}>
-          <Text style={{ fontWeight: activeTab === "Pending" ? "bold" : "normal" }}>Pending</Text>
-        </Pressable>
-        <Pressable onPress={() => setActiveTab("Sent")}>
-          <Text style={{ fontWeight: activeTab === "Sent" ? "bold" : "normal" }}>Sent</Text>
-        </Pressable>
-      </View>
+
 
       {activeTab === "Pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
     </View>
