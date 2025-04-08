@@ -20,6 +20,20 @@ export default function Notifications() {
                 console.log(error);
             })
     }
+    
+    const acceptNotification = (id) => {
+        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
+            .then((response) => {
+                console.log(response)
+            })
+    }
+
+    const rejectNotification = (id) => {
+        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'rejected' }, session)
+            .then((response) => {
+                console.log(response)
+            })
+    }
 
     const renderNotifications = () => {
         if (notifications.length == 0) return
@@ -38,6 +52,8 @@ export default function Notifications() {
                 status={notification.status}
                 message={notification.message}
                 creatorName={notification.sender_name}
+                acceptNotification={acceptNotification}
+                rejectNotification={rejectNotification}
             />
         ))
     }

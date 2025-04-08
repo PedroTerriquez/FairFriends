@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import { useSession } from "@/services/authContext";
 import Person from '@/presentational/Person';
@@ -25,55 +25,56 @@ export default function contactRequests() {
       })
   }
 
-  const cancelRequest = (id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${id}/cancel`, {}, session)
+  const cancelRequest = (friendship_id) => {
+    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/cancel`, {}, session)
       .then((response) => {
-        removeCard(id, 'sent')
+        removeCard(friendship_id, 'sent')
       })
       .catch((error) => {
       })
   }
 
-  const rejectRequest = (id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${id}/reject`, {}, session)
+  const rejectRequest = (friendship_id) => {
+    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/reject`, {}, session)
       .then((response) => {
-        removeCard(id, 'pending')
+        removeCard(friendship_id, 'pending')
       })
       .catch((error) => {
       })
   }
 
-  const acceptRequest = (id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${id}/accept`, {}, session)
+  const acceptRequest = (friendship_id) => {
+    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/accept`, {}, session)
       .then((response) => {
-        removeCard(id, 'pending')
+        removeCard(friendship_id, 'pending')
       })
       .catch((error) => {
       })
   }
 
-  const removeCard = (id, type) => {
+  const removeCard = (friendship_id, type) => {
     if (type == 'sent') {
-      const newPeople = sent.filter((person) => person.id !== id)
+      const newPeople = sent.filter((friendship) => friendship.friendship_id !== friendship_id)
       setSent(newPeople)
     } else if (type == 'pending') {
-      const newPeople = pending.filter((person) => person.id !== id)
+      const newPeople = pending.filter((friendship) => friendship.friendship_id !== friendship_id)
       setPending(newPeople)
     }
   }
   
   const renderRequests = (contacts, type) => {
-    if (contacts.length == 0) return
+    if (contacts.length == 0) return <View style={[baseStyles.viewContainer, baseStyles.center]}><Text>No friendships pending</Text></View>
 
+    contacts.length == 0
     if (type == 'pending') {
       return contacts.map(contact => (
         <Person person={contact} >
-          {contact.id && (
+          {contact.friendship_id && (
             <View style={baseStyles.rowCenter}>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => rejectRequest(contact.id)}>
+              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => rejectRequest(contact.friendship_id)}>
                 <MaterialIcons name="close" size={24} color="white" />
               </TouchableOpacity>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.green, baseStyles.marginLeft]} onPress={() => acceptRequest(contact.id)}>
+              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.green, baseStyles.marginLeft]} onPress={() => acceptRequest(contact.friendship_id)}>
                 <MaterialIcons name="check" size={24} color="white" />
               </TouchableOpacity>
             </View>
@@ -83,9 +84,9 @@ export default function contactRequests() {
     } else if (type == 'sent') {
       return contacts.map(contact => (
         <Person person={contact} >
-          {contact.id && (
-            <TouchableOpacity style={baseStyles.circleButton} onPress={() => cancelRequest(contact.id)}>
-              <MaterialIcons name="close" size={24} color="white" />
+          {contact.friendship_id && (
+            <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => cancelRequest(contact.friendship_id)}>
+              <MaterialCommunityIcons name="cancel" size={24} color="white" />
             </TouchableOpacity>
           )}
         </Person>

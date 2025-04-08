@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { router, useNavigation } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +17,11 @@ export default function NotificationCard({
   status,
   message,
   creatorName,
+  acceptNotification,
+  rejectNotification,
 }) {
+  const [pendingDecision, setPendingDecision] = useState(false)
+  const [decisionDone, setDecisionDone] = useState(false)
   const navigation = useNavigation();
   
   const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -46,41 +50,34 @@ export default function NotificationCard({
           </View>
         </View>
         <View style={baseStyles.rightColumn}>
-          {amount && <Text style={styles.boldText}>{amount}</Text>}
-          <Pressable style={[styles.button, styles.warning]}>
+          {amount && <Text style={baseStyles.boldText}>{amount}</Text>}
+          {!pendingDecision && status == 'pending' && <Pressable
+            style={[baseStyles.circleButton, baseStyles.buttonWarning]}
+            onPress={() => setPendingDecision(true)}>
             <Ionicons name="notifications" size={20} color="white" />
-          </Pressable>
+          </Pressable> }
+          {pendingDecision && !decisionDone && (
+            <View style={baseStyles.rowCenter}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]}
+                onPress={() => {
+                  acceptNotification(id);
+                  setDecisionDone(true);
+                }}
+              >
+                <Text style={baseStyles.buttonText}>✔</Text>
+              </Pressable>
+              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]}
+                onPress={() => {
+                  rejectNotification(id);
+                  setDecisionDone(true);
+                }}
+              >
+                <Text style={baseStyles.buttonText}>✖</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
       </View>
     </Pressable>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-  boldText: {
-    fontWeight: "bold",
-  },
-  note: {
-    color: "#888",
-  },
-  right: {
-    alignItems: "center",
-  },
-  button: {
-    height: 40,
-    width: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 20,
-    marginTop: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
-  },
-  warning: {
-    backgroundColor: "#f8c146",
-  },
-}); 

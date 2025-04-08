@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import Payment from '../../presentational/Payment';
@@ -61,7 +61,9 @@ export default function Home() {
         </Pressable>
       </View>
 
-      {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+      <ScrollView>
+        {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+      </ScrollView>
     </View>
   );
 }

@@ -23,7 +23,9 @@ export default function CustomHeader() {
           )}
         </View>
         <View style={styles.centerSection}>
-          <Text style={styles.title}>FairFriends</Text>
+          <TouchableOpacity  onPress={() => router.push('/home')}>
+            <Text style={styles.title}>FairFriends</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.rightSection}>
           <TouchableOpacity 
