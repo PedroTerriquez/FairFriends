@@ -1,4 +1,5 @@
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
+import { useState } from 'react';
 import { useSession } from '../services/authContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 export default function Login() {
   const { signIn } = useSession();
   const router = useRouter();
+  const [email, setEmail] = useState(process.env.EXPO_PUBLIC_USER);
+  const [password, setPassword] = useState(process.env.EXPO_PUBLIC_PASSWORD);
+
+  const handleLogin = () => {
+    signIn(email, password);
+  };
 
   return (
     <View style={styles.container}>
@@ -16,9 +23,28 @@ export default function Login() {
       </View>
 
       <View style={styles.loginContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoComplete="password"
+          />
+        </View>
         <TouchableOpacity 
           style={styles.loginButton}
-          onPress={() => signIn(process.env.EXPO_PUBLIC_USER, process.env.EXPO_PUBLIC_PASSWORD)}
+          onPress={handleLogin}
         >
           <Ionicons name="log-in" size={24} color="white" />
           <Text style={styles.loginButtonText}>Login</Text>
@@ -63,6 +89,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: '#f5f5f5',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    fontSize: 16,
   },
   loginButton: {
     flexDirection: 'row',

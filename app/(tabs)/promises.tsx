@@ -5,6 +5,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Promises() {
   const [receivable , setReceivable] = useState([])
@@ -25,7 +26,7 @@ export default function Promises() {
   }
   
   const renderPromises = (promises) => {
-    if (promises.length == 0) return
+    if (promises.length == 0) return EmptyList("No promises")
 
     return promises.map(promise => (
       <PromiseCard

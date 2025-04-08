@@ -12,10 +12,12 @@ type Session = {
 
 const AuthContext = createContext<{
   signIn: (email: string, password: string) => void;
+  signUp: (first_name: string, last_name: string, email: string, password: string, password_confirmation: string) => void;
   signOut: () => void;
   session: Session | null;
 }>({
   signIn: () => null,
+  signUp: () => null,
   signOut: () => null,
   session: null,
 });
@@ -37,6 +39,23 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   const signIn = (email: string, password: string) => {
     axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password })
+      .then((response) => {
+        const token = response.data.auth_token;
+        saveToken(token).then(() => {
+          setSession({
+            token,
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          router.replace("/(tabs)/home");
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const signUp = (first_name: string, last_name: string, email: string, password: string, password_confirmation: string) => {
+    axios.post(`${process.env.EXPO_PUBLIC_API}/users`, { first_name, last_name, email, password, password_confirmation })
       .then((response) => {
         const token = response.data.auth_token;
         saveToken(token).then(() => {
@@ -76,6 +95,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     <AuthContext.Provider
       value={{
         signIn,
+        signUp,
         signOut,
         session
       }}>

@@ -5,6 +5,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import Payment from '../../presentational/Payment';
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Home() {
   const [balancePayments, setBalancePayments] = useState([])
@@ -26,7 +27,7 @@ export default function Home() {
   }
   
   const renderPayments = (payments) => {
-    if (payments.length == 0) return
+    if (payments.length == 0) return EmptyList("No payments")
 
     return payments.map(payment => (
       <Payment

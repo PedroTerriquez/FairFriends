@@ -5,6 +5,7 @@ import { ScrollView } from "react-native";
 import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Balances() {
   const [balances, setBalances] = useState([])
@@ -22,7 +23,7 @@ export default function Balances() {
   }
   
   const renderBalances = () => {
-    if (balances.length == 0) return
+    if (balances.length == 0) return EmptyList("No balances")
 
     return balances.map(balance => (
       <BalanceCard

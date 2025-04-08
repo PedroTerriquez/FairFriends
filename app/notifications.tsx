@@ -5,6 +5,7 @@ import { View, Text, ScrollView } from "react-native";
 import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([])
@@ -36,7 +37,7 @@ export default function Notifications() {
     }
 
     const renderNotifications = () => {
-        if (notifications.length == 0) return
+        if (notifications.length == 0) return EmptyList("No notifications")
 
         return notifications.map(notification => (
             <NotificationCard
@@ -65,7 +66,7 @@ export default function Notifications() {
     return (
         <View style={baseStyles.viewContainer}>
             <ScrollView contentContainerStyle={[baseStyles.viewContainer]} >
-                {notifications.length > 0 ? renderNotifications() : <Text>No notifications</Text>}
+                { renderNotifications() }
             </ScrollView>
         </View>
     );

@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useNavigation, useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import baseStyles from './BaseStyles';
 
 export default function CustomHeader() {
-  const navigation = useNavigation();
   const router = useRouter();
+  const pathname = usePathname();
   const canGoBack = router.canGoBack();
+
+  if (pathname === '/login' || pathname === '/signup') {
+    return null;
+  }
 
   return (
     <View style={styles.header}>

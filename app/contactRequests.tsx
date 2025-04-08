@@ -6,6 +6,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useSession } from "@/services/authContext";
 import Person from '@/presentational/Person';
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([])
@@ -63,7 +64,7 @@ export default function contactRequests() {
   }
   
   const renderRequests = (contacts, type) => {
-    if (contacts.length == 0) return <View style={[baseStyles.viewContainer, baseStyles.center]}><Text>No friendships pending</Text></View>
+    if (contacts.length == 0) return EmptyList("No friendships pending")
 
     if (type == 'pending') {
       return renderPendingContacts(contacts)

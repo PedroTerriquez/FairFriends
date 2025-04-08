@@ -7,6 +7,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Person from '../../presentational/Person';
 import { useSession } from "@/services/authContext";
 import baseStyles from '../../presentational/BaseStyles'
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([])
@@ -30,7 +31,7 @@ export default function Contacts() {
     }
 
     const renderContacts = (friends) => {
-        if (friends.length == 0) return
+        if (friends.length == 0) return EmptyList("No friends")
 
         return friends.map(friend => (
             <Person person={friend} onClick={navigateProfile} >

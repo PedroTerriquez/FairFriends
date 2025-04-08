@@ -8,6 +8,7 @@ import baseStyles from '@/presentational/BaseStyles'
 import { useSession } from "@/services/authContext";
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Balance() {
     const [payments, setPayments] = useState([])
