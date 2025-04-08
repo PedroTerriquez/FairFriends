@@ -3,10 +3,17 @@ import { useState, useContext, createContext, type PropsWithChildren, useEffect 
 import { getToken, saveToken, deleteToken } from './useStorage';
 import axios from 'axios';
 
+type Session = {
+  token: string | null;
+  headers: {
+    Authorization?: string;
+  };
+};
+
 const AuthContext = createContext<{
-  signIn: (email: any, password: any) => void;
+  signIn: (email: string, password: string) => void;
   signOut: () => void;
-  session?: object | null;
+  session: Session | null;
 }>({
   signIn: () => null,
   signOut: () => null,
@@ -25,38 +32,51 @@ export function useSession() {
   return value;
 }
 
-function signIn(email: string, password: string) {
-  axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password },)
-    .then((response) => {
-      saveToken(response.data.auth_token).then(res => {
-        router.replace("/home");
-      });
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-}
-
-function signout() {
-  deleteToken();
-}
-
 export function SessionProvider({ children }: PropsWithChildren) {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
+
+  const signIn = (email: string, password: string) => {
+    axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password })
+      .then((response) => {
+        const token = response.data.auth_token;
+        saveToken(token).then(() => {
+          setSession({
+            token,
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          router.replace("/(tabs)/home");
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const signOut = () => {
+    deleteToken();
+    setSession(null);
+  };
+
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await getToken();
-      setSession(token);
+      const tokenData = await getToken();
+      if (tokenData.headers.Authorization) {
+        const token = tokenData.headers.Authorization.replace('Bearer ', '');
+        setSession({
+          token,
+          headers: tokenData.headers
+        });
+      }
     };
 
     fetchToken();
-  },[]);
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: signIn,
-        signOut: signout,
+        signIn,
+        signOut,
         session
       }}>
       {children}
