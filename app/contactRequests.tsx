@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import { useSession } from "@/services/authContext";
@@ -107,10 +107,16 @@ export default function contactRequests() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
-
-
+    <ScrollView style={baseStyles.viewContainerFull}>
+      <View style={baseStyles.viewRowWithSpace}>
+        <Pressable onPress={() => setActiveTab("Pending")} style={activeTab === "Pending" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Pending" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Pending</Text>
+        </Pressable>
+        <Pressable onPress={() => setActiveTab("Sent")} style={activeTab === "Sent" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Sent" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Sent</Text>
+        </Pressable>
+      </View>
       {activeTab === "Pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
-    </View>
+    </ScrollView>
   );
 }

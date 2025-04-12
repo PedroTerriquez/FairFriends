@@ -38,7 +38,7 @@ export default function Profile() {
   }
 
   return (
-    <View style={[baseStyles.card, baseStyles.rightColumn]}>
+    <View style={[baseStyles.card, baseStyles.alignItemsCenter]}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 15 }}>{info.name}</Text>
       <Image
         style={{ width: 150, height: 150, borderRadius: 75 }}
@@ -65,7 +65,7 @@ export default function Profile() {
           <TouchableOpacity
             style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
             onPress={() => {
-              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: id }, session)
+              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
                 .then((response) => {
                   router.push({
                     pathname: '/balance', 

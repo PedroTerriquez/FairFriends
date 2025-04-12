@@ -31,7 +31,7 @@ export default function Payment({
   const rejected = realStatus === "rejected";
 
   let moneyColor = baseStyles.boldText;
-  if (mine && accepted) {
+  if (accepted) {
     moneyColor = baseStyles.greenText;
   } else if (rejected) {
     moneyColor = baseStyles.redText;
@@ -39,15 +39,28 @@ export default function Payment({
     moneyColor = baseStyles.orangeText;
   }
 
-  const paymentName = parentTitle ? `${creatorName} - ${parentTitle}` : creatorName;
+  const formattedDate = (() => {
+    const now = new Date();
+    const paymentDate = new Date(date);
+    const diffInMillis = now - paymentDate;
+    const diffInMinutes = Math.floor(diffInMillis / (1000 * 60));
+    const diffInHours = Math.floor(diffInMillis / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
 
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit", 
-    minute: "2-digit",
-  }).format(new Date(date));
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours} hours ago`;
+    } else if (diffInDays < 7) {
+      return `${diffInDays} days ago`;
+    } else {
+      return new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric"
+      }).format(paymentDate);
+    }
+  })();
 
   const handleShow = () => {
     navigation.navigate(type.toLowerCase(), {paymentable_id, type})
@@ -100,16 +113,16 @@ export default function Payment({
       onPress={() => handleShow() }
       style={[baseStyles.card, status == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
-        <View style={[baseStyles.rowCenter, baseStyles.viewContainerTwo]}>
+        <View style={[baseStyles.rowCenter]}>
           <Avatar name={ creatorName[0] } />
           <View style={baseStyles.marginLeft}>
-            <Text style={baseStyles.cardTitle}>{paymentName}</Text>
-            <Text style={baseStyles.cardSubtitle}>{title}</Text>
+            <Text style={baseStyles.cardTitle}>{creatorName}</Text>
+            <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text>
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>
-        <View style={[baseStyles.rightColumn]}>
-          <Text style={moneyColor}>{amount}</Text>
+        <View style={[baseStyles.alignItemsCenter]}>
+          <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
           {pendingDecision && (
             <View style={baseStyles.rowCenter}>
               <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]} onPress={() => acceptPaymentButton(id)}>

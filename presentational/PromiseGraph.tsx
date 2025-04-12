@@ -39,7 +39,7 @@ export default function PromiseGraph({ percentage }) {
 
 const styles = StyleSheet.create({
   progressBar: {
-    margin: 20,
+    marginVertical: 20,
     height: 10,
     backgroundColor: "#ddd",
     borderRadius: 10,

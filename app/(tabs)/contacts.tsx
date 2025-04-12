@@ -31,7 +31,8 @@ export default function Contacts() {
     }
 
     const renderContacts = (friends) => {
-        if (friends.length == 0) return EmptyList("No friends")
+        if (friends.length == 0 && text == null) return EmptyList("No friends")
+        if (friends.length == 0 && text != null) return EmptyList("No contacts found")
 
         return friends.map(friend => (
             <Person person={friend} onClick={navigateProfile} >
@@ -71,7 +72,7 @@ export default function Contacts() {
     }
 
     const startBalance = (id, name) => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { user2_id: id }, session)
+        axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
             .then((response) => {
                 router.push({
                     pathname: '/balance',
@@ -87,22 +88,20 @@ export default function Contacts() {
     }, [text]);
 
     return (
-        <View style={baseStyles.viewContainer}>
-            <View style={baseStyles.searchBar}>
-                <TextInput
-                    style={baseStyles.searchBarInput}
-                    placeholder="Search"
-                    value={text}
-                    onChangeText={(newText) => { setText(newText); }}
-                    autoFocus={true}
-                />
-                <TouchableOpacity style={[baseStyles.button, baseStyles.searchBarCancelButton]} onPress={() => setText('')}>
-                    <Text>Cancel</Text>
-                </TouchableOpacity>
+        <View style={baseStyles.viewContainerFull}>
+            <View>
+                <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                    <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                    <TextInput
+                        style={{ flex: 1 }}
+                        placeholder="Search"
+                        value={text}
+                        onChangeText={(newText) => { setText(newText); }}
+                        autoFocus={true}
+                    />
+                </View>
             </View>
-            <ScrollView style={baseStyles.viewContainer}>
-                {renderContacts(friends)}
-            </ScrollView>
+            {renderContacts(friends)}
             <TouchableOpacity style={baseStyles.floatingButton}
                 onPress={() => { router.push({ pathname: "/addContact", }) }}>
                         <Ionicons name="add" size={32} color="white" />

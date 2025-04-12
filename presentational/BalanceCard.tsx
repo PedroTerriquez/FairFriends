@@ -3,49 +3,58 @@ import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { useNavigation } from "expo-router";
 import baseStyles from "./BaseStyles";
-import AvatarInfoHeader from "./AvatarInfoHeader";
 
-export default BalanceCard = ({ id, counterpart, name1, name2, total1, total2 }) => {
-  const data = [
-    { 
-      name: `${name1}\n has paid $${total1 || 0}\n`, 
-      population: total1 || 1, 
-      color: "#2F66FF", 
-      legendFontColor: "black", 
-      legendFontSize: 13 
-    },
-    { 
-      name: `${name2}\n has paid $${total2 || 0}\n`, 
-      population: total2 || 1, 
-      color: "#7ECC10", 
-      legendFontColor: "black", 
-      legendFontSize: 13 
-    },
-  ];
+export default BalanceCard = ({ id, total, name, status, members, myTotal }) => {
+
+  const data = members.map((member, index) => ({
+    name: ` - ${member.name}\n`,
+    population: member.money || 1,
+    color: index === 0 ? "#2F66FF" : "#7ECC10",
+    legendFontColor: "black",
+    legendFontSize: 13
+  }));
+
   const navigation = useNavigation();
-  const lessPaid = total1 > total2 ? name2 : name1;
-  const difference = total1 > total2 ? total1 - total2 : total2 - total1;
+  const membersWithMoney = members.map(member => ({
+    name: member.name,
+    money: member.money || 0
+  }));
+
+  const minPaidMember = membersWithMoney.reduce((min, current) => 
+    current.money < min.money ? current : min
+  );
+
+  const lessPaid = minPaidMember.name;
+  const difference = myTotal - total/members.length;
 
   return (
-    <TouchableOpacity style={baseStyles.card} onPress={() => navigation.navigate("balance", { paymentable_id: id })}>
-      <AvatarInfoHeader user={counterpart} text={`Balance with ${counterpart}`} />
-      <PieChart
-        data={data}
-        width={Dimensions.get("window").width - 40}
-        height={100}
-        chartConfig={{
-          backgroundColor: "transparent",
-          color: () => "#000",
-          decimalPlaces: 0,
-        }}
-        accessor="population"
-        backgroundColor="transparent"
-        paddingLeft={"-50"}
-        center={[50, 0]}
-        absolute
-      />
-      <View style={[baseStyles.center, { marginTop: 5 }]}>
-        { total1 == total2 ? <Text style={baseStyles.boldText}>Friendship in balance</Text> : <Text style={baseStyles.boldText}>{lessPaid} needs to pay {difference}</Text> }
+    <TouchableOpacity key={id} style={[baseStyles.card, baseStyles.viewRow]} onPress={() => navigation.navigate("balance", { paymentable_id: id })}>
+      <View style={{ flex: 2, justifyContent: "space-between" }}>
+        <View style={{marginBottom: 20}}>
+          <Text style={[baseStyles.bigNumber, { color: difference >= 0 ? 'green' : '#dc3545' }]}>{difference >= 0 ? '+' : '-'}${Math.abs(difference)}</Text>
+          <Text style={[baseStyles.cardTitle]}>{name || "Balance with this user"}</Text>
+        </View>
+        <View style={[baseStyles.viewRow, { marginTop: 'auto' }]}>
+          <Text style={[baseStyles.label, baseStyles.backgroundRed, {borderRadius: 10, paddingHorizontal: 10}]}>Next: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
+        </View>
+      </View>
+      <View style={[baseStyles.viewContainerFullOnly]}>
+        <PieChart
+          data={data}
+          width={Dimensions.get("window").width}
+          height={100}
+          chartConfig={{
+            backgroundColor: "transparent",
+            color: () => "#000",
+            decimalPlaces: 0,
+          }}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft={"-30"}
+          center={[0, 0]}
+          absolute
+        />
+        <Text style={[baseStyles.label, { textAlign: "right" }]}>Total: $<Text style={{ fontWeight: 'bold' }}>{total}</Text></Text>
       </View>
     </TouchableOpacity>
   );

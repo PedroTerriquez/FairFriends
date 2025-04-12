@@ -28,16 +28,11 @@ export default function Balances() {
     return balances.map(balance => (
       <BalanceCard
             id={balance.id}
-            key={balance.id}
-            user1={balance.user1_id}
-            user2={balance.user2_id}
-            name1={balance.user1_name}
-            name2={balance.user2_name}
-            total1={balance.user1_money}
-            total2={balance.user2_money}
-            counterpart={balance.counterpart}
-            percentage1={balance.percetage1}
-            percentage2={balance.percetage2}
+            total={balance.total}
+            name={balance.name}
+            status={balance.status}
+            members={balance.balance_members}
+            myTotal={balance.my_total}
       />
     ))
   }
@@ -47,7 +42,7 @@ export default function Balances() {
   }, []);
 
   return (
-    <ScrollView style={baseStyles.viewContainer}>
+    <ScrollView style={baseStyles.viewContainerFull}>
         {renderBalances()}
     </ScrollView>
   );

@@ -1,36 +1,67 @@
 import { StyleSheet } from 'react-native';
 
 const baseStyles = StyleSheet.create({
-    viewContainer: {
-        flex: 1
+    viewContainerFull: {
+        flex: 1,
+        backgroundColor: "#f6f6f6",
+        paddingHorizontal: 15
     },
-    viewContainerTwo: {
-        flex: 2,
+    viewContainerFullOnly: {
+        flex: 1,
     },
-    viewContainerThree: {
-        flex: 3,
+    viewRowWithSpace: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        padding: 10,
     },
-    viewContainerFour: {
-        flex: 4,
+    viewAsRowCenter: {
+        flexDirection: "row",
+        justifyContent: "center",
+        padding: 10,
     },
-    viewBackground: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-      padding: 10,
-      backgroundColor: "#eee" 
+    viewRow: {
+        flexDirection: "row",
+        paddingVertical: 10,
+        alignItems: "center",
+    },
+    bigNumber: {
+        fontSize: 40,
+        fontWeight: "bold",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+    },
+    titleh2: {
+        fontSize: 15,
+        fontWeight: "bold",
+    },
+    textCenter: {
+        textAlign: "center",
+    },
+    label: {
+        fontSize: 15,
+        marginBottom: 5,
+    },
+    textGray14: {
+        fontSize: 14,
+        color: 'gray',
     },
     card: {
         backgroundColor: "#fff",
-        padding: 16,
-        marginVertical: 4,
-        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginVertical: 5,
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: "#0000002e",
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
     },
     cardAccepted: {
-        backgroundColor: "#f4fff6",
         borderWidth: 1,
         borderColor: "#7ECC10",
         shadowColor: "#7ECC10",
@@ -38,7 +69,6 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 8,
     },
     cardClose: {
-        backgroundColor: "#fff4f4", 
         borderWidth: 1,
         borderColor: "#dc3545",
         shadowColor: "#dc3545",
@@ -46,7 +76,6 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 8,
     },
     cardPending: {
-        backgroundColor: "#fffcf4",
         borderWidth: 1,
         borderColor: "#ffc107",
         shadowColor: "#ffc107",
@@ -65,11 +94,23 @@ const baseStyles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
     },
+    cardTitle: {
+        fontSize: 15,
+        fontWeight: "bold",
+        marginBottom: 2,
+    },
+    cardSubtitle: {
+        fontSize: 14,
+    },
+    cardDate: {
+        fontSize: 12,
+        color: 'gray',
+    },
     rowCenter: {
         flexDirection: "row",
         alignItems: "center",
     },
-    rightColumn: {
+    alignItemsCenter: {
         alignItems: "center",
     },
     center: {
@@ -78,8 +119,8 @@ const baseStyles = StyleSheet.create({
         alignItems: "center",
     },
     avatar: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 20,
         backgroundColor: "#007aff",
         justifyContent: "center",
@@ -87,7 +128,7 @@ const baseStyles = StyleSheet.create({
     },
     avatarText: {
         color: "#fff",
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: "bold",
     },
     marginLeft: {
@@ -115,7 +156,7 @@ const baseStyles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: 5,
     },
     saveButton: {
         backgroundColor: "#3e8c41",
@@ -123,39 +164,39 @@ const baseStyles = StyleSheet.create({
     cancelButton: {
         backgroundColor: "#a8312e",
     },
+    normalButton: {
+        backgroundColor: "#007AFF",
+    },
     buttonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
     },
-    label: {
-        fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 5,
-    },
     input: {
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: "#0000002e",
+        borderBottomWidth: 1,
         borderRadius: 8,
         padding: 10,
-        marginBottom: 15,
     },
     picker: {
         height: 50,
         marginBottom: 20,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 20,
-    },
-    email: {
-        fontSize: 14,
-        color: 'gray',
-    },
     disabledInput: {
         backgroundColor: "#f0f0f0"
+    },
+    floatingBadgeForCard: {
+        position: "absolute",
+        top: 10, 
+        right: 20,
+        width: 'auto',
+        height: 30,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        flexDirection: "row",
     },
     floatingIconForCard: {
         position: "absolute",
@@ -172,8 +213,8 @@ const baseStyles = StyleSheet.create({
         position: "absolute",
         bottom: 10, 
         right: 10,
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         backgroundColor: "#007AFF",
         borderRadius: 30,
         alignItems: "center",
@@ -187,19 +228,17 @@ const baseStyles = StyleSheet.create({
  
     },
     searchBar: {
-        flexDirection: "row",
-        padding: 10,
-        backgroundColor: "#f0f0f0",
-        height: 60,
+        paddingHorizontal: 0,
     },
     searchBarInput: {
         flex: 4,
         backgroundColor: "white",
-        borderRadius: 8,
+        borderRadius: 15,
         height: 40,
         borderWidth: 1,
         borderColor: "#ccc",
         padding: 10,
+        marginVertical: 10,
     },
     searchBarCancelButton: {
         flex: 1,
@@ -221,18 +260,6 @@ const baseStyles = StyleSheet.create({
     blue: {
         backgroundColor: '#007aff',
     },
-    cardTitle: {
-        fontSize: 15,
-        fontWeight: "bold",
-        marginBottom: 2,
-    },
-    cardSubtitle: {
-        fontSize: 14,
-    },
-    cardDate: {
-        fontSize: 13,
-        color: 'gray',
-    },
     buttonWarning: {
         backgroundColor: "#f8c146",
     },
@@ -242,10 +269,46 @@ const baseStyles = StyleSheet.create({
     buttonDanger: {
         backgroundColor: "#E53935",
     },
+    backgroundGreen: {
+        backgroundColor: "#e6ffe6",
+    },
+    backgroundRed: {
+        backgroundColor: "#ffe6e6",
+    },
+    backgroundOrange: {
+        backgroundColor: "#fffcf4",
+    },
     boldText: { fontWeight: "bold", },
     greenText: { color: "green", fontWeight: "bold" },
     redText: { color: "red", fontWeight: "bold" },
     orangeText: { color: "orange", fontWeight: "bold" },
+    tabBarActive: {
+        flex: 1,
+        backgroundColor: '#007bff',
+        borderRadius: 20,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        marginHorizontal: 10,
+    },
+    tabBarTextActive: {
+        color: 'white',
+        fontWeight: "bold"
+    },
+    tabBarInactive: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    tabBarTextInactive: {
+        color: 'gray',
+        fontWeight: "normal"
+    },
 });
 
 export default baseStyles

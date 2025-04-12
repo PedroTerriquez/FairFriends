@@ -47,13 +47,13 @@ export default function Promises() {
   }, []);
 
   return (
-    <ScrollView style={baseStyles.viewContainer}>
-      <View style={ baseStyles.viewBackground}>
-        <Pressable onPress={() => setActiveTab("Receivable")}>
-          <Text style={{ fontWeight: activeTab === "Receivable" ? "bold" : "normal" }}>Receivable</Text>
+    <ScrollView style={baseStyles.viewContainerFull}>
+      <View style={ baseStyles.viewRowWithSpace}>
+        <Pressable onPress={() => setActiveTab("Receivable")} style={activeTab === "Receivable" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Receivable" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Receivable</Text>
         </Pressable>
-        <Pressable onPress={() => setActiveTab("Payable")}>
-          <Text style={{ fontWeight: activeTab === "Payable" ? "bold" : "normal" }}>Payable</Text>
+        <Pressable onPress={() => setActiveTab("Payable")} style={activeTab === "Payable" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Payable" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Payable</Text>
         </Pressable>
       </View>
 

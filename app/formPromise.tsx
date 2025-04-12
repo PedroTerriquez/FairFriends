@@ -74,7 +74,7 @@ export default function formPromise() {
     
     return (
         <ScrollView style={baseStyles.card}>
-            { paymentable_id ? <AvatarInfoHeader user={promise.admin_name} text={`Editing Promise made to ${promise.admin_name}`} /> :  <AvatarInfoHeader user={promise.administrator_name} text={`New Promise made to ${promise.administrator_name}`} /> }
+            { paymentable_id ? <AvatarInfoHeader user={promise.admin_name} text={`Editing Promise made to`} /> :  <AvatarInfoHeader user={promise.administrator_name} text={`New Promise made to`} /> }
             <Text style={baseStyles.label}>Concept</Text>
             <TextInput style={baseStyles.input} value={promise.title} onChangeText={(title) => handleChange('title', title)} editable={promise.mine} />
             <Text style={baseStyles.label}>Total</Text>

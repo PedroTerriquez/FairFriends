@@ -8,6 +8,8 @@ import baseStyles from '@/presentational/BaseStyles';
 import { useSession } from "@/services/authContext";
 import Payment from '@/presentational/Payment';
 import PromiseGraph from "@/presentational/PromiseGraph";
+import PromiseCard from "@/presentational/PromiseCard";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Promise() {
     const [payments, setPayments] = useState([])
@@ -53,49 +55,53 @@ export default function Promise() {
     }, [paymentable_id]);
 
     return promise ? (
-        <ScrollView>
-            <View style={baseStyles.cardNoBorder}>
-                <View style={baseStyles.viewContainer}>
-                    <Text style={baseStyles.title}>{promise.title}</Text>
-                    <Text style={baseStyles.title}>${promise.total}</Text>
-                    <PromiseGraph percentage={(promise.paid_amount / 100 * promise.total) + "%"} />
-                    {promise.status === "pending" && (
-                        <Pressable
-                            style={[baseStyles.button, baseStyles.saveButton]}
-                            onPress={() => router.push({
-                                pathname: "/formPromise", params: {
-                                    paymentable_id,
-                                    mine: promise.mine
-                                }
-                            })}
-                        >
-                            <Text style={baseStyles.buttonText}>Edit</Text>
-                        </Pressable>
-                    )}
-                </View>
-            </View>
-            <View style={baseStyles.cardNoBorder}>
-                {renderPayments()}
-            </View>
-            {promise.status != 'pending' && <TouchableOpacity
-                style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
-                onPress={() => {
-                    if (promise) {
-                        router.push({
-                            pathname: "/formPayment",
-                            params: {
-                                paymentable_id: paymentable_id,
-                                type: 'Promise',
-                                recipient_name: promise.admin_name,
-                                recipient_id: promise.administrator_id
+        <ScrollView style={[baseStyles.viewContainerFull, {backgroundColor: "white"}]}>
+            <View>
+                <PromiseCard
+                    id={promise.id}
+                    title={promise.title}
+                    total={promise.total}
+                    percentage={(promise.paid_amount / 100 * promise.total) + "%"}
+                    status={promise.status}
+                    user={promise.admin_name}
+                />
+                {promise.status === "pending" && (
+                    <Pressable
+                        style={[baseStyles.button, baseStyles.buttonWarning, { marginTop: 10 }]}
+                        onPress={() => router.push({
+                            pathname: "/formPromise", params: {
+                                paymentable_id,
+                                mine: promise.mine
                             }
-                        });
-                    }
-                }}
-            >
-                <Ionicons name="add" size={32} color="white" />
-            </TouchableOpacity>
-            }
+                        })}
+                    >
+                        <Text style={baseStyles.buttonText}>Edit</Text>
+                    </Pressable>
+                )}
+            </View>
+            <View style={[baseStyles.viewRow, { justifyContent: "space-between", height: 70 }]}>
+                {payments.length > 0 && <Text style={[baseStyles.titleh2, { marginTop: 10 }]}>Recent Transactions </Text>}
+                {promise.status != 'pending' && promise.status != 'close' && <TouchableOpacity
+                    style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
+                    onPress={() => {
+                        if (promise) {
+                            router.push({
+                                pathname: "/formPayment",
+                                params: {
+                                    paymentable_id: paymentable_id,
+                                    type: 'Promise',
+                                    recipient_name: promise.admin_name,
+                                    recipient_id: promise.administrator_id
+                                }
+                            });
+                        }
+                    }}
+                >
+                    <Ionicons name="add" size={32} color="white" />
+                </TouchableOpacity>
+                }
+            </View>
+            {renderPayments()}
         </ScrollView>
     ) : <View></View>
 }

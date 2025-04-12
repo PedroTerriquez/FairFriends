@@ -14,7 +14,7 @@ export default Person = ({ person, children, onClick = () => {}}) => {
             <Text style={baseStyles.label}>
               {person.first_name} {person.last_name}
             </Text>
-            < Text style={baseStyles.email} >{person.email}</Text>
+            < Text style={baseStyles.textGray14} >{person.email}</Text>
           </View>
         </View>
         {children}

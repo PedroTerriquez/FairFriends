@@ -64,10 +64,9 @@ export default function Notifications() {
     }, []);
 
     return (
-        <View style={baseStyles.viewContainer}>
-            <ScrollView contentContainerStyle={[baseStyles.viewContainer]} >
-                { renderNotifications() }
-            </ScrollView>
-        </View>
+        <ScrollView contentContainerStyle={[baseStyles.viewContainerFull]} >
+            <Text style={[baseStyles.title, baseStyles.textCenter, { marginTop: 10 }]}>Notifications</Text>
+            {renderNotifications()}
+        </ScrollView>
     );
 }

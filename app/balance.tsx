@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -17,7 +17,7 @@ export default function Balance() {
     const { session } = useSession();
     const router = useRouter();
 
-    const fetchPayments = async () => {
+    const fetchBalance = async () => {
       if (!session) return;
       
       try {
@@ -52,45 +52,42 @@ export default function Balance() {
     }
 
     useEffect(() => {
-        fetchPayments();
+        fetchBalance();
     }, [paymentable_id]);
 
     return (
-      <ScrollView>
+      <ScrollView style={[baseStyles.viewContainerFull]}>
         { balance && <BalanceCard
           id={balance.id}
-          key={balance.id}
-          user1={balance.user1_id}
-          user2={balance.user2_id}
-          name1={balance.user1_name}
-          name2={balance.user2_name}
-          total1={balance.user1_money}
-          total2={balance.user2_money}
-          counterpart={balance.counterpart}
-          percentage1={balance.percetage1}
-          percentage2={balance.percetage2}
+          total={balance.total}
+          name={balance.name}
+          status={balance.status}
+          members={balance.balance_members}
+          myTotal={balance.my_total}
         /> }
-        <View style={baseStyles.viewContainer}>
-          {renderPayments()}
+        <View style={[baseStyles.viewRow, { justifyContent: "space-between", height: 70 }]}>
+          {payments.length > 0 && <Text style={[baseStyles.titleh2, { marginTop: 10 }]}>Recent Transactions </Text>}
+          {balance && balance.status != 'pending' && balance.status != 'close' && <TouchableOpacity
+            style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
+            onPress={() => {
+              if (balance) {
+                router.push({
+                  pathname: "/formPayment",
+                  params: {
+                    paymentable_id: paymentable_id,
+                    type: 'Balance',
+                    recipient_name: balance.name,
+                    recipient_id: balance.id,
+                  }
+                });
+              }
+            }}
+          >
+            <Ionicons name="add" size={32} color="white" />
+          </TouchableOpacity>
+          }
         </View>
-        <TouchableOpacity 
-          style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]} 
-          onPress={() => {
-            if (balance) {
-              router.push({
-                pathname: "/formPayment",
-                params: { 
-                  paymentable_id: paymentable_id, 
-                  type: 'Balance', 
-                  recipient_name: balance.counterpart,
-                  recipient_id: balance.counterpart == balance.user1_name ? balance.user1_id : balance.user2_id
-                }
-              });
-            }
-          }}
-        >
-          <Ionicons name="add" size={32} color="white" />
-        </TouchableOpacity>
+        {renderPayments()}
       </ScrollView>
     )
 }

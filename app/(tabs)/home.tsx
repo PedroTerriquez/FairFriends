@@ -52,13 +52,23 @@ export default function Home() {
   }, []);
 
   return (
-    <View style={baseStyles.viewContainer}>
-      <View style={baseStyles.viewBackground}>
-        <Pressable onPress={() => setActiveTab("Promises")}>
-          <Text style={{ fontWeight: activeTab === "Promises" ? "bold" : "normal" }}>Promises</Text>
+    <View style={baseStyles.viewContainerFull}>
+      <View style={baseStyles.viewRowWithSpace}>
+        <Pressable
+          style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+          onPress={() => setActiveTab("Promises")}
+        >
+          <Text style={activeTab === "Promises" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+            Promises
+          </Text>
         </Pressable>
-        <Pressable onPress={() => setActiveTab("Balances")}>
-          <Text style={{ fontWeight: activeTab === "Balances" ? "bold" : "normal" }}>Balances</Text>
+        <Pressable
+          style={activeTab === "Balances" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+          onPress={() => setActiveTab("Balances")}
+        >
+          <Text style={activeTab === "Balances" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+            Balances
+          </Text>
         </Pressable>
       </View>
 

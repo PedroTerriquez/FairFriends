@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '@/presentational/Person';
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function addContact() {
     const [people, setPeople] = useState([])
@@ -39,7 +40,7 @@ export default function addContact() {
     }
 
     const renderPeople = () => {
-        if (people.length == 0) return
+        if (people.length == 0) return EmptyList("No contacts found")
 
         return people.map(friend => (
             <Person person={friend}>
@@ -56,20 +57,20 @@ export default function addContact() {
     }, [text]);
 
     return (
-        <View style={baseStyles.viewContainer}>
-            <View style={baseStyles.searchBar}>
-                <TextInput
-                    style={baseStyles.searchBarInput}
-                    placeholder="Search"
-                    value={text}
-                    onChangeText={(newText) => { setText(newText); }}
-                    autoFocus={true}
-                />
-                <TouchableOpacity style={[baseStyles.button, baseStyles.searchBarCancelButton]} onPress={() => setText('')}>
-                    <Text>Clean</Text>
-                </TouchableOpacity>
+        <View style={[baseStyles.viewContainerFull]}>
+            <View>
+                <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                    <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                    <TextInput
+                        style={{ flex: 1 }}
+                        placeholder="Search"
+                        value={text}
+                        onChangeText={(newText) => { setText(newText); }}
+                        autoFocus={true}
+                    />
+                </View>
             </View>
-            <ScrollView>{renderPeople()}</ScrollView>
+            {renderPeople()}
         </View>
     );
 }
