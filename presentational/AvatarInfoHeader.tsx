@@ -6,7 +6,7 @@ export default function AvatarInfoHeader({user = '?', text}) {
     return (
       <View style={[baseStyles.alignItemsCenter]}>
         <Avatar name={user} />
-        <Text style={[baseStyles.titleh2]}>
+        <Text style={[baseStyles.title15]}>
           {text}
         </Text>
         <Text style={[baseStyles.email]}>{user}</Text>

@@ -66,7 +66,7 @@ export default function Balance() {
           myTotal={balance.my_total}
         /> }
         <View style={[baseStyles.viewRow, { justifyContent: "space-between", height: 70 }]}>
-          {payments.length > 0 && <Text style={[baseStyles.titleh2, { marginTop: 10 }]}>Recent Transactions </Text>}
+          {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
           {balance && balance.status != 'pending' && balance.status != 'close' && <TouchableOpacity
             style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
             onPress={() => {

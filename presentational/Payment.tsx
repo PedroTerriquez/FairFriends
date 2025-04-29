@@ -125,22 +125,22 @@ export default function Payment({
           <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
           {pendingDecision && (
             <View style={baseStyles.rowCenter}>
-              <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]} onPress={() => acceptPaymentButton(id)}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]} onPress={() => acceptPaymentButton(id)}>
                 <Ionicons name="checkmark" size={20} color="white" />
               </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
                 <Ionicons name="close" size={20} color="white" />
               </Pressable>
             </View>
           )}
           {pending && !pendingDecision && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.buttonWarning]} onPress={() => setPendingDecision(true)}>
+            <Pressable style={[baseStyles.circleButton, baseStyles.warningBG]} onPress={() => setPendingDecision(true)}>
               <Ionicons name="warning" size={20} color="white" />
             </Pressable>
           )}
           {editable && (
             <Pressable
-              style={[baseStyles.circleButton, baseStyles.buttonWarning]}
+              style={[baseStyles.circleButton, baseStyles.warningBG]}
               onPressIn={() => router.push({
                 pathname: "/formPayment",
                 params: {
@@ -158,12 +158,12 @@ export default function Payment({
             </Pressable>
           )}
           {accepted && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]}>
+            <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}>
               <Ionicons name="checkmark" size={20} color="white" />
             </Pressable>
           )}
           {rejected && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger]}>
+            <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG]}>
               <Ionicons name="close" size={20} color="white" />
             </Pressable>
           )}

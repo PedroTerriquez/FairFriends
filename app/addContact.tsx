@@ -45,7 +45,7 @@ export default function addContact() {
         return people.map(friend => (
             <Person person={friend}>
                 { friend.id && (
-                    <TouchableOpacity style={[baseStyles.circleButton, baseStyles.blue]} onPress={() => onAdd(friend.id)}>
+                    <TouchableOpacity style={[baseStyles.circleButton, baseStyles.blueBG]} onPress={() => onAdd(friend.id)}>
                         <MaterialIcons name="person-add" size={24} color="white" />
                     </TouchableOpacity>
                 )}

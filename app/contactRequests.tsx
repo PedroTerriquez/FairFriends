@@ -77,7 +77,7 @@ export default function contactRequests() {
     return contacts.map(contact => (
       <Person person={contact} >
         {contact.friendship_id && (
-          <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => cancelRequest(contact.friendship_id)}>
+          <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => cancelRequest(contact.friendship_id)}>
             <MaterialCommunityIcons name="cancel" size={24} color="white" />
           </TouchableOpacity>
         )}
@@ -90,10 +90,10 @@ export default function contactRequests() {
       <Person person={contact} >
         {contact.friendship_id && (
           <View style={baseStyles.rowCenter}>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.red]} onPress={() => rejectRequest(contact.friendship_id)}>
+              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => rejectRequest(contact.friendship_id)}>
                 <MaterialIcons name="close" size={24} color="white" />
               </TouchableOpacity>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.green, baseStyles.marginLeft]} onPress={() => acceptRequest(contact.friendship_id)}>
+              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft]} onPress={() => acceptRequest(contact.friendship_id)}>
                 <MaterialIcons name="check" size={24} color="white" />
               </TouchableOpacity>
             </View>

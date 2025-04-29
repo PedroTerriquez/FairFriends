@@ -55,10 +55,10 @@ export default function Profile() {
       </View>)}
       {info.me != 1 && (
         <><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
-          <Text style={baseStyles.titleh2}>Start a promise or a balance with {info.name}</Text>
+          <Text style={baseStyles.title15}>Start a promise or a balance with {info.name}</Text>
         </View><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
             <TouchableOpacity
-              style={[baseStyles.circleButton, baseStyles.green]}
+              style={[baseStyles.circleButton, baseStyles.greenBG]}
               onPress={() => router.push({
                 pathname: '/formPromise',
                 params: { administrator_id: id, administrator_name: info.name }
@@ -67,7 +67,7 @@ export default function Profile() {
               <MaterialIcons name="attach-money" size={20} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
-              style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
+              style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
               onPress={() => {
                 axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
                   .then((response) => {

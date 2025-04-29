@@ -39,21 +39,13 @@ export default function Contacts() {
                 {friend.id && (
                     <View style={baseStyles.rowCenter}>
                         <TouchableOpacity
-                            style={[
-                                baseStyles.circleButton,
-                                baseStyles.green,
-                                baseStyles.marginLeft
-                            ]}
+                            style={[ baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft ]}
                             onPress={() => startPromise(friend.id, friend.first_name)}
                         >
                             <MaterialIcons name="attach-money" size={20} color="white" />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[
-                                baseStyles.circleButton,
-                                baseStyles.blue,
-                                baseStyles.marginLeft
-                            ]}
+                            style={[ baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft ]}
                             onPress={() => startBalance(friend.id, friend.first_name)}
                         >
                             <FontAwesome name="balance-scale" size={20} color="white" />

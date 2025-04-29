@@ -19,29 +19,29 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         status === 'accepted' ? baseStyles.cardAccepted : null
       ]}
     >
-      {status == 'pending' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.backgroundOrange]}>
+      {status == 'pending' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightOrangeBG]}>
         <MaterialIcons name="edit" size={20} color="orange" />
-        <Text style={[baseStyles.textGray14, {color: 'orange', marginLeft: 5}]}>Editable</Text>
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'orange', marginLeft: 5}]}>Editable</Text>
       </Pressable>
       }
-      {status == 'accepted' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.backgroundGreen]}>
+      {status == 'accepted' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightGreenBG]}>
         <MaterialIcons name="check" size={20} color="green" />
-        <Text style={[baseStyles.textGray14, {color: 'green', marginLeft: 5}]}>Open</Text>
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'green', marginLeft: 5}]}>Open</Text>
       </Pressable>
       }
-      {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.backgroundRed]}>
+      {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightRedBG]}>
         <MaterialIcons name="close" size={20} color="red" />  
-        <Text style={[baseStyles.textGray14, {color: 'red', marginLeft: 5}]}>Closed</Text>
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'red', marginLeft: 5}]}>Closed</Text>
       </Pressable>
       }
       <View style={baseStyles.viewRow}>
         <Avatar name={user} />
         <Text style={[baseStyles.cardTitle, baseStyles.marginLeft]}>{user}</Text>
       </View>
-      <Text style={baseStyles.bigNumber}>${cleanTotal}</Text>
-      <Text style={baseStyles.textGray14}>{title}</Text>
+      <Text style={baseStyles.titleBold40}>${cleanTotal}</Text>
+      <Text style={[baseStyles.label14, baseStyles.textGray]}>{title}</Text>
       <PromiseGraph percentage={percentage} />
-      <Text style={[baseStyles.textGray14, baseStyles.textCenter]}>{paid_amount}/{total}</Text>
+      <Text style={[baseStyles.label14, baseStyles.textGray, baseStyles.textCenter]}>{paid_amount}/{total}</Text>
     </TouchableOpacity>
   );
 }

@@ -78,7 +78,7 @@ export default function Promise() {
                 {promise.status === "pending" && (
                     <>
                         <Pressable
-                            style={[baseStyles.button, baseStyles.buttonWarning, { marginTop: 10 }]}
+                            style={[baseStyles.button, baseStyles.warningBG, { marginTop: 10 }]}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
                                     paymentable_id,
@@ -90,7 +90,7 @@ export default function Promise() {
                         </Pressable>
                         {
                             promise.mine && (<Pressable
-                                style={[baseStyles.button, baseStyles.buttonSuccess, { marginTop: 10 }]}
+                                style={[baseStyles.button, baseStyles.successBG, { marginTop: 10 }]}
                                 onPress={() => acceptPromiseThroughNotification(promise.notification_id)} >
                                 <Text style={baseStyles.buttonText}>Accept</Text>
                             </Pressable>)
@@ -99,7 +99,7 @@ export default function Promise() {
                 )}
             </View>
             <View style={[baseStyles.viewRow, { justifyContent: "space-between", height: 70 }]}>
-                {payments.length > 0 && <Text style={[baseStyles.titleh2, { marginTop: 10 }]}>Recent Transactions </Text>}
+                {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
                 {promise.status != 'pending' && promise.status != 'close' && <TouchableOpacity
                     style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
                     onPress={() => {

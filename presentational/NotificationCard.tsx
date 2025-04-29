@@ -52,13 +52,13 @@ export default function NotificationCard({
         <View style={baseStyles.alignItemsCenter}>
           {amount && <Text style={baseStyles.boldText}>{amount}</Text>}
           {!pendingDecision && status == 'pending' && <Pressable
-            style={[baseStyles.circleButton, baseStyles.buttonWarning]}
+            style={[baseStyles.circleButton, baseStyles.warningBG]}
             onPress={() => setPendingDecision(true)}>
             <Ionicons name="notifications" size={20} color="white" />
           </Pressable> }
           {pendingDecision && !decisionDone && (
             <View style={baseStyles.rowCenter}>
-              <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]}
+              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}
                 onPress={() => {
                   acceptNotification(id);
                   setDecisionDone(true);
@@ -66,7 +66,7 @@ export default function NotificationCard({
               >
                 <Text style={baseStyles.buttonText}>✔</Text>
               </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]}
+              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]}
                 onPress={() => {
                   rejectNotification(id);
                   setDecisionDone(true);

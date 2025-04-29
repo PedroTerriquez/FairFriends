@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const baseStyles = StyleSheet.create({
+    //Containers
     viewContainerFull: {
         flex: 1,
         backgroundColor: "#f6f6f6",
@@ -24,34 +25,95 @@ const baseStyles = StyleSheet.create({
         paddingVertical: 10,
         alignItems: "center",
     },
-    bigNumber: {
+    // General Alignments
+    rowCenter: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    alignItemsCenter: {
+        alignItems: "center",
+    },
+    center: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    // Label Sizes
+    titleBold40: {
         fontSize: 40,
         fontWeight: "bold",
     },
-    title: {
+    title24: {
         fontSize: 24,
         fontWeight: "bold",
         marginBottom: 20,
     },
-    titleh2: {
+    title15: {
         fontSize: 15,
         fontWeight: "bold",
-    },
-    textCenter: {
-        textAlign: "center",
     },
     label: {
         fontSize: 15,
         marginBottom: 5,
     },
+    label14: {
+        fontSize: 14,
+    },
     smallLabel: {
         fontSize: 12,
         marginBottom: 5,
     },
-    textGray14: {
-        fontSize: 14,
-        color: 'gray',
+    // Text Caracteristics
+    textCenter: {
+        textAlign: "center",
     },
+    textGray: {
+        color: "gray",
+    },
+    boldText: {
+        fontWeight: "bold",
+    },
+    greenText: {
+        color: "green",
+        fontWeight: "bold"
+    },
+    redText: {
+        color: "red",
+        fontWeight: "bold"
+    },
+    orangeText: {
+        color: "orange",
+        fontWeight: "bold"
+    },
+    // Backgrounds
+    redBG: {
+        backgroundColor: '#a8312e',
+    },
+    greenBG: {
+        backgroundColor: 'green',
+    },
+    blueBG: {
+        backgroundColor: '#007aff',
+    },
+    warningBG: {
+        backgroundColor: "#f8c146",
+    },
+    successBG: {
+        backgroundColor: "#4CAF50",
+    },
+    dangerBG: {
+        backgroundColor: "#E53935",
+    },
+    lightGreenBG: {
+        backgroundColor: "#e6ffe6",
+    },
+    lightRedBG: {
+        backgroundColor: "#ffe6e6",
+    },
+    lightOrangeBG: {
+        backgroundColor: "#fffcf4",
+    },
+    // Card Styles
     card: {
         backgroundColor: "#fff",
         paddingVertical: 15,
@@ -116,38 +178,7 @@ const baseStyles = StyleSheet.create({
         fontSize: 12,
         color: 'gray',
     },
-    rowCenter: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    alignItemsCenter: {
-        alignItems: "center",
-    },
-    center: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    avatar: {
-        width: 30,
-        height: 30,
-        borderRadius: 20,
-        backgroundColor: "#007aff",
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 8,
-    },
-    avatarText: {
-        color: "#fff",
-        fontSize: 15,
-        fontWeight: "bold",
-    },
-    marginLeft: {
-        marginLeft: 10,
-    },
-    marginLeft5: {
-        marginLeft: 5,
-    },
+    // Buttons
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -182,6 +213,27 @@ const baseStyles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
+    },
+    // Rest of utilities
+    avatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 20,
+        backgroundColor: "#007aff",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 8,
+    },
+    avatarText: {
+        color: "#fff",
+        fontSize: 15,
+        fontWeight: "bold",
+    },
+    marginLeft: {
+        marginLeft: 10,
+    },
+    marginLeft5: {
+        marginLeft: 5,
     },
     input: {
         borderWidth: 1,
@@ -261,37 +313,6 @@ const baseStyles = StyleSheet.create({
         borderWidth: 0.1,
         borderColor: "#c1c1c1",
     },
-    red: {
-        backgroundColor: '#a8312e',
-    },
-    green: {
-        backgroundColor: 'green',
-    },
-    blue: {
-        backgroundColor: '#007aff',
-    },
-    buttonWarning: {
-        backgroundColor: "#f8c146",
-    },
-    buttonSuccess: {
-        backgroundColor: "#4CAF50",
-    },
-    buttonDanger: {
-        backgroundColor: "#E53935",
-    },
-    backgroundGreen: {
-        backgroundColor: "#e6ffe6",
-    },
-    backgroundRed: {
-        backgroundColor: "#ffe6e6",
-    },
-    backgroundOrange: {
-        backgroundColor: "#fffcf4",
-    },
-    boldText: { fontWeight: "bold", },
-    greenText: { color: "green", fontWeight: "bold" },
-    redText: { color: "red", fontWeight: "bold" },
-    orangeText: { color: "orange", fontWeight: "bold" },
     tabBarActive: {
         flex: 1,
         backgroundColor: '#007bff',

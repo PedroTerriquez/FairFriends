@@ -51,7 +51,7 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
       <View style={[baseStyles.viewRow, {paddingVertical: 5}]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[baseStyles.bigNumber, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
+            <Text style={[baseStyles.titleBold40, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
               ${Math.abs(myTotal)}
             </Text>
             <AntDesign
@@ -64,7 +64,7 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
           <Text style={[baseStyles.smallLabel]}>Split Avg: $<Text style={{ fontWeight: 'bold' }}>{avg}</Text></Text>
           <Text style={[baseStyles.smallLabel]}>Split Total: $<Text style={{ fontWeight: 'bold' }}>{total}</Text></Text>
           <View style={[baseStyles.viewRow, { marginTop: 20 }]}>
-            <Text style={[baseStyles.label, baseStyles.backgroundRed, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
+            <Text style={[baseStyles.label, baseStyles.lightRedBG, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
           </View>
         </View>
         <View style={[baseStyles.viewContainerFullOnly, { flex: 3 }]}>
