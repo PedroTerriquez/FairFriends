@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '../services/authContext';
+import { useToast } from '@/services/ToastContext';
 
 export default function SignUp() {
   const { signUp } = useSession();
   const router = useRouter();
+  const { showToast } = useToast();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,11 +18,10 @@ export default function SignUp() {
 
   const handleSignUp = () => {
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      showToast('Passwords do not match');
       return;
     }
-    signUp(firstName, lastName, email, password, confirmPassword);
-
+    signUp(firstName, lastName, email, password, confirmPassword, showToast);
   };
 
   return (
@@ -35,7 +36,8 @@ export default function SignUp() {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Full Name"
+            placeholder="First Name"
+            placeholderTextColor="#666"
             value={firstName}
             onChangeText={setFirstName}
             autoCapitalize="words"
@@ -43,6 +45,7 @@ export default function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Last Name"
+            placeholderTextColor="#666"
             value={lastName}
             onChangeText={setLastName}
             autoCapitalize="words"
@@ -50,6 +53,7 @@ export default function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Email"
+            placeholderTextColor="#666"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -59,6 +63,7 @@ export default function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Password"
+            placeholderTextColor="#666"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -67,6 +72,7 @@ export default function SignUp() {
           <TextInput
             style={styles.input}
             placeholder="Confirm Password"
+            placeholderTextColor="#666"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry

@@ -10,12 +10,14 @@ type Session = {
   };
 };
 
-const AuthContext = createContext<{
-  signIn: (email: string, password: string) => void;
-  signUp: (first_name: string, last_name: string, email: string, password: string, password_confirmation: string) => void;
+type AuthContextType = {
+  signIn: (email: string, password: string, showToast: (message: string, type?: string) => void) => void;
+  signUp: (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, showToast: (message: string, type?: string) => void) => void;
   signOut: () => void;
   session: Session | null;
-}>({
+};
+
+const AuthContext = createContext<AuthContextType>({
   signIn: () => null,
   signUp: () => null,
   signOut: () => null,
@@ -37,7 +39,7 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
 
-  const signIn = (email: string, password: string) => {
+  const signIn = (email: string, password: string, showToast: (message: string, type?: string) => void) => {
     axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password })
       .then((response) => {
         const token = response.data.auth_token;
@@ -46,15 +48,17 @@ export function SessionProvider({ children }: PropsWithChildren) {
             token,
             headers: { Authorization: `Bearer ${token}` }
           });
+          showToast('Login successful', 'success');
           router.replace("/(tabs)/home");
         });
       })
       .catch((error) => {
         console.log(error);
+        showToast(error.response?.data?.message || 'Login failed. Please check your credentials.');
       });
   };
 
-  const signUp = (first_name: string, last_name: string, email: string, password: string, password_confirmation: string) => {
+  const signUp = (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, showToast: (message: string, type?: string) => void) => {
     axios.post(`${process.env.EXPO_PUBLIC_API}/users`, { first_name, last_name, email, password, password_confirmation })
       .then((response) => {
         const token = response.data.auth_token;
@@ -63,11 +67,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
             token,
             headers: { Authorization: `Bearer ${token}` }
           });
+          showToast('Account created successfully', 'success');
           router.replace("/(tabs)/home");
         });
       })
       .catch((error) => {
         console.log(error);
+        showToast(error.response?.data?.message || 'Signup failed. Please try again.');
       });
   };
 

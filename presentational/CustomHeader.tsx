@@ -1,19 +1,21 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function CustomHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const canGoBack = router.canGoBack();
+  const insets = useSafeAreaInsets();
 
   if (pathname === '/login' || pathname === '/signup') {
     return null;
   }
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { paddingTop: insets.top }]}>
       <View style={styles.headerContent}>
         <View style={styles.leftSection}>
           {canGoBack && (
@@ -58,7 +60,6 @@ export default function CustomHeader() {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: 'white',
-    paddingTop: 15,
     paddingBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',

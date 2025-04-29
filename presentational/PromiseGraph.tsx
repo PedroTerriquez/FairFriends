@@ -1,9 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 
 export default function PromiseGraph({ percentage }) {
-  const router = useRouter();
-
   const getColorHex = (value) => {
     let color;
 
@@ -39,7 +36,7 @@ export default function PromiseGraph({ percentage }) {
 
 const styles = StyleSheet.create({
   progressBar: {
-    marginVertical: 20,
+    marginTop: 20,
     height: 10,
     backgroundColor: "#ddd",
     borderRadius: 10,

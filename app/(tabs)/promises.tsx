@@ -8,17 +8,17 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 
 export default function Promises() {
-  const [receivable , setReceivable] = useState([])
-  const [payable, setPayable] = useState([])
-  const [activeTab, setActiveTab] = useState("Receivable");
+  const [receiving , setReceiving] = useState([])
+  const [paying, setPaying] = useState([])
+  const [activeTab, setActiveTab] = useState("Receiving");
   const { session } = useSession();
 
   const fetchPromises = async () => {
     axios.get(`${process.env.EXPO_PUBLIC_API}/promises`, session)
       .then((response) => {
         console.log(response)
-        setReceivable(response.data.my_promises)
-        setPayable(response.data.owe_promises)
+        setReceiving(response.data.my_promises)
+        setPaying(response.data.owe_promises)
       })
       .catch((error) => {
         console.log(error);
@@ -33,7 +33,7 @@ export default function Promises() {
             id={promise.id}
             key={promise.id}
             title={promise.title}
-            paid={promise.paid_amount}
+            paid_amount={promise.paid_amount}
             total={promise.total}
             percentage={promise.percentage}
             user={promise.user}
@@ -49,15 +49,15 @@ export default function Promises() {
   return (
     <ScrollView style={baseStyles.viewContainerFull}>
       <View style={ baseStyles.viewRowWithSpace}>
-        <Pressable onPress={() => setActiveTab("Receivable")} style={activeTab === "Receivable" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Receivable" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Receivable</Text>
+        <Pressable onPress={() => setActiveTab("Receiving")} style={activeTab === "Receiving" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Receiving" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Receiving</Text>
         </Pressable>
-        <Pressable onPress={() => setActiveTab("Payable")} style={activeTab === "Payable" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Payable" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Payable</Text>
+        <Pressable onPress={() => setActiveTab("Paying")} style={activeTab === "Paying" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
+          <Text style={activeTab === "Paying" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Paying</Text>
         </Pressable>
       </View>
 
-      {activeTab === "Receivable" ? renderPromises(receivable) : renderPromises(payable)}
+      {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
     </ScrollView>
   );
 }

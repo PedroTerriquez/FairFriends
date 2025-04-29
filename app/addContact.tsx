@@ -25,7 +25,7 @@ export default function addContact() {
     }
     
     const onAdd = (id) => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/friendships`, { user2_id: id }, session)
+        axios.post(`${process.env.EXPO_PUBLIC_API}/friendships`, { recipient_user_id: id }, session)
             .then((response) => {
                 removeCard(id)
             })
@@ -45,7 +45,7 @@ export default function addContact() {
         return people.map(friend => (
             <Person person={friend}>
                 { friend.id && (
-                    <TouchableOpacity style={baseStyles.circleButton} onPress={() => onAdd(friend.id)}>
+                    <TouchableOpacity style={[baseStyles.circleButton, baseStyles.blue]} onPress={() => onAdd(friend.id)}>
                         <MaterialIcons name="person-add" size={24} color="white" />
                     </TouchableOpacity>
                 )}
@@ -64,6 +64,7 @@ export default function addContact() {
                     <TextInput
                         style={{ flex: 1 }}
                         placeholder="Search"
+                        placeholderTextColor="#666"
                         value={text}
                         onChangeText={(newText) => { setText(newText); }}
                         autoFocus={true}

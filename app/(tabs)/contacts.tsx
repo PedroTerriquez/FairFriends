@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -88,24 +88,27 @@ export default function Contacts() {
     }, [text]);
 
     return (
-        <View style={baseStyles.viewContainerFull}>
-            <View>
-                <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
-                    <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
-                    <TextInput
-                        style={{ flex: 1 }}
-                        placeholder="Search"
-                        value={text}
-                        onChangeText={(newText) => { setText(newText); }}
-                        autoFocus={true}
-                    />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={baseStyles.viewContainerFull}>
+                <View>
+                    <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                        <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                        <TextInput
+                            style={{ flex: 1 }}
+                            placeholder="Search"
+                            placeholderTextColor="#666"
+                            value={text}
+                            onChangeText={(newText) => { setText(newText); }}
+                            autoFocus={true}
+                        />
+                    </View>
                 </View>
+                {renderContacts(friends)}
+                <TouchableOpacity style={baseStyles.floatingButton}
+                    onPress={() => { router.push({ pathname: "/addContact", }) }}>
+                            <Ionicons name="add" size={32} color="white" />
+                </TouchableOpacity>
             </View>
-            {renderContacts(friends)}
-            <TouchableOpacity style={baseStyles.floatingButton}
-                onPress={() => { router.push({ pathname: "/addContact", }) }}>
-                        <Ionicons name="add" size={32} color="white" />
-            </TouchableOpacity>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }

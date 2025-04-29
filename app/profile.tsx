@@ -38,8 +38,8 @@ export default function Profile() {
   }
 
   return (
-    <View style={[baseStyles.card, baseStyles.alignItemsCenter]}>
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 15 }}>{info.name}</Text>
+    <View style={[baseStyles.alignItemsCenter, baseStyles.viewContainerFull, {backgroundColor: "white"}]}>
+      <Text style={{ fontSize: 24, fontWeight: "bold", marginVertical: 45 }}>{info.name}</Text>
       <Image
         style={{ width: 150, height: 150, borderRadius: 75 }}
         source={{ uri: "https://picsum.photos/300/300.jpg" }}
@@ -47,39 +47,43 @@ export default function Profile() {
       <Text style={{ fontSize: 14, marginVertical: 20 }}>
         Member since {info.created_at}
       </Text>
-      {info.me == 1 && (<Pressable style={[baseStyles.button, baseStyles.cancelButton]} onPress={logout} >
-        <Text style={baseStyles.buttonText}>Log out</Text>
-      </Pressable>)}
+      {info.me == 1 && (<View style={baseStyles.rowCenter}>
+        <TouchableOpacity style={[baseStyles.button, baseStyles.cancelButton, baseStyles.center, {flexDirection: 'row', gap: 10}]} onPress={logout} >
+          <MaterialIcons name="logout" size={20} color="white" />
+          <Text style={[baseStyles.buttonText, baseStyles.textCenter]}>Log out</Text>
+        </TouchableOpacity>
+      </View>)}
       {info.me != 1 && (
-        <View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
-          <Text style={baseStyles.label}>Start a promise or a balance with {info.name}</Text>
-          <TouchableOpacity
-            style={[baseStyles.circleButton, baseStyles.green]}
-            onPress={() => router.push({
-              pathname: '/formPromise',
-              params: { administrator_id: id, administrator_name: info.name }
-            })}
-          >
-            <MaterialIcons name="attach-money" size={20} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
-            onPress={() => {
-              axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
-                .then((response) => {
-                  router.push({
-                    pathname: '/balance', 
-                    params: { paymentable_id: response.data.id }
+        <><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
+          <Text style={baseStyles.titleh2}>Start a promise or a balance with {info.name}</Text>
+        </View><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
+            <TouchableOpacity
+              style={[baseStyles.circleButton, baseStyles.green]}
+              onPress={() => router.push({
+                pathname: '/formPromise',
+                params: { administrator_id: id, administrator_name: info.name }
+              })}
+            >
+              <MaterialIcons name="attach-money" size={20} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[baseStyles.circleButton, baseStyles.blue, baseStyles.marginLeft]}
+              onPress={() => {
+                axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
+                  .then((response) => {
+                    router.push({
+                      pathname: '/balance',
+                      params: { paymentable_id: response.data.id }
+                    });
                   })
-                })
-                .catch((error) => {
-                  console.log(error);
-                })
-            }}
-          >
-            <FontAwesome name="balance-scale" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } }
+            >
+              <FontAwesome name="balance-scale" size={20} color="white" />
+            </TouchableOpacity>
+          </View></>
       )}
     </View>
   );

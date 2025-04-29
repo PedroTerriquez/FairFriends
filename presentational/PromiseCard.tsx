@@ -5,7 +5,7 @@ import PromiseGraph from "./PromiseGraph";
 import Avatar from "./Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export default function PromiseCard({ id, title, percentage, user, status, total }) {
+export default function PromiseCard({ id, title, percentage, user, status, total, paid_amount }) {
   const router = useRouter();
   const cleanTotal = total ? total.toString().replace(/[^0-9.]/g, '') : 0;
 
@@ -41,6 +41,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
       <Text style={baseStyles.bigNumber}>${cleanTotal}</Text>
       <Text style={baseStyles.textGray14}>{title}</Text>
       <PromiseGraph percentage={percentage} />
+      <Text style={[baseStyles.textGray14, baseStyles.textCenter]}>{paid_amount}/{total}</Text>
     </TouchableOpacity>
   );
 }

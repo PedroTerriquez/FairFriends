@@ -3,8 +3,10 @@ import baseStyles from "./BaseStyles";
 
 export default function EmptyList(text: string) {
     return (
-        <View style={[baseStyles.viewContainerFull, baseStyles.center]}>
-                    <Text style={baseStyles.boldText}>{text}</Text>
-                </View>
+        <ScrollView contentContainerStyle={[baseStyles.viewContainerFull, baseStyles.center]}>
+            <View>
+                <Text style={baseStyles.boldText}>{text}</Text>
+            </View>
+        </ScrollView>
     )
-}   
+}

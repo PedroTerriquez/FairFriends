@@ -126,10 +126,10 @@ export default function Payment({
           {pendingDecision && (
             <View style={baseStyles.rowCenter}>
               <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]} onPress={() => acceptPaymentButton(id)}>
-                <Text style={baseStyles.buttonText}>✔</Text>
+                <Ionicons name="checkmark" size={20} color="white" />
               </Pressable>
               <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
-                <Text style={baseStyles.buttonText}>✖</Text>
+                <Ionicons name="close" size={20} color="white" />
               </Pressable>
             </View>
           )}
@@ -159,12 +159,12 @@ export default function Payment({
           )}
           {accepted && (
             <Pressable style={[baseStyles.circleButton, baseStyles.buttonSuccess]}>
-              <Text style={baseStyles.buttonText}>✔</Text>
+              <Ionicons name="checkmark" size={20} color="white" />
             </Pressable>
           )}
           {rejected && (
             <Pressable style={[baseStyles.circleButton, baseStyles.buttonDanger]}>
-              <Text style={baseStyles.buttonText}>✖</Text>
+              <Ionicons name="close" size={20} color="white" />
             </Pressable>
           )}
         </View>

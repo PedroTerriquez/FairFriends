@@ -1,21 +1,21 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { View, Text, ScrollView, TouchableOpacity, Pressable } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles';
 import { useSession } from "@/services/authContext";
 import Payment from '@/presentational/Payment';
-import PromiseGraph from "@/presentational/PromiseGraph";
 import PromiseCard from "@/presentational/PromiseCard";
-import EmptyList from "@/presentational/EmptyList";
+import { useToast } from "@/services/ToastContext";
 
 export default function Promise() {
     const [payments, setPayments] = useState([])
     const [promise, setPromise] = useState(null)
     const { paymentable_id } = useLocalSearchParams();
     const { session } = useSession();
+    const { showToast } = useToast();
 
     const fetchPayments = async () => {
         axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${paymentable_id}`, session)
@@ -50,6 +50,15 @@ export default function Promise() {
         ))
     }
 
+    const acceptPromiseThroughNotification = (id) => {
+        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
+            .then((response) => {
+                promise.status = 'accepted'
+                setPromise(promise)
+                showToast('Promise accepted')
+            })
+    }
+
     useEffect(() => {
         fetchPayments();
     }, [paymentable_id]);
@@ -61,22 +70,32 @@ export default function Promise() {
                     id={promise.id}
                     title={promise.title}
                     total={promise.total}
+                    paid_amount={promise.paid_amount}
                     percentage={(promise.paid_amount / 100 * promise.total) + "%"}
                     status={promise.status}
                     user={promise.admin_name}
                 />
                 {promise.status === "pending" && (
-                    <Pressable
-                        style={[baseStyles.button, baseStyles.buttonWarning, { marginTop: 10 }]}
-                        onPress={() => router.push({
-                            pathname: "/formPromise", params: {
-                                paymentable_id,
-                                mine: promise.mine
-                            }
-                        })}
-                    >
-                        <Text style={baseStyles.buttonText}>Edit</Text>
-                    </Pressable>
+                    <>
+                        <Pressable
+                            style={[baseStyles.button, baseStyles.buttonWarning, { marginTop: 10 }]}
+                            onPress={() => router.push({
+                                pathname: "/formPromise", params: {
+                                    paymentable_id,
+                                    mine: promise.mine
+                                }
+                            })}
+                        >
+                            <Text style={baseStyles.buttonText}>Edit</Text>
+                        </Pressable>
+                        {
+                            promise.mine && (<Pressable
+                                style={[baseStyles.button, baseStyles.buttonSuccess, { marginTop: 10 }]}
+                                onPress={() => acceptPromiseThroughNotification(promise.notification_id)} >
+                                <Text style={baseStyles.buttonText}>Accept</Text>
+                            </Pressable>)
+                        }
+                    </>
                 )}
             </View>
             <View style={[baseStyles.viewRow, { justifyContent: "space-between", height: 70 }]}>
@@ -91,7 +110,8 @@ export default function Promise() {
                                     paymentable_id: paymentable_id,
                                     type: 'Promise',
                                     recipient_name: promise.admin_name,
-                                    recipient_id: promise.administrator_id
+                                    recipient_id: promise.administrator_id,
+                                    amount_payments: promise.amount_payments
                                 }
                             });
                         }
