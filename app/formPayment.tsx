@@ -127,7 +127,7 @@ export default function addPayment() {
                 keyboardType="numeric"
               />
             </View>
-            <Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${params.amount_payments}</Text>
+            { params.amout_payment && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${params.amount_payments}</Text>)}
           </View>
 
           {/* Keypad Section */}

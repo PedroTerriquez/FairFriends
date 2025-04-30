@@ -22,7 +22,6 @@ const baseStyles = StyleSheet.create({
     },
     viewRow: {
         flexDirection: "row",
-        paddingVertical: 10,
         alignItems: "center",
     },
     // General Alignments
@@ -37,6 +36,12 @@ const baseStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    paddingVertical10: {
+        paddingVertical: 10,
+    },
+    paddingTop10: {
+        paddingTop: 10,
     },
     // Label Sizes
     titleBold40: {
@@ -53,7 +58,7 @@ const baseStyles = StyleSheet.create({
         fontWeight: "bold",
     },
     label: {
-        fontSize: 15,
+        fontSize: 17,
         marginBottom: 5,
     },
     label14: {
@@ -76,6 +81,9 @@ const baseStyles = StyleSheet.create({
     greenText: {
         color: "green",
         fontWeight: "bold"
+    },
+    errorText: {
+        color: "red",
     },
     redText: {
         color: "red",
@@ -106,6 +114,9 @@ const baseStyles = StyleSheet.create({
     },
     lightGreenBG: {
         backgroundColor: "#e6ffe6",
+    },
+    lightBlueBG: {
+        backgroundColor: "#e6f3ff",
     },
     lightRedBG: {
         backgroundColor: "#ffe6e6",
@@ -142,8 +153,8 @@ const baseStyles = StyleSheet.create({
     },
     cardClose: {
         borderWidth: 1,
-        borderColor: "#dc3545",
-        shadowColor: "#dc3545",
+        borderColor: "#7ECC10",
+        shadowColor: "#7ECC10",
         shadowOpacity: 0.3,
         shadowRadius: 8,
     },
@@ -240,7 +251,8 @@ const baseStyles = StyleSheet.create({
         borderColor: "#0000002e",
         borderBottomWidth: 1,
         borderRadius: 8,
-        padding: 10,
+        padding: 14,
+        fontSize: 16,
     },
     picker: {
         height: 50,

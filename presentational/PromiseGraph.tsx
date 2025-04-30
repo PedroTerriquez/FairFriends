@@ -29,18 +29,19 @@ export default function PromiseGraph({ percentage }) {
 
   return (
       <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${percentage}`, backgroundColor: `${getColorHex(parseInt(percentage))}` }]} />
+        <View style={[styles.progressFill, { width: `${percentage}`, backgroundColor: `${getColorHex(parseInt(percentage))}` }]} />
       </View>
   );
 }
 
 const styles = StyleSheet.create({
   progressBar: {
-    marginTop: 20,
     height: 10,
     backgroundColor: "#ddd",
     borderRadius: 10,
+    flex: 1,
     overflow: "hidden",
+    marginHorizontal: 5,
   },
   percentageText: {
     color: "#888",

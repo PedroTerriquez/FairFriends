@@ -16,7 +16,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         baseStyles.card,
         status === 'pending' ? baseStyles.cardPending : 
         status === 'close' ? baseStyles.cardClose :
-        status === 'accepted' ? baseStyles.cardAccepted : null
+        status === 'accepted' ? null : null
       ]}
     >
       {status == 'pending' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightOrangeBG]}>
@@ -24,24 +24,32 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'orange', marginLeft: 5}]}>Editable</Text>
       </Pressable>
       }
-      {status == 'accepted' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightGreenBG]}>
-        <MaterialIcons name="check" size={20} color="green" />
-        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'green', marginLeft: 5}]}>Open</Text>
+      {status == 'accepted' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightBlueBG]}>
+        <MaterialIcons name="moving" size={20} color="blue" />
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'blue', marginLeft: 5}]}>Open</Text>
       </Pressable>
       }
-      {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightRedBG]}>
-        <MaterialIcons name="close" size={20} color="red" />  
-        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'red', marginLeft: 5}]}>Closed</Text>
+      {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightGreenBG]}>
+        <MaterialIcons name="check" size={20} color="green" />  
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'green', marginLeft: 5}]}>Finished</Text>
       </Pressable>
       }
       <View style={baseStyles.viewRow}>
         <Avatar name={user} />
         <Text style={[baseStyles.cardTitle, baseStyles.marginLeft]}>{user}</Text>
       </View>
-      <Text style={baseStyles.titleBold40}>${cleanTotal}</Text>
       <Text style={[baseStyles.label14, baseStyles.textGray]}>{title}</Text>
-      <PromiseGraph percentage={percentage} />
-      <Text style={[baseStyles.label14, baseStyles.textGray, baseStyles.textCenter]}>{paid_amount}/{total}</Text>
+      <View style={[baseStyles.viewRow, baseStyles.paddingVertical10]}>
+        <View style={{ flex: 1}}>
+          <Text style={[baseStyles.titleBold40, baseStyles.textCenter]}>{paid_amount}</Text>
+          <Text style={[baseStyles.title15, baseStyles.textGray, baseStyles.textCenter, {paddingBottom: 10}]}>Of <Text style={baseStyles.boldText}>{cleanTotal}</Text></Text>
+          <View style={[ baseStyles.rowCenter, { alignContent: 'center', justifyContent: 'center' }]}>
+            <Text> 0% </Text>
+            <PromiseGraph percentage={percentage} />
+            <Text> 100% </Text>
+          </View>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 }

@@ -11,7 +11,7 @@ import EmptyList from "@/presentational/EmptyList";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([])
-    const [text, setText] = useState(null)
+    const [text, setText] = useState("");
     const { session } = useSession();
     const navigation = useNavigation();
 
@@ -35,7 +35,11 @@ export default function Contacts() {
         if (friends.length == 0 && text != null) return EmptyList("No contacts found")
 
         return friends.map(friend => (
-            <Person person={friend} onClick={navigateProfile} >
+            <Person 
+                key={friend.id}
+                person={friend} 
+                onClick={navigateProfile} 
+            >
                 {friend.id && (
                     <View style={baseStyles.rowCenter}>
                         <TouchableOpacity
