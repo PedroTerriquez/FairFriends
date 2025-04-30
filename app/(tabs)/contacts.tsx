@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -27,37 +27,47 @@ export default function Contacts() {
     }
 
     const navigateProfile = (id) => {
-        navigation.navigate('profile' , {id})
+        router.push({
+            pathname: '/profile',
+            params: { id }
+        });
     }
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text == null) return EmptyList("No friends")
-        if (friends.length == 0 && text != null) return EmptyList("No contacts found")
+        if (friends.length == 0 && text === "") return EmptyList("No friends");
+        if (friends.length == 0 && text !== "") return EmptyList("No contacts found");
 
-        return friends.map(friend => (
-            <Person 
-                key={friend.id}
-                person={friend} 
-                onClick={navigateProfile} 
-            >
-                {friend.id && (
-                    <View style={baseStyles.rowCenter}>
-                        <TouchableOpacity
-                            style={[ baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft ]}
-                            onPress={() => startPromise(friend.id, friend.first_name)}
-                        >
-                            <MaterialIcons name="attach-money" size={20} color="white" />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[ baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft ]}
-                            onPress={() => startBalance(friend.id, friend.first_name)}
-                        >
-                            <FontAwesome name="balance-scale" size={20} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                )}
-            </Person>
-        ))
+        let fullList = [];
+
+        Object.keys(friends).map((key) => {
+            const list = friends[key];
+            fullList.push(<Text key={key} style={[baseStyles.textGray, baseStyles.smallLabel]}>{key}</Text>);
+            fullList.push(...list.map(friend => (
+                <Person
+                    key={friend.id}
+                    person={friend}
+                    onClick={navigateProfile}
+                >
+                    {friend.id && (
+                        <View style={baseStyles.rowCenter}>
+                            <TouchableOpacity
+                                style={[baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft]}
+                                onPress={() => startPromise(friend.id, friend.first_name)}
+                            >
+                                <MaterialIcons name="attach-money" size={20} color="white" />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
+                                onPress={() => startBalance(friend.id, friend.first_name)}
+                            >
+                                <FontAwesome name="balance-scale" size={20} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </Person>
+            )));
+        });
+        return fullList;
     }
 
     const startPromise = (id, name) => {
