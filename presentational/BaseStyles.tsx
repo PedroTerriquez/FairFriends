@@ -355,6 +355,21 @@ const baseStyles = StyleSheet.create({
     tabBarTextInactive: {
         color: 'gray',
         fontWeight: "normal"
+    }, 
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        height: '50%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
