@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -41,7 +41,7 @@ export default function Contacts() {
 
         Object.keys(friends).map((key) => {
             const list = friends[key];
-            fullList.push(<Text key={key} style={[baseStyles.textGray, baseStyles.smallLabel]}>{key}</Text>);
+            fullList.push(<Text key={key} style={[baseStyles.boldText, baseStyles.label14, { marginLeft: 10}]}>{key}</Text>);
             fullList.push(...list.map(friend => (
                 <Person
                     key={friend.id}
@@ -95,26 +95,28 @@ export default function Contacts() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={baseStyles.viewContainerFull}>
-                <View>
-                    <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
-                        <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
-                        <TextInput
-                            style={{ flex: 1 }}
-                            placeholder="Search"
-                            placeholderTextColor="#666"
-                            value={text}
-                            onChangeText={(newText) => { setText(newText); }}
-                            autoFocus={true}
-                        />
+            <>
+                <ScrollView style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}>
+                    <View>
+                        <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                            <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                            <TextInput
+                                style={{ flex: 1 }}
+                                placeholder="Search"
+                                placeholderTextColor="#666"
+                                value={text}
+                                onChangeText={(newText) => { setText(newText); }}
+                                autoFocus={true}
+                            />
+                        </View>
                     </View>
-                </View>
-                {renderContacts(friends)}
+                    {renderContacts(friends)}
+                </ScrollView>
                 <TouchableOpacity style={baseStyles.floatingButton}
                     onPress={() => { router.push({ pathname: "/addContact", }) }}>
-                            <Ionicons name="add" size={32} color="white" />
+                    <Ionicons name="add" size={32} color="white" />
                 </TouchableOpacity>
-            </View>
+            </>
         </TouchableWithoutFeedback>
     );
 }

@@ -111,7 +111,7 @@ export default function Payment({
   return (
     <Pressable
       onPress={() => handleShow() }
-      style={[baseStyles.card, status == 'pending' ? baseStyles.cardPending : null]}>
+      style={[baseStyles.card, realStatus == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
         <View style={[baseStyles.rowCenter]}>
           <Avatar name={ creatorName[0] } />
@@ -163,7 +163,7 @@ export default function Payment({
             </Pressable>
           )}
           {rejected && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG]}>
+            <Pressable style={[baseStyles.circleButton, baseStyles.redBG]}>
               <Ionicons name="close" size={20} color="white" />
             </Pressable>
           )}

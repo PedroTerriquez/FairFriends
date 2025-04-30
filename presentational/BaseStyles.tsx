@@ -4,7 +4,7 @@ const baseStyles = StyleSheet.create({
     //Containers
     viewContainerFull: {
         flex: 1,
-        backgroundColor: "#f6f6f6",
+        backgroundColor: "white",
         paddingHorizontal: 15
     },
     viewContainerFullOnly: {
@@ -345,7 +345,7 @@ const baseStyles = StyleSheet.create({
     },
     tabBarInactive: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#f6f6f6',
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 8,
@@ -353,7 +353,7 @@ const baseStyles = StyleSheet.create({
         justifyContent: "center"
     },
     tabBarTextInactive: {
-        color: 'gray',
+        color: 'black',
         fontWeight: "normal"
     }, 
     modalContainer: {
