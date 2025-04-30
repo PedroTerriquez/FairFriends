@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Balances() {
   const [balances, setBalances] = useState([])
@@ -42,8 +44,14 @@ export default function Balances() {
   }, []);
 
   return (
-    <ScrollView style={baseStyles.viewContainerFull}>
+    <>
+      <ScrollView style={baseStyles.viewContainerFull}>
         {renderBalances()}
-    </ScrollView>
+      </ScrollView>
+      <TouchableOpacity style={[baseStyles.floatingButton, { position: 'absolute', bottom: 16, right: 16 }]}
+        onPress={() => { router.push({ pathname: "/formBalance", }) }}>
+        <Ionicons name="add" size={32} color="white" />
+      </TouchableOpacity>
+    </>
   );
 }

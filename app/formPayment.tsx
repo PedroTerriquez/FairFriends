@@ -91,7 +91,7 @@ export default function addPayment() {
             <View style={[baseStyles.alignItemsCenter, { marginVertical: 20 }]}>
               <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
             </View>
-            <View style={{ paddingHorizontal: 20, flex: 1 }}>
+            <View style={{ paddingHorizontal: 40 }}>
               {!showConcept && <TouchableOpacity
                 style={[baseStyles.button, baseStyles.normalButton, { marginBottom: 10 }]}
                 onPress={() => setShowConcept(!showConcept)}
@@ -178,11 +178,11 @@ export default function addPayment() {
             </View>
             <View style={[styles.keypadRow, { flex: 1 }]}>
               <TouchableOpacity
-                style={[baseStyles.button, baseStyles.saveButton]}
+                style={[baseStyles.button, baseStyles.saveButton, { paddingHorizontal: '30%'}]}
                 onPress={() => handleSubmit()}
               >
                 <Text style={baseStyles.buttonText}>
-                  {params.payment_id ? 'Update Payment' : 'Cool Pay'}
+                  {params.payment_id ? 'Update Payment' : 'Fair Pay'}
                 </Text>
               </TouchableOpacity>
             </View>

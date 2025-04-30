@@ -75,6 +75,12 @@ const baseStyles = StyleSheet.create({
     textGray: {
         color: "gray",
     },
+    textBlack: {
+        color: "black",
+    },
+    textWhite: {
+        color: "white",
+    },
     boldText: {
         fontWeight: "bold",
     },
@@ -196,7 +202,6 @@ const baseStyles = StyleSheet.create({
         marginTop: 20,
     },
     button: {
-        flex: 1,
         padding: 12,
         borderRadius: 8,
         alignItems: "center",
@@ -223,7 +228,6 @@ const baseStyles = StyleSheet.create({
     buttonText: {
         color: "#fff",
         fontSize: 16,
-        fontWeight: "bold",
     },
     // Rest of utilities
     avatar: {
