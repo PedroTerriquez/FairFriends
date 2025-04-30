@@ -82,14 +82,14 @@ export default function Promise() {
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
                                     paymentable_id,
-                                    mine: promise.mine
+                                    mine: promise.admin
                                 }
                             })}
                         >
                             <Text style={baseStyles.buttonText}>Edit</Text>
                         </Pressable>
                         {
-                            promise.mine && (<Pressable
+                            promise.admin && (<Pressable
                                 style={[baseStyles.button, baseStyles.successBG, { marginTop: 10 }]}
                                 onPress={() => acceptPromiseThroughNotification(promise.notification_id)} >
                                 <Text style={baseStyles.buttonText}>Accept</Text>
@@ -100,7 +100,7 @@ export default function Promise() {
             </View>
             <View style={[baseStyles.viewRow, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
                 {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
-                {promise.status != 'pending' && promise.status != 'close' && <TouchableOpacity
+                {promise.status == 'accepted' && !promise.admin && <TouchableOpacity
                     style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
                     onPress={() => {
                         if (promise) {
@@ -123,5 +123,5 @@ export default function Promise() {
             </View>
             {renderPayments()}
         </ScrollView>
-    ) : <View></View>
+    ) : <></>
 }
