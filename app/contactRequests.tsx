@@ -75,7 +75,7 @@ export default function contactRequests() {
 
   const renderSentContacts = (contacts) => {
     return contacts.map(contact => (
-      <Person person={contact} >
+      <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
           <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => cancelRequest(contact.friendship_id)}>
             <MaterialCommunityIcons name="cancel" size={24} color="white" />
@@ -87,7 +87,7 @@ export default function contactRequests() {
 
   const renderPendingContacts = (contacts) => {
     return contacts.map(contact => (
-      <Person person={contact} >
+      <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
           <View style={baseStyles.rowCenter}>
               <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => rejectRequest(contact.friendship_id)}>

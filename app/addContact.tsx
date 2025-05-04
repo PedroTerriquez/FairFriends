@@ -43,7 +43,7 @@ export default function addContact() {
         if (people.length == 0) return EmptyList("No contacts found")
 
         return people.map(friend => (
-            <Person person={friend}>
+            <Person key={friend.id} person={friend}>
                 { friend.id && (
                     <TouchableOpacity style={[baseStyles.circleButton, baseStyles.blueBG]} onPress={() => onAdd(friend.id)}>
                         <MaterialIcons name="person-add" size={24} color="white" />
@@ -57,7 +57,10 @@ export default function addContact() {
     }, [text]);
 
     return (
-        <ScrollView style={[baseStyles.viewContainerFull]}>
+        <ScrollView 
+            style={[baseStyles.viewContainerFull]} 
+            keyboardDismissMode="on-drag"
+        >
             <View>
                 <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
                     <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />

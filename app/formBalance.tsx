@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../presentational/Person';
@@ -80,31 +80,32 @@ export default function Contacts() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <>
+            <View style={{ flex: 1 }}>
                 { step == 0 && (<View style={baseStyles.viewContainerFull}>
-                    <View>
-                        <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
-                            <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
-                            <TextInput
-                                style={{ flex: 1 }}
-                                placeholder="Search"
-                                placeholderTextColor="#666"
-                                value={text}
-                                onChangeText={(newText) => { setText(newText); }}
-                                autoFocus={true}
-                            />
+                    <ScrollView keyboardDismissMode="on-drag">
+                        <View>
+                            <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                                <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    style={{ flex: 1 }}
+                                    placeholder="Search"
+                                    placeholderTextColor="#666"
+                                    value={text}
+                                    onChangeText={(newText) => { setText(newText); }}
+                                    autoFocus={true}
+                                />
+                            </View>
                         </View>
-                    </View>
-                    {renderContacts(friends)}
-                    <Text>{selectedFriends}</Text>
-                    {selectedFriends.length > 0 && (
-                        <TouchableOpacity
-                            style={[baseStyles.floatingButton, baseStyles.greenBG]}
-                            onPress={() => {setStep(1);}}>
-                            <MaterialIcons name="navigate-next" size={32} color="white" />
-
-                        </TouchableOpacity>
-                    )}
+                        {renderContacts(friends)}
+                        <Text>{selectedFriends}</Text>
+                        {selectedFriends.length > 0 && (
+                            <TouchableOpacity
+                                style={[baseStyles.floatingButton, baseStyles.greenBG]}
+                                onPress={() => {setStep(1);}}>
+                                <MaterialIcons name="navigate-next" size={32} color="white" />
+                            </TouchableOpacity>
+                        )}
+                    </ScrollView>
                 </View>)}
                 {step == 1 && (
                     <>
@@ -139,7 +140,7 @@ export default function Contacts() {
                         </View>
                     </>
                 )}
-            </>
+            </View>
         </TouchableWithoutFeedback>
     );
 }

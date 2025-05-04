@@ -57,7 +57,7 @@ const Toast = ({ message, isVisible, onHide, type = 'error' }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 20,
+    top: 20,
     left: 20,
     right: 20,
     padding: 15,
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Toast; 
+export default Toast;

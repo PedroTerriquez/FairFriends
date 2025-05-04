@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,77 +25,84 @@ export default function SignUp() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Ionicons name="people" size={80} color="#2F66FF" />
-        <Text style={styles.appName}>FairFriends</Text>
-        <Text style={styles.tagline}>Split expenses with friends</Text>
-      </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Ionicons name="people" size={80} color="#2F66FF" />
+            <Text style={styles.appName}>FairFriends</Text>
+            <Text style={styles.tagline}>Split expenses with friends</Text>
+          </View>
 
-      <View style={styles.signupContainer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            placeholderTextColor="#666"
-            value={firstName}
-            onChangeText={setFirstName}
-            autoCapitalize="words"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            placeholderTextColor="#666"
-            value={lastName}
-            onChangeText={setLastName}
-            autoCapitalize="words"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#666"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            autoComplete="email"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#666"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoComplete="password-new"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor="#666"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-            autoComplete="password-new"
-          />
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          <View style={styles.signupContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                placeholderTextColor="#666"
+                value={firstName}
+                onChangeText={setFirstName}
+                autoCapitalize="words"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                placeholderTextColor="#666"
+                value={lastName}
+                onChangeText={setLastName}
+                autoCapitalize="words"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#666"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#666"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoComplete="password-new"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                placeholderTextColor="#666"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry
+                autoComplete="password-new"
+              />
+              {error && <Text style={styles.errorText}>{error}</Text>}
+            </View>
+            <TouchableOpacity 
+              style={styles.signupButton}
+              onPress={handleSignUp}
+            >
+              <Ionicons name="person-add" size={24} color="white" />
+              <Text style={styles.signupButtonText}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.push('/login')}>
+              <Text style={styles.loginLink}>Login</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity 
-          style={styles.signupButton}
-          onPress={handleSignUp}
-        >
-          <Ionicons name="person-add" size={24} color="white" />
-          <Text style={styles.signupButtonText}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => router.push('/login')}>
-          <Text style={styles.loginLink}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -175,4 +182,4 @@ const styles = StyleSheet.create({
     color: 'red'
   }
   
-}); 
+});

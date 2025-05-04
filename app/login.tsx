@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { useState } from 'react';
 import { useSession } from '../services/authContext';
 import { useRouter } from 'expo-router';
@@ -13,57 +13,66 @@ export default function Login() {
   const [password, setPassword] = useState(process.env.EXPO_PUBLIC_PASSWORD);
 
   const handleLogin = () => {
+    if (!email || !password) {
+      showToast('Please fill in all fields');
+      return;
+    }
     signIn(email, password, showToast);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Ionicons name="people" size={80} color="#2F66FF" />
-          <Text style={styles.appName}>FairFriends</Text>
-          <Text style={styles.tagline}>Split expenses with friends</Text>
-        </View>
-
-        <View style={styles.loginContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="#666"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              autoComplete="email"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#666"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoComplete="password"
-            />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Ionicons name="people" size={80} color="#2F66FF" />
+            <Text style={styles.appName}>FairFriends</Text>
+            <Text style={styles.tagline}>Split expenses with friends</Text>
           </View>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}
-          >
-            <Ionicons name="log-in" size={24} color="white" />
-            <Text style={styles.loginButtonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('/signup')}>
-            <Text style={styles.signupLink}>Sign Up</Text>
-          </TouchableOpacity>
+          <View style={styles.loginContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#666"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                autoComplete="email"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#666"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoComplete="password"
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={handleLogin}
+            >
+              <Ionicons name="log-in" size={24} color="white" />
+              <Text style={styles.loginButtonText}>Login</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => router.push('/signup')}>
+              <Text style={styles.signupLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -45,7 +45,7 @@ export default function NotificationCard({
           <Avatar name={creatorName[0]} />
           <View style={baseStyles.marginLeft}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
-            <Text style={baseStyles.cardSubtitle}>{message}</Text>
+            <Text style={baseStyles.cardSubtitle}>New {nType}</Text>
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>

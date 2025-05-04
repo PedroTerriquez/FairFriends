@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -96,8 +96,12 @@ export default function Contacts() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <>
-                <ScrollView style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+                <ScrollView
+                    style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                >
                     <View>
                         <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
                             <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
@@ -117,7 +121,7 @@ export default function Contacts() {
                     onPress={() => { router.push({ pathname: "/addContact", }) }}>
                     <Ionicons name="add" size={32} color="white" />
                 </TouchableOpacity>
-            </>
+            </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
 }

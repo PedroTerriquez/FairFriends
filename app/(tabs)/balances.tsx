@@ -29,6 +29,7 @@ export default function Balances() {
 
     return balances.map(balance => (
       <BalanceCard
+            key={balance.id}
             id={balance.id}
             total={balance.total}
             name={balance.name}
