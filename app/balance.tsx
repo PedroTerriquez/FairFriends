@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Text } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles' 
@@ -46,14 +46,16 @@ export default function Balance() {
                 creatorName={payment.creator_name}
                 paymentable_id={payment.paymentable_id}
                 parentTitle={payment.parent_title}
-                mine={payment.mine}
+                mine={balance.admin ? false : true}
             />
         ))
     }
 
-    useEffect(() => {
-        fetchBalance();
-    }, [paymentable_id]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchBalance();
+        }, [paymentable_id])
+    );
 
     return (
       <ScrollView style={[baseStyles.viewContainerFull]}>

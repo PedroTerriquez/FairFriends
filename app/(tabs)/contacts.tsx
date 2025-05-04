@@ -1,6 +1,6 @@
 import axios from "axios";
-import { router, useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect, useNavigation } from "expo-router";
+import { useCallback, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
@@ -18,7 +18,6 @@ export default function Contacts() {
     const fetchFriends = async () => {
         axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session)
             .then((response) => {
-                console.log(response)
                 setFriends(response.data)
             })
             .catch((error) => {
@@ -89,9 +88,11 @@ export default function Contacts() {
             })
     }
 
-    useEffect(() => {
-        fetchFriends();
-    }, [text]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchFriends();
+        }, [navigation])
+    );
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

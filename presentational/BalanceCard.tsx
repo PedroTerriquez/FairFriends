@@ -47,7 +47,7 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
 
   return (
     <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => navigation.navigate("balance", { paymentable_id: id })}>
-      <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Extra large title Balance with ${name}`}</Text>
+      <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
       <View style={[baseStyles.viewRow, {paddingTop: 5}]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -61,7 +61,6 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
               style={{ marginLeft: 5 }}
             />
           </View>
-          <Text style={[baseStyles.smallLabel]}>Avg: $<Text style={{ fontWeight: 'bold' }}>{avg}</Text></Text>
           <Text style={[baseStyles.smallLabel]}>Total: $<Text style={{ fontWeight: 'bold' }}>{total}</Text></Text>
           <View style={[baseStyles.viewRow, baseStyles.paddingVertical10, { marginTop: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.lightRedBG, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>

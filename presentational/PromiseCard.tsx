@@ -4,10 +4,10 @@ import baseStyles from './BaseStyles'
 import PromiseGraph from "./PromiseGraph";
 import Avatar from "./Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
+import { getColorHex } from "../services/getColorHex";
 
 export default function PromiseCard({ id, title, percentage, user, status, total, paid_amount }) {
   const router = useRouter();
-  const cleanTotal = total ? total.toString().replace(/[^0-9.]/g, '') : 0;
 
   return (
     <TouchableOpacity 
@@ -38,11 +38,11 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <Avatar name={user} />
         <Text style={[baseStyles.cardTitle, baseStyles.marginLeft]}>{user}</Text>
       </View>
-      <Text style={[baseStyles.label14, baseStyles.textGray]}>{title}</Text>
+      <Text style={[baseStyles.title15, baseStyles.textGray]}>{title}</Text>
+      <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>
       <View style={[baseStyles.viewRow, baseStyles.paddingVertical10]}>
         <View style={{ flex: 1}}>
-          <Text style={[baseStyles.titleBold40, baseStyles.textCenter]}>{paid_amount}</Text>
-          <Text style={[baseStyles.title15, baseStyles.textGray, baseStyles.textCenter, {paddingBottom: 10}]}>Of <Text style={baseStyles.boldText}>{cleanTotal}</Text></Text>
+          <Text style={[baseStyles.titleBold40, baseStyles.textCenter, { color: getColorHex(parseInt(percentage)) }]}>${paid_amount}</Text>
           <View style={[ baseStyles.rowCenter, { alignContent: 'center', justifyContent: 'center' }]}>
             <Text> 0% </Text>
             <PromiseGraph percentage={percentage} />

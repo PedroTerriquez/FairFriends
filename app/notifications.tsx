@@ -1,11 +1,11 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
-
+import { useCallback, useState } from "react";
+import { Text, ScrollView } from "react-native";
 import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import { useFocusEffect } from "expo-router";
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([])
@@ -59,9 +59,11 @@ export default function Notifications() {
         ))
     }
 
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchNotifications();
+        }, [])
+    );
 
     return (
         <ScrollView contentContainerStyle={[baseStyles.viewContainerFull]} >

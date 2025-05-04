@@ -57,7 +57,7 @@ export default function addContact() {
     }, [text]);
 
     return (
-        <View style={[baseStyles.viewContainerFull]}>
+        <ScrollView style={[baseStyles.viewContainerFull]}>
             <View>
                 <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
                     <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
@@ -72,6 +72,6 @@ export default function addContact() {
                 </View>
             </View>
             {renderPeople()}
-        </View>
+        </ScrollView>
     );
 }

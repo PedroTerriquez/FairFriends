@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import { useFocusEffect } from "expo-router";
 
 export default function Promises() {
   const [receiving , setReceiving] = useState([])
@@ -42,9 +43,11 @@ export default function Promises() {
     ))
   }
 
-  useEffect(() => {
-    fetchPromises();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchPromises();
+    }, [])
+  );
 
   return (
     <ScrollView style={baseStyles.viewContainerFull}>

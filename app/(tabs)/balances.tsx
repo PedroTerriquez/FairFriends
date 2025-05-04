@@ -1,12 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Balances() {
@@ -39,9 +39,11 @@ export default function Balances() {
     ))
   }
 
-  useEffect(() => {
-    fetchBalances();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchBalances();
+    }, [])
+  );
 
   return (
     <>

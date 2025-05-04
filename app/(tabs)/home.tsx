@@ -6,6 +6,7 @@ import { useSession } from "@/services/authContext";
 import Payment from '../../presentational/Payment';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import MiniBalanceCard from "@/presentational/MiniBalanceCard";
 
 export default function Home() {
   const [balancePayments, setBalancePayments] = useState([])
@@ -53,28 +54,47 @@ export default function Home() {
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      <View style={baseStyles.viewRowWithSpace}>
-        <Pressable
-          style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
-          onPress={() => setActiveTab("Promises")}
-        >
-          <Text style={activeTab === "Promises" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
-            Promises
-          </Text>
-        </Pressable>
-        <Pressable
-          style={activeTab === "Balances" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
-          onPress={() => setActiveTab("Balances")}
-        >
-          <Text style={activeTab === "Balances" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
-            Balances
-          </Text>
-        </Pressable>
+      <View style={{ flex: 1 }}>
+        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Balances</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <MiniBalanceCard key='1' id={'1'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+          <MiniBalanceCard key='2' id={'2'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+          <MiniBalanceCard key='3' id={'3'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+        </ScrollView>
       </View>
+      <View style={{ flex: 1 }}>
+        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Promises</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <MiniBalanceCard key='1' id={'1'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+          <MiniBalanceCard key='2' id={'2'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+          <MiniBalanceCard key='3' id={'3'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
+        </ScrollView>
+      </View>
+      <View style={{ flex: 4.5 }}>
+        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Payments</Text>
+        <View style={baseStyles.viewRowWithSpace}>
+          <Pressable
+            style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+            onPress={() => setActiveTab("Promises")}
+          >
+            <Text style={activeTab === "Promises" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+              Promises
+            </Text>
+          </Pressable>
+          <Pressable
+            style={activeTab === "Balances" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+            onPress={() => setActiveTab("Balances")}
+          >
+            <Text style={activeTab === "Balances" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+              Balances
+            </Text>
+          </Pressable>
+        </View>
 
-      <ScrollView>
-        {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
-      </ScrollView>
+        <ScrollView>
+          {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+        </ScrollView>
+      </View>
     </View>
   );
 }

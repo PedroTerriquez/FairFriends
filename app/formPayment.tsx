@@ -68,7 +68,7 @@ export default function addPayment() {
           paymentUpdateValues(),
           session
         );
-        showToast('Payment updated successfully', 'success');
+        setModalVisible(true); // Show success modal
       } else {
         await axios.post(
           `${process.env.EXPO_PUBLIC_API}/payments/`,

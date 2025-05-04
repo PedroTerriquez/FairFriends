@@ -35,7 +35,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="balances"
         options={{
-          title: "Balances",
+          title: "Fair Split",
           tabBarIcon: ({ color, size }) => <FontAwesome name="balance-scale" color={color} size={size} />,
           headerShown: false
         }}

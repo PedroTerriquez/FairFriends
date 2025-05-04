@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Pressable } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles';
@@ -46,6 +46,7 @@ export default function Promise() {
                 creatorName={payment.creator_name}
                 paymentable_id={payment.paymentable_id}
                 parentTitle={payment.parent_title}
+                mine={payment.mine}
             />
         ))
     }
@@ -59,9 +60,11 @@ export default function Promise() {
             })
     }
 
-    useEffect(() => {
-        fetchPayments();
-    }, [paymentable_id]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchPayments();
+        }, [paymentable_id])
+    );
 
     return promise ? (
         <ScrollView style={[baseStyles.viewContainerFull, {backgroundColor: "white"}]}>
@@ -71,7 +74,7 @@ export default function Promise() {
                     title={promise.title}
                     total={promise.total}
                     paid_amount={promise.paid_amount}
-                    percentage={(promise.paid_amount / 100 * promise.total) + "%"}
+                    percentage={promise.percentage}
                     status={promise.status}
                     user={promise.admin_name}
                 />
