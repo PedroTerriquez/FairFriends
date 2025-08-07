@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import PromiseCard from '../../presentational/PromiseCard';
@@ -13,8 +13,10 @@ export default function Promises() {
   const [paying, setPaying] = useState([])
   const [activeTab, setActiveTab] = useState("Receiving");
   const { session } = useSession();
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchPromises = async () => {
+    setRefreshing(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/promises`, session)
       .then((response) => {
         console.log(response)
@@ -24,6 +26,9 @@ export default function Promises() {
       .catch((error) => {
         console.log(error);
       })
+      .finally(() => {
+        setRefreshing(false);
+      });
   }
   
   const renderPromises = (promises) => {
@@ -50,7 +55,12 @@ export default function Promises() {
   );
 
   return (
-    <ScrollView style={baseStyles.viewContainerFull}>
+    <ScrollView style={baseStyles.viewContainerFull} refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={fetchPromises}
+      />
+    }>
       <View style={ baseStyles.viewRowWithSpace}>
         <Pressable onPress={() => setActiveTab("Receiving")} style={activeTab === "Receiving" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
           <Text style={activeTab === "Receiving" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Receiving</Text>

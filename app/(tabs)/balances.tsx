@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { RefreshControl, ScrollView, TouchableOpacity } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
@@ -12,16 +12,21 @@ import { Ionicons } from "@expo/vector-icons";
 export default function Balances() {
   const [balances, setBalances] = useState([])
   const { session } = useSession();
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchBalances = async () => {
+    setRefreshing(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/balances`, session)
       .then((response) => {
-        console.log(response)
-        setBalances(response.data)
+        console.log(response);
+        setBalances(response.data);
       })
       .catch((error) => {
         console.log(error);
       })
+      .finally(() => {
+        setRefreshing(false);
+      });
   }
   
   const renderBalances = () => {
@@ -48,11 +53,16 @@ export default function Balances() {
 
   return (
     <>
-      <ScrollView style={baseStyles.viewContainerFull}>
+      <ScrollView style={baseStyles.viewContainerFull} refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={fetchBalances}
+        />
+      }>
         {renderBalances()}
       </ScrollView>
       <TouchableOpacity style={[baseStyles.floatingButton, { position: 'absolute', bottom: 16, right: 16 }]}
-        onPress={() => { router.push({ pathname: "/formBalance", }) }}>
+        onPress={() => { router.push({ pathname: "/formBalance" }) }}>
         <Ionicons name="add" size={32} color="white" />
       </TouchableOpacity>
     </>

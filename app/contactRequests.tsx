@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import { useSession } from "@/services/authContext";
@@ -9,9 +9,10 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 
 export default function contactRequests() {
-  const [pending, setPending] = useState([])
-  const [sent, setSent] = useState([])
+  const [pending, setPending] = useState([]);
+  const [sent, setSent] = useState([]);
   const [activeTab, setActiveTab] = useState("Pending");
+  const [refreshing, setRefreshing] = useState(false);
 
   const { session } = useSession();
 
@@ -102,12 +103,22 @@ export default function contactRequests() {
       ))
   }
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchRequests().finally(() => setRefreshing(false));
+  };
+
   useEffect(() => {
     fetchRequests();
   }, []);
 
   return (
-    <ScrollView style={baseStyles.viewContainerFull}>
+    <ScrollView
+      style={baseStyles.viewContainerFull}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={baseStyles.viewRowWithSpace}>
         <Pressable onPress={() => setActiveTab("Pending")} style={activeTab === "Pending" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
           <Text style={activeTab === "Pending" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Pending</Text>

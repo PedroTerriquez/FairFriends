@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Button } from "react-native";
 import { useState } from 'react';
 import { useSession } from '../services/authContext';
 import { useRouter } from 'expo-router';
@@ -31,6 +31,14 @@ export default function Login() {
             <Ionicons name="people" size={80} color="#2F66FF" />
             <Text style={styles.appName}>FairFriends</Text>
             <Text style={styles.tagline}>Split expenses with friends</Text>
+            {process.env.NODE_ENV === 'development' && (
+              <Button
+                title="Change user"
+                onPress={() => {
+                  setEmail(process.env.EXPO_PUBLIC_USER.replace(/1/g, '2'));
+                }}
+              />
+            )}
           </View>
 
           <View style={styles.loginContainer}>

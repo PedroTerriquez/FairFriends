@@ -7,22 +7,19 @@ import Avatar from "./Avatar";
 
 export default function NotificationCard({
   id,
-  creator,
-  nId,
-  nType,
-  eId,
-  eType,
+  notifiableId,
+  notifiableType,
+  paymentableId,
+  paymentableType,
   date,
   amount,
   status,
-  message,
   creatorName,
   acceptNotification,
   rejectNotification,
 }) {
   const [pendingDecision, setPendingDecision] = useState(false)
   const [decisionDone, setDecisionDone] = useState(false)
-  const navigation = useNavigation();
   
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -33,19 +30,39 @@ export default function NotificationCard({
   }).format(new Date(date));
 
   const handleShow = () => {
-    navigation.navigate(nType.toLowerCase(), {paymentable_id: nId, type: nType})
+    let route;
+    switch (notifiableType) {
+      case 'Promise':
+        route = 'promise';
+        break;
+      case 'Balance':
+        route = 'balance';
+        break;
+      case 'Payment':
+        route = paymentableType.toLowerCase();
+        notifiableId = paymentableId;
+        break;
+      case 'Friendship':
+        route = 'profile';
+        break;
+      default:
+        route = 'default';
+        break;
+    }
+    
+    router.push({ pathname: route, params: { id: notifiableId } });
   }
 
   return (
     <Pressable
       onPress={() => handleShow()}
-      style={baseStyles.card}>
+      style={[baseStyles.card, ['accepted', 'rejected'].includes(status) ? baseStyles.cardRead : baseStyles.cardUnread]}>
       <View style={baseStyles.cardContent}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={creatorName[0]} />
           <View style={baseStyles.marginLeft}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
-            <Text style={baseStyles.cardSubtitle}>New {nType}</Text>
+            <Text style={baseStyles.cardSubtitle}>New {notifiableType}</Text>
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, TouchableOpacity, View, Text } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text, RefreshControl, NativeModules } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,9 +11,10 @@ import BalanceCard from '../presentational/BalanceCard';
 import EmptyList from "@/presentational/EmptyList";
 
 export default function Balance() {
-    const [payments, setPayments] = useState([])
-    const [balance, setBalance] = useState(null)
-    const { paymentable_id } = useLocalSearchParams();
+    const [payments, setPayments] = useState([]);
+    const [balance, setBalance] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
+    const { id } = useLocalSearchParams();
     const { session } = useSession();
     const router = useRouter();
 
@@ -21,13 +22,16 @@ export default function Balance() {
       if (!session) return;
       
       try {
-        const response = await axios.get(`${process.env.EXPO_PUBLIC_API}/balances/${paymentable_id}`, session);
-        setPayments(response.data.payments)
-        setBalance(response.data.balance)
+        setRefreshing(true); 
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_API}/balances/${id}`, session);
+        setPayments(response.data.payments);
+        setBalance(response.data.balance);
       } catch (error) {
         console.log(error);
+      } finally {
+        setRefreshing(false);
       }
-    }
+    };
 
     const renderPayments = () => {
         if (payments.length == 0) return
@@ -36,17 +40,15 @@ export default function Balance() {
             <Payment
                 key={payment.id}
                 id={payment.id}
-                creator={payment.creator_id}
-                method='Cash'
-                date={payment.created_at}
                 amount={payment.amount}
-                title={payment.title}
-                status={payment.status}
-                type={payment.paymentable_type}
+                canEdit={(balance.admin && balance.balance_members.length > 2) || payment.mine}
                 creatorName={payment.creator_name}
-                paymentable_id={payment.paymentable_id}
+                date={payment.created_at}
+                paymentableId={payment.paymentable_id}
+                paymentableType={payment.paymentable_type}
                 parentTitle={payment.parent_title}
-                mine={balance.admin ? false : true}
+                status={payment.status}
+                title={payment.title}
             />
         ))
     }
@@ -54,11 +56,16 @@ export default function Balance() {
     useFocusEffect(
         useCallback(() => {
             fetchBalance();
-        }, [paymentable_id])
+        }, [id])
     );
 
     return (
-      <ScrollView style={[baseStyles.viewContainerFull]}>
+      <ScrollView
+        style={[baseStyles.viewContainerFull]}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchBalance} />
+        }
+      >
         { balance && <BalanceCard
           id={balance.id}
           total={balance.total}
@@ -76,7 +83,7 @@ export default function Balance() {
                 router.push({
                   pathname: "/formPayment",
                   params: {
-                    paymentable_id: paymentable_id,
+                    paymentable_id: id,
                     type: 'Balance',
                     recipient_name: balance.name,
                     recipient_id: balance.id,

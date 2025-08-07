@@ -9,26 +9,25 @@ import { useSession } from "@/services/authContext";
 
 export default function Payment({
   id,
-  title,
-  creatorName,
-  method,
   amount,
+  canEdit,
+  creatorName,
   date,
-  paymentable_id,
-  type,
-  status,
-  mine,
+  paymentableId,
+  paymentableType,
   parentTitle,
+  status,
+  title,
 }) {
   const navigation = useNavigation();
   const { session } = useSession();
-  const [realStatus, setRealStatus] = useState(status)
+  const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
-  
-  const pending = !mine && realStatus === "pending";
-  const editable = mine && realStatus === "pending";
-  const accepted = realStatus === "accepted";
-  const rejected = realStatus === "rejected";
+
+  const pending = !canEdit && mutableStatus === "pending";
+  const editable = canEdit && mutableStatus === "pending";
+  const accepted = mutableStatus === "accepted";
+  const rejected = mutableStatus === "rejected";
 
   let moneyColor = baseStyles.boldText;
   if (accepted) {
@@ -48,11 +47,11 @@ export default function Payment({
     const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
 
     if (diffInMinutes < 60) {
-      return `${diffInMinutes} minutes ago`;
+      return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
     } else if (diffInHours < 24) {
-      return `${diffInHours} hours ago`;
+      return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
     } else if (diffInDays < 7) {
-      return `${diffInDays} days ago`;
+      return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
     } else {
       return new Intl.DateTimeFormat("en-US", {
         month: "short",
@@ -63,7 +62,7 @@ export default function Payment({
   })();
 
   const handleShow = () => {
-    navigation.navigate(type.toLowerCase(), {paymentable_id, type})
+    router.push({ pathname: paymentableType.toLowerCase(), params: { id: paymentableId } });
   }
 
   const acceptPaymentButton = (id) => {
@@ -80,7 +79,7 @@ export default function Payment({
       session
     )
     .then((response) => {
-      setRealStatus('accepted')
+      setMutableStatus('accepted')
     })
     .catch((error) => {
       console.error('Error accepting payment:', error);
@@ -101,17 +100,77 @@ export default function Payment({
       session
     )
       .then((response) => {
-        setRealStatus('rejected')
+        setMutableStatus('rejected')
       })
       .catch((error) => {
         console.error('Error rejecting payment:', error);
       });
   }
 
+  const renderStatusSection = () => {
+    return (
+      <>
+        {
+          pendingDecision && (
+            <View style={baseStyles.rowCenter}>
+              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]} onPress={() => acceptPaymentButton(id)}>
+                <Ionicons name="checkmark" size={20} color="white" />
+              </Pressable>
+              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
+                <Ionicons name="close" size={20} color="white" />
+              </Pressable>
+            </View>
+          )
+        }
+        {
+          pending && !pendingDecision && (
+            <Pressable style={[baseStyles.circleButton, baseStyles.warningBG]} onPress={() => setPendingDecision(true)}>
+              <Ionicons name="warning" size={20} color="white" />
+            </Pressable>
+          )
+        }
+        {
+          editable && (
+            <Pressable
+              style={[baseStyles.circleButton, baseStyles.warningBG]}
+              onPressIn={() => router.push({
+                pathname: "/formPayment",
+                params: {
+                  payment_id: id,
+                  paymentable_id: paymentableId,
+                  type: paymentableType,
+                  title: title,
+                  amount: amount,
+                  recipient_name: creatorName
+                }
+              })}
+              onPress={() => navigation.navigate("formPayment", { payment_id: id, })}
+            >
+              <Text style={baseStyles.buttonText}>✎</Text>
+            </Pressable>
+          )
+        }
+        {
+          accepted && (
+            <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}>
+              <Ionicons name="checkmark" size={20} color="white" />
+            </Pressable>
+          )
+        }
+        {
+          rejected && (
+            <Pressable style={[baseStyles.circleButton, baseStyles.redBG]}>
+              <Ionicons name="close" size={20} color="white" />
+            </Pressable>
+          )
+        }
+      </>
+    )};
+
   return (
     <Pressable
       onPress={() => handleShow() }
-      style={[baseStyles.card, realStatus == 'pending' ? baseStyles.cardPending : null]}>
+      style={[baseStyles.card, mutableStatus == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
         <View style={[baseStyles.rowCenter]}>
           <Avatar name={ creatorName[0] } />
@@ -123,50 +182,7 @@ export default function Payment({
         </View>
         <View style={[baseStyles.alignItemsCenter]}>
           <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
-          {pendingDecision && (
-            <View style={baseStyles.rowCenter}>
-              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]} onPress={() => acceptPaymentButton(id)}>
-                <Ionicons name="checkmark" size={20} color="white" />
-              </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
-                <Ionicons name="close" size={20} color="white" />
-              </Pressable>
-            </View>
-          )}
-          {pending && !pendingDecision && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.warningBG]} onPress={() => setPendingDecision(true)}>
-              <Ionicons name="warning" size={20} color="white" />
-            </Pressable>
-          )}
-          {editable && (
-            <Pressable
-              style={[baseStyles.circleButton, baseStyles.warningBG]}
-              onPressIn={() => router.push({
-                pathname: "/formPayment",
-                params: {
-                  payment_id: id,
-                  paymentable_id: paymentable_id,
-                  type: type,
-                  title: title,
-                  amount: amount,
-                  recipient_name: creatorName 
-                }
-              })}
-              onPress={() => navigation.navigate("formPayment", { payment_id: id,  })}
-            >
-              <Text style={baseStyles.buttonText}>✎</Text>
-            </Pressable>
-          )}
-          {accepted && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}>
-              <Ionicons name="checkmark" size={20} color="white" />
-            </Pressable>
-          )}
-          {rejected && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.redBG]}>
-              <Ionicons name="close" size={20} color="white" />
-            </Pressable>
-          )}
+          { renderStatusSection() }
         </View>
       </View>
     </Pressable>

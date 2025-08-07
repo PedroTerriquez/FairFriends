@@ -60,16 +60,16 @@ export default function Contacts() {
         let fullList = [];
 
         Object.keys(friends).map((key) => {
-            const list = friends[key];
+            const friend = friends[key];
             fullList.push(<Text key={key} style={[baseStyles.textGray, baseStyles.smallLabel]}>{key}</Text>);
-            fullList.push(...list.map(friend => (
+            fullList.push(
                 <Person
                     key={friend.id}
                     person={friend}
                     onClick={() => toggleSelectFriend(friend.id)} >
                     {selectedFriends.includes(friend.id) ? <Ionicons name="checkmark-circle" size={30} color="green" /> : <Ionicons name="ellipse-outline" size={30} color="gray" />}
                 </Person>
-            )));
+            );
         });
         return fullList;
     };

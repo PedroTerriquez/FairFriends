@@ -11,7 +11,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
 
   return (
     <TouchableOpacity 
-      onPress={() => router.push({ pathname: "/promise", params: { paymentable_id: id } })}
+      onPress={() => router.push({ pathname: "/promise", params: {  id } })}
       style={[
         baseStyles.card,
         status === 'pending' ? baseStyles.cardPending : 
@@ -40,7 +40,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
       </View>
       <Text style={[baseStyles.title15, baseStyles.textGray]}>{title}</Text>
       <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>
-      <View style={[baseStyles.viewRow, baseStyles.paddingVertical10]}>
+      <View style={[baseStyles.viewRow]}>
         <View style={{ flex: 1}}>
           <Text style={[baseStyles.titleBold40, baseStyles.textCenter, { color: getColorHex(parseInt(percentage)) }]}>${paid_amount}</Text>
           <View style={[ baseStyles.rowCenter, { alignContent: 'center', justifyContent: 'center' }]}>

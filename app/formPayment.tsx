@@ -68,14 +68,14 @@ export default function addPayment() {
           paymentUpdateValues(),
           session
         );
-        setModalVisible(true); // Show success modal
+        setModalVisible(true);
       } else {
         await axios.post(
           `${process.env.EXPO_PUBLIC_API}/payments/`,
           paymentCreationValues(),
           session
         );
-        setModalVisible(true); // Show success modal
+        setModalVisible(true);
       }
     } catch (error) {
       console.error('Error:', error);

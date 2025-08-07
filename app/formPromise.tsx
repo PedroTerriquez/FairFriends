@@ -4,7 +4,7 @@ import { View, Text, TextInput, ScrollView, Pressable, TouchableWithoutFeedback,
 import { Picker } from "@react-native-picker/picker";
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
 
 export default function formPromise() {
@@ -55,7 +55,7 @@ export default function formPromise() {
     const updatePromise = (id) => {
         axios.patch(`${process.env.EXPO_PUBLIC_API}/promises/${id}`, promise, session)
             .then((response) => {
-                navigation.navigate('promise', { paymentable_id: id })
+                router.push({pathname:'/promise', params: { id } })
             })
             .catch((error) => {
             })
@@ -64,7 +64,8 @@ export default function formPromise() {
     const createPromise = () => {
         axios.post(`${process.env.EXPO_PUBLIC_API}/promises`, promise, session)
             .then((response) => {
-                navigation.navigate('promise', { paymentable_id: response.data.id })
+                debugger;
+                router.push({pathname:'/promise', params: { id: response.data.id } })
             })
             .catch((error) => {
                 console.log(error);

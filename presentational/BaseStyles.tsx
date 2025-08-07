@@ -5,7 +5,7 @@ const baseStyles = StyleSheet.create({
     viewContainerFull: {
         flex: 1,
         backgroundColor: "white",
-        paddingHorizontal: 15
+        paddingHorizontal: 5
     },
     viewContainerFullOnly: {
         flex: 1,
@@ -28,6 +28,10 @@ const baseStyles = StyleSheet.create({
     rowCenter: {
         flexDirection: "row",
         alignItems: "center",
+    },
+    rowRight: {
+        flexDirection: "row",
+        alignItems: "flex-end",
     },
     alignItemsCenter: {
         alignItems: "center",
@@ -156,6 +160,13 @@ const baseStyles = StyleSheet.create({
         shadowColor: "#7ECC10",
         shadowOpacity: 0.3,
         shadowRadius: 8,
+    },
+    cardRead: {
+        borderColor: "#0000002e",
+    },
+    cardUnread: {
+        backgroundColor: "#2887ec1f",
+        borderWidth: 1,
     },
     cardClose: {
         borderWidth: 1,

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Pressable, RefreshControl } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -11,63 +11,70 @@ import PromiseCard from "@/presentational/PromiseCard";
 import { useToast } from "@/services/ToastContext";
 
 export default function Promise() {
-    const [payments, setPayments] = useState([])
-    const [promise, setPromise] = useState(null)
-    const { paymentable_id } = useLocalSearchParams();
+    const [payments, setPayments] = useState([]);
+    const [promise, setPromise] = useState(null);
+    const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
+    const { id } = useLocalSearchParams();
     const { session } = useSession();
     const { showToast } = useToast();
 
     const fetchPayments = async () => {
-        axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${paymentable_id}`, session)
+        console.log("Fetching payments...");
+        setRefreshing(true); // Start refreshing
+        axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${id}`, session)
             .then((response) => {
-                console.log(response)
-                setPayments(response.data.payments)
-                setPromise(response.data.promise)
+                console.log(response);
+                setPayments(response.data.payments);
+                setPromise(response.data.promise);
             })
             .catch((error) => {
                 console.log(error);
             })
-    }
+            .finally(() => setRefreshing(false)); // Stop refreshing
+    };
 
     const renderPayments = () => {
-        if (payments.length == 0) return
+        if (payments.length == 0) return;
 
         return payments.map(payment => (
             <Payment
                 key={payment.id}
                 id={payment.id}
-                creator={payment.creator_id}
-                method='Cash'
-                date={payment.created_at}
                 amount={payment.amount}
-                title={payment.title}
-                status={payment.status}
-                type={payment.paymentable_type}
+                canEdit={payment.mine}
                 creatorName={payment.creator_name}
-                paymentable_id={payment.paymentable_id}
+                date={payment.created_at}
+                paymentableId={payment.paymentable_id}
+                paymentableType={payment.paymentable_type}
                 parentTitle={payment.parent_title}
-                mine={payment.mine}
+                status={payment.status}
+                title={payment.title}
             />
-        ))
-    }
+        ));
+    };
 
     const acceptPromiseThroughNotification = (id) => {
         axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
             .then((response) => {
-                promise.status = 'accepted'
-                setPromise(promise)
-                showToast('Promise accepted')
-            })
-    }
+                promise.status = 'accepted';
+                setPromise(promise);
+                showToast('Promise accepted');
+            });
+    };
 
     useFocusEffect(
         useCallback(() => {
             fetchPayments();
-        }, [paymentable_id])
+        }, [id])
     );
 
     return promise ? (
-        <ScrollView style={[baseStyles.viewContainerFull, {backgroundColor: "white"}]}>
+        <ScrollView
+            style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={fetchPayments} />
+            }
+        >
             <View>
                 <PromiseCard
                     id={promise.id}
@@ -84,7 +91,7 @@ export default function Promise() {
                             style={[baseStyles.button, baseStyles.warningBG, { marginTop: 10 }]}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
-                                    paymentable_id,
+                                    id,
                                     mine: promise.admin
                                 }
                             })}
@@ -110,7 +117,7 @@ export default function Promise() {
                             router.push({
                                 pathname: "/formPayment",
                                 params: {
-                                    paymentable_id: paymentable_id,
+                                    paymentable_id: id,
                                     type: 'Promise',
                                     recipient_name: promise.admin_name,
                                     recipient_id: promise.administrator_id,
@@ -126,5 +133,5 @@ export default function Promise() {
             </View>
             {renderPayments()}
         </ScrollView>
-    ) : <></>
+    ) : <></>;
 }

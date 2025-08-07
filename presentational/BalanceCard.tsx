@@ -46,7 +46,7 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
   const difference = myTotal - avg;
 
   return (
-    <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => navigation.navigate("balance", { paymentable_id: id })}>
+    <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => navigation.navigate("balance", { id })}>
       <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
       <View style={[baseStyles.viewRow, {paddingTop: 5}]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>

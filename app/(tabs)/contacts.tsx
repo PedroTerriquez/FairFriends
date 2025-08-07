@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -10,20 +10,23 @@ import baseStyles from '../../presentational/BaseStyles'
 import EmptyList from "@/presentational/EmptyList";
 
 export default function Contacts() {
-    const [friends, setFriends] = useState([])
+    const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
+    const [refreshing, setRefreshing] = useState(false);
     const { session } = useSession();
     const navigation = useNavigation();
 
     const fetchFriends = async () => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session)
-            .then((response) => {
-                setFriends(response.data)
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
+        try {
+            setRefreshing(true);
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session);
+            setFriends(response.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
 
     const navigateProfile = (id) => {
         router.push({
@@ -39,9 +42,9 @@ export default function Contacts() {
         let fullList = [];
 
         Object.keys(friends).map((key) => {
-            const list = friends[key];
+            const friend = friends[key];
             fullList.push(<Text key={key} style={[baseStyles.boldText, baseStyles.label14, { marginLeft: 10}]}>{key}</Text>);
-            fullList.push(...list.map(friend => (
+            fullList.push(
                 <Person
                     key={friend.id}
                     person={friend}
@@ -57,14 +60,14 @@ export default function Contacts() {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
-                                onPress={() => startBalance(friend.id, friend.first_name)}
+                                onPress={() => startBalance(friend.id)}
                             >
                                 <FontAwesome name="balance-scale" size={20} color="white" />
                             </TouchableOpacity>
                         </View>
                     )}
                 </Person>
-            )));
+            );
         });
         return fullList;
     }
@@ -76,12 +79,12 @@ export default function Contacts() {
         })
     }
 
-    const startBalance = (id, name) => {
+    const startBalance = (id) => {
         axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
             .then((response) => {
                 router.push({
                     pathname: '/balance',
-                    params: { paymentable_id: response.data.id }
+                    params: { id: response.data.id }
                 })
             })
             .catch((error) => {
@@ -101,6 +104,9 @@ export default function Contacts() {
                     style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
                     keyboardShouldPersistTaps="handled"
                     keyboardDismissMode="on-drag"
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={fetchFriends} />
+                    }
                 >
                     <View>
                         <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>

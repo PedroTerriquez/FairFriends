@@ -34,16 +34,14 @@ export default function Home() {
       <Payment
         key={payment.id}
         id={payment.id}
-        creator={payment.creator_id}
-        method='Cash'
-        date={payment.created_at}
         amount={payment.amount}
-        title={payment.title}
-        status={payment.status}
-        type={payment.paymentable_type}
         creatorName={payment.creator_name}
-        paymentable_id={payment.paymentable_id}
+        date={payment.created_at}
+        paymentableId={payment.paymentable_id}
+        paymentableType={payment.paymentable_type}
         parentTitle={payment.parent_title}
+        status={payment.status}
+        title={payment.title}
       />
     ))
   }
@@ -54,22 +52,6 @@ export default function Home() {
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      <View style={{ flex: 1 }}>
-        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Balances</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <MiniBalanceCard key='1' id={'1'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-          <MiniBalanceCard key='2' id={'2'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-          <MiniBalanceCard key='3' id={'3'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-        </ScrollView>
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Promises</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <MiniBalanceCard key='1' id={'1'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-          <MiniBalanceCard key='2' id={'2'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-          <MiniBalanceCard key='3' id={'3'} total={400} name={'Javi'} members={3} myTotal={200}></MiniBalanceCard>
-        </ScrollView>
-      </View>
       <View style={{ flex: 4.5 }}>
         <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Payments</Text>
         <View style={baseStyles.viewRowWithSpace}>

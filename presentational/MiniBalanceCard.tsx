@@ -13,7 +13,7 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
     <TouchableOpacity
       key={id}
       style={[baseStyles.card, baseStyles.viewRow, baseStyles.marginLeft5, {height: 10}]}
-      onPress={() => navigation.navigate("balance", { paymentable_id: id })}
+      onPress={() => navigation.navigate("balance", { id })}
     >
       <Text style={[baseStyles.cardTitle]}>{name}</Text>
       <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
