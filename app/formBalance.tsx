@@ -8,11 +8,13 @@ import Person from '../presentational/Person';
 import { useSession } from "@/services/authContext";
 import baseStyles from '../presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
+import PlaceholderPerson from "@/presentational/PlaceholderPerson";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [selectedFriends, setSelectedFriends] = useState([]);
+    const [selectedPlaceholders, setSelectedPlaceholders] = useState([]);
     const { session } = useSession();
     const [step, setStep] = useState(0);
     const [groupName, setGroupName] = useState("");
@@ -28,16 +30,42 @@ export default function Contacts() {
             })
     };
 
-    const toggleSelectFriend = (friend) => {
+    const toggleSelectFriend = (friend_id) => {
         setSelectedFriends((prev) => {
-            if (prev.includes(friend)) {
-                return prev.filter((f) => f !== friend);
+            if (prev.includes(friend_id)) {
+                return prev.filter((friend) => friend !== friend_id);
             } else if (prev.length < 10) {
-                return [...prev, friend];
+                return [...prev, friend_id];
             }
-            return prev; // Do nothing if already 10 selected
+            return prev;
         });
     };
+
+    const addPlaceholder = () => {
+        if ((selectedPlaceholders.length + selectedFriends.length) < 10) {
+            setSelectedPlaceholders(prev => [...prev, prev.length]);
+            setSelectedFriends(prev => [...prev, 0]);
+        }
+    };
+
+    const removePlaceholder = () => {
+        setSelectedPlaceholders(prev => {
+            if (prev.length > 0) {
+                const newPlaceholders = prev.slice(0, -1);
+                setSelectedFriends(friendsPrev => {
+                    const index = friendsPrev.lastIndexOf(0);
+                    if (index > -1) {
+                        // Remove only the last 0
+                        return [...friendsPrev.slice(0, index), ...friendsPrev.slice(index + 1)];
+                    }
+                    return friendsPrev;
+                });
+                return newPlaceholders;
+            }
+            return prev;
+        });
+    }
+
 
     const createGroup = () => {
         const memberIds = selectedFriends;
@@ -45,7 +73,7 @@ export default function Contacts() {
             .then((response) => {
                 router.push({
                     pathname: '/balance',
-                    params: { paymentable_id: response.data.id }
+                    params: { id: response.data.id }
                 });
             })
             .catch((error) => {
@@ -58,10 +86,22 @@ export default function Contacts() {
         if (friends.length == 0 && text !== "") return EmptyList("No contacts found");
 
         let fullList = [];
+        fullList.push(
+            <PlaceholderPerson onClick={addPlaceholder} key="add-placeholder">
+                <Ionicons name="ellipse-outline" size={30} color="gray" />
+            </PlaceholderPerson>
+        );
+        selectedPlaceholders.forEach((_, idx) => {
+            fullList.push(
+                <PlaceholderPerson onClick={removePlaceholder} key={`placeholder-${idx}`}>
+                    <Ionicons name="checkmark-circle" size={30} color="green" />
+                </PlaceholderPerson>
+            );
+        });
 
         Object.keys(friends).map((key) => {
             const friend = friends[key];
-            fullList.push(<Text key={key} style={[baseStyles.textGray, baseStyles.smallLabel]}>{key}</Text>);
+            //fullList.push(<Text key={key} style={[baseStyles.textGray, baseStyles.smallLabel]}>{key}</Text>);
             fullList.push(
                 <Person
                     key={friend.id}
@@ -82,7 +122,10 @@ export default function Contacts() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={{ flex: 1 }}>
                 { step == 0 && (<View style={baseStyles.viewContainerFull}>
-                    <ScrollView keyboardDismissMode="on-drag">
+                    <ScrollView
+                        keyboardDismissMode="on-drag"
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    >
                         <View>
                             <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
                                 <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
@@ -97,7 +140,8 @@ export default function Contacts() {
                             </View>
                         </View>
                         {renderContacts(friends)}
-                        <Text>{selectedFriends}</Text>
+                        <Text>Selected Friends: {selectedFriends}</Text>
+                        <Text>Selected Placeholders: {selectedPlaceholders}</Text>
                         {selectedFriends.length > 0 && (
                             <TouchableOpacity
                                 style={[baseStyles.floatingButton, baseStyles.greenBG]}
