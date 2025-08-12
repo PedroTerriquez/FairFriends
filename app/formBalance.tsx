@@ -55,7 +55,6 @@ export default function Contacts() {
                 setSelectedFriends(friendsPrev => {
                     const index = friendsPrev.lastIndexOf(0);
                     if (index > -1) {
-                        // Remove only the last 0
                         return [...friendsPrev.slice(0, index), ...friendsPrev.slice(index + 1)];
                     }
                     return friendsPrev;
@@ -65,7 +64,6 @@ export default function Contacts() {
             return prev;
         });
     }
-
 
     const createGroup = () => {
         const memberIds = selectedFriends;
@@ -140,8 +138,6 @@ export default function Contacts() {
                             </View>
                         </View>
                         {renderContacts(friends)}
-                        <Text>Selected Friends: {selectedFriends}</Text>
-                        <Text>Selected Placeholders: {selectedPlaceholders}</Text>
                         {selectedFriends.length > 0 && (
                             <TouchableOpacity
                                 style={[baseStyles.floatingButton, baseStyles.greenBG]}

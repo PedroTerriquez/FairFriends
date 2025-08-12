@@ -43,7 +43,7 @@ export default function Contacts() {
 
         Object.keys(friends).map((key) => {
             const friend = friends[key];
-            fullList.push(<Text key={key} style={[baseStyles.boldText, baseStyles.label14, { marginLeft: 10}]}>{key}</Text>);
+            //fullList.push(<Text key={key} style={[baseStyles.boldText, baseStyles.label14, { marginLeft: 10}]}>{key}</Text>);
             fullList.push(
                 <Person
                     key={friend.id}

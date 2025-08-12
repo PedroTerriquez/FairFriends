@@ -16,6 +16,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         baseStyles.card,
         status === 'pending' ? baseStyles.cardPending : 
         status === 'close' ? baseStyles.cardClose :
+        status === 'rejected' ? baseStyles.cardRejected :
         status === 'accepted' ? null : null
       ]}
     >
@@ -32,6 +33,11 @@ export default function PromiseCard({ id, title, percentage, user, status, total
       {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightGreenBG]}>
         <MaterialIcons name="check" size={20} color="green" />  
         <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'green', marginLeft: 5}]}>Finished</Text>
+      </Pressable>
+      }
+      {status == 'rejected' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightRedBG]}>
+        <MaterialIcons name="cancel" size={20} color="red" />
+        <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'red', marginLeft: 5}]}>Rejected</Text>
       </Pressable>
       }
       <View style={baseStyles.viewRow}>

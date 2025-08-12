@@ -3,10 +3,10 @@ export const getColorHex = (value) => {
 
   switch (true) {
     case (value <= 20):
-      color = '#FF6F61';
+      color = '#dc3545';
       break;
     case (value <= 40):
-      color = '#FFB84D';
+      color = '#f7ab3aff';
       break;
     case (value <= 60):
       color = '#F2E205';
@@ -15,7 +15,7 @@ export const getColorHex = (value) => {
       color = '#A8D08D';
       break;
     case (value >= 81):
-      color = '#4caf50';
+      color = '#008000';
       break;
     default:
       color = '#FF6F61';

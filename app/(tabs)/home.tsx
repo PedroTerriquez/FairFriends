@@ -7,8 +7,12 @@ import Payment from '../../presentational/Payment';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import MiniBalanceCard from "@/presentational/MiniBalanceCard";
+import MiniPromiseCard from "@/presentational/MiniPromiseCard";
+import { router } from "expo-router";
 
 export default function Home() {
+  const [balances, setBalances] = useState([])
+  const [promises, setPromises] = useState([])
   const [balancePayments, setBalancePayments] = useState([])
   const [promisePayments, setPromisePayments] = useState([])
   const [activeTab, setActiveTab] = useState("Promises");
@@ -16,19 +20,19 @@ export default function Home() {
   const { session } = useSession();
 
   const fetchPayments = async () => {
-    axios.get(`${process.env.EXPO_PUBLIC_API}/payments/friends_payments`, session)
-      .then((response) => {
-        console.log(response)
-        setBalancePayments(response.data.balance)
-        setPromisePayments(response.data.promise)
-      })
-      .catch((error) => {
+    axios.get(`${process.env.EXPO_PUBLIC_API}/home`, session).then((response) => {
+      console.log(response)
+      setBalances(response.data.balances)
+      setPromises(response.data.promises)
+      setBalancePayments(response.data.balance_payments)
+      setPromisePayments(response.data.promise_payments)
+    }).catch((error) => {
         console.log(error);
       })
   }
   
   const renderPayments = (payments) => {
-    if (payments.length == 0) return EmptyList("No payments")
+    if (payments.length == 0) return (<EmptyList text="No payments">holis</EmptyList>)
 
     return payments.map(payment => (
       <Payment
@@ -46,14 +50,58 @@ export default function Home() {
     ))
   }
 
+  const renderMiniBalanceCards = (balances) => {
+    if (balances.length == 0) return EmptyList("No balances")
+
+    return balances.map(balance => (
+      <MiniBalanceCard
+        key={balance.id}
+        id={balance.id}
+        total={balance.total}
+        name={balance.name}
+        members={balance.members}
+        myTotal={balance.my_total}
+      />
+    ))
+  }
+
+  const renderMiniPromiseCards = (promises) => {
+    if (promises.length == 0) return EmptyList("No promises")
+
+    return promises.map(promise => (
+      <MiniPromiseCard
+        key={promise.id}
+        id={promise.id}
+        paidAmount={promise.paid_amount}
+        total={promise.total}
+        name={promise.administrator_name}
+      />
+    ))
+  }
+
   useEffect(() => {
     fetchPayments();
   }, []);
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      <View style={{ flex: 4.5 }}>
-        <Text style={[baseStyles.label14, {fontWeight: 600}]}>Recent Payments</Text>
+      <View>
+        { balances.length > 0 && (<>
+          <Pressable onPress={() => { router.push("/balances") }}>
+            <Text style={[baseStyles.label, { fontWeight: 600 }]}>Balances</Text>
+          </Pressable>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+            {renderMiniBalanceCards(balances)}
+          </ScrollView> </>
+        )}
+        { promises.length > 0 && (<>
+          <Pressable onPress={() => { router.push("/promises") }}>
+            <Text style={[baseStyles.label, { fontWeight: 600 }]}>Promises</Text>
+          </Pressable>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+            {renderMiniPromiseCards(promises)}
+          </ScrollView></>
+        )}
         <View style={baseStyles.viewRowWithSpace}>
           <Pressable
             style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
@@ -72,7 +120,6 @@ export default function Home() {
             </Text>
           </Pressable>
         </View>
-
         <ScrollView>
           {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
         </ScrollView>

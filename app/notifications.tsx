@@ -84,7 +84,6 @@ export default function Notifications() {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
         >
-            <Text style={[baseStyles.title24, baseStyles.textCenter, { marginTop: 10 }]}>Notifications</Text>
             {renderNotifications()}
         </ScrollView>
     );

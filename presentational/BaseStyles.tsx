@@ -155,10 +155,17 @@ const baseStyles = StyleSheet.create({
         minHeight: 80,
     },
     cardAccepted: {
-        borderWidth: 1,
+        borderWidth: StyleSheet.hairlineWidth,
         borderColor: "#7ECC10",
         shadowColor: "#7ECC10",
-        shadowOpacity: 0.3,
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+    cardRejected: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#dc3545",
+        shadowColor: "#dc3545",
+        shadowOpacity: 0.1,
         shadowRadius: 8,
     },
     cardRead: {
@@ -248,7 +255,6 @@ const baseStyles = StyleSheet.create({
         backgroundColor: "#007aff",
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 8,
     },
     avatarText: {
         color: "#fff",

@@ -3,33 +3,33 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import baseStyles from "./BaseStyles";
+import { getColorHex } from "@/services/getColorHex";
 import Avatar from "./Avatar";
 
-export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
+export default MiniPromiseCard = ({ id, name, paidAmount, total }) => {
   const navigation = useNavigation();
-  const avg = total / members;
-  const difference = myTotal - avg;
+  const percentage = (paidAmount / total * 100);
 
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.viewRow, baseStyles.marginLeft5, {height: 0}]}
+      style={[baseStyles.card, baseStyles.viewRow, baseStyles.marginLeft5, {height: 10}]}
       onPress={() => navigation.navigate("balance", { id })}
     >
-      <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 5}}>
         <Avatar name={name || '.'}></Avatar>
         <Text
           style={[
             baseStyles.titleBold40,
-            { color: difference >= 0 ? "green" : "#dc3545" },
+            { color: getColorHex(percentage) },
           ]}
         >
-          ${Math.abs(myTotal)}
+          {percentage}%
         </Text>
         <AntDesign
-          name={difference >= 0 ? "caretup" : "caretdown"}
+          name={"caretdown"}
           size={24}
-          color={difference >= 0 ? "green" : "#dc3545"}
+          color={ getColorHex(percentage) }
           style={{ marginLeft: 5 }}
         />
       </View>
