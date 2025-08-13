@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
-import { Text, ScrollView, RefreshControl } from "react-native";
+import { Text, ScrollView, RefreshControl, Pressable } from "react-native";
 import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -44,8 +44,25 @@ export default function Notifications() {
         );
     }
 
+    const showEmptyState = () => {
+        return (<EmptyList text={"No notifications yet"}>
+            <>
+                <Text style={baseStyles.label17}>Start by adding your first {''}
+                    <Pressable onPress={() => { router.push("/addContact") }}>
+                        <Text style={baseStyles.link}>friend</Text>
+                    </Pressable>
+                </Text>
+                <Text style={baseStyles.label17}>or new {''}
+                    <Pressable onPress={() => { router.push("/formBalance") }}>
+                        <Text style={baseStyles.link}>balance</Text>
+                    </Pressable>
+                </Text>
+            </>
+        </EmptyList>)
+    }
+
     const renderNotifications = () => {
-        if (notifications.length == 0) return EmptyList("No notifications")
+        if (notifications.length === 0) return showEmptyState();
 
         return notifications.map(notification => (
             <NotificationCard
@@ -58,7 +75,6 @@ export default function Notifications() {
                 date={notification.updated_at}
                 amount={notification.amount}
                 status={notification.status}
-                message={notification.message}
                 creatorName={notification.sender_name}
                 acceptNotification={acceptNotification}
                 rejectNotification={rejectNotification}

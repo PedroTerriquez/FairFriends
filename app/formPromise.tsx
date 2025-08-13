@@ -115,7 +115,7 @@ export default function formPromise() {
                                     General Information
                                 </Text>
                                 <View>
-                                    <Text style={baseStyles.label}>Concept</Text>
+                                    <Text style={baseStyles.label17}>Concept</Text>
                                     <TextInput
                                         style={baseStyles.input}
                                         value={promise.title || ''}
@@ -126,7 +126,7 @@ export default function formPromise() {
                                     {errors.title && <Text style={baseStyles.errorText}>{errors.title}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={baseStyles.label}>Amount Requested</Text>
+                                    <Text style={baseStyles.label17}>Amount Requested</Text>
                                     <TextInput
                                         style={baseStyles.input}
                                         value={promise.total || ''}
@@ -138,7 +138,7 @@ export default function formPromise() {
                                     {errors.total && <Text style={baseStyles.errorText}>{errors.total}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={baseStyles.label}>Payment Amount</Text>
+                                    <Text style={baseStyles.label17}>Payment Amount</Text>
                                     <TextInput
                                         style={baseStyles.input}
                                         value={promise.amount_payments || ''}
@@ -150,7 +150,7 @@ export default function formPromise() {
                                     {errors.amount_payments && <Text style={baseStyles.errorText}>{errors.amount_payments}</Text>}
                                 </View>
                                 <View>
-                                    <Text style={baseStyles.label}>Payment Interval</Text>
+                                    <Text style={baseStyles.label17}>Payment Interval</Text>
                                     {promise.admin ? (
                                         <TextInput
                                             style={[baseStyles.input, baseStyles.disabledInput]}
@@ -178,7 +178,7 @@ export default function formPromise() {
                                     Financial Details
                                 </Text>
                                 <View style={{ marginBottom: 15 }}>
-                                    <Text style={baseStyles.label}>Interest (%)</Text>
+                                    <Text style={baseStyles.label17}>Interest (%)</Text>
                                     <TextInput
                                         style={baseStyles.input}
                                         value={promise.interest || ''} 
@@ -189,7 +189,7 @@ export default function formPromise() {
                                     />
                                 </View>
                                 <View style={{ marginBottom: 15 }}>
-                                    <Text style={baseStyles.label}>Total With Interest</Text>
+                                    <Text style={baseStyles.label17}>Total With Interest</Text>
                                     <TextInput
                                         style={[baseStyles.input, baseStyles.disabledInput]}
                                         value={(promise.total * percent_interest).toFixed(1) || ''}
@@ -197,7 +197,7 @@ export default function formPromise() {
                                 </View>
                                 {promise.total && percent_interest && promise.amount_payments && (
                                     <View>
-                                        <Text style={baseStyles.label}>Total Payments</Text>
+                                        <Text style={baseStyles.label17}>Total Payments</Text>
                                         <Text style={[baseStyles.input, baseStyles.disabledInput]}>
                                             {Math.ceil(promise.total * percent_interest / promise.amount_payments)}
                                         </Text>

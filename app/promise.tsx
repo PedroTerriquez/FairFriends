@@ -108,7 +108,7 @@ export default function Promise() {
                     </>
                 )}
             </View>
-            <View style={[baseStyles.viewRow, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
+            <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
                 {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
                 {promise.status == 'accepted' && !promise.admin && <TouchableOpacity
                     style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}

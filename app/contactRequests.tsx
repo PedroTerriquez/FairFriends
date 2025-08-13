@@ -7,6 +7,7 @@ import { useSession } from "@/services/authContext";
 import Person from '@/presentational/Person';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import { router } from "expo-router";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
@@ -64,17 +65,27 @@ export default function contactRequests() {
     }
   }
   
+  const showEmptyState = () => {
+    return (<EmptyList text={"No friendships pending"}>
+      <Text style={baseStyles.label17}>Start adding some {''}
+        <Pressable onPress={() => { router.push("/addContact") }}>
+          <Text style={baseStyles.link}>friends</Text>
+        </Pressable>
+      </Text>
+    </EmptyList>)
+  }
+  
   const renderRequests = (contacts, type) => {
-    if (contacts.length == 0) return EmptyList("No friendships pending")
+    if (contacts.length == 0) return showEmptyState();
 
     if (type == 'pending') {
       return renderPendingContacts(contacts)
     } else if (type == 'sent') {
-      return renderSentContacts(contacts)
+      return renderSentRequests(contacts)
     }
   }
 
-  const renderSentContacts = (contacts) => {
+  const renderSentRequests = (contacts) => {
     return contacts.map(contact => (
       <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
@@ -114,7 +125,7 @@ export default function contactRequests() {
 
   return (
     <ScrollView
-      style={baseStyles.viewContainerFull}
+      contentContainerStyle={baseStyles.viewContainerFull}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

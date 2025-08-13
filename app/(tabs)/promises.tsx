@@ -6,7 +6,7 @@ import { useSession } from "@/services/authContext";
 import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 export default function Promises() {
   const [receiving , setReceiving] = useState([])
@@ -32,7 +32,13 @@ export default function Promises() {
   }
   
   const renderPromises = (promises) => {
-    if (promises.length == 0) return EmptyList("No promises")
+    if (promises.length === 0) return (<EmptyList text="No promises">
+      <Text style={baseStyles.label17}>Try adding some promises to your {''}
+        <Pressable onPress={() => { router.push("/contacts") }}>
+          <Text style={[baseStyles.boldText, baseStyles.link]}>contacts</Text>
+        </Pressable>
+      </Text>
+    </EmptyList>)
 
     return promises.map(promise => (
       <PromiseCard
@@ -55,7 +61,7 @@ export default function Promises() {
   );
 
   return (
-    <ScrollView style={baseStyles.viewContainerFull} refreshControl={
+    <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
       <RefreshControl
         refreshing={refreshing}
         onRefresh={fetchPromises}

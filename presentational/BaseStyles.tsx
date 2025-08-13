@@ -20,10 +20,6 @@ const baseStyles = StyleSheet.create({
         justifyContent: "center",
         padding: 10,
     },
-    viewRow: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
     // General Alignments
     rowCenter: {
         flexDirection: "row",
@@ -61,7 +57,7 @@ const baseStyles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
     },
-    label: {
+    label17: {
         fontSize: 17,
         marginBottom: 5,
     },
@@ -102,6 +98,9 @@ const baseStyles = StyleSheet.create({
     orangeText: {
         color: "orange",
         fontWeight: "bold"
+    },
+    link: {
+        color: '#007bff',
     },
     // Backgrounds
     redBG: {

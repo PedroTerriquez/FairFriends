@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -36,14 +36,24 @@ export default function Contacts() {
     }
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return EmptyList("No friends");
-        if (friends.length == 0 && text !== "") return EmptyList("No contacts found");
+        if (friends.length == 0 && text === "") return (<EmptyList text={"No friends"}>
+            <Text style={baseStyles.label17}>Try adding some {''}
+                <Pressable onPress={() => { router.push("/addContact") }}>
+                    <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>friends</Text>
+                </Pressable>
+            </Text>
+            </EmptyList>
+        );
+        if (friends.length == 0 && text !== "") return (<EmptyList text={"No people found"}>
+            <Text style={baseStyles.label17}>Try searching for a different {''}
+                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]} onPress={() => { setText("") }}>name</Text>
+            </Text>
+        </EmptyList>)
 
         let fullList = [];
 
         Object.keys(friends).map((key) => {
             const friend = friends[key];
-            //fullList.push(<Text key={key} style={[baseStyles.boldText, baseStyles.label14, { marginLeft: 10}]}>{key}</Text>);
             fullList.push(
                 <Person
                     key={friend.id}
@@ -101,7 +111,7 @@ export default function Contacts() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
                 <ScrollView
-                    style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
+                    contentContainerStyle={baseStyles.viewContainerFull}
                     keyboardShouldPersistTaps="handled"
                     keyboardDismissMode="on-drag"
                     refreshControl={

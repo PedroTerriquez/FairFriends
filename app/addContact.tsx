@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '@/presentational/Person';
@@ -40,7 +40,13 @@ export default function addContact() {
     }
 
     const renderPeople = () => {
-        if (people.length == 0) return EmptyList("No contacts found")
+        if (people.length == 0) return (<EmptyList text={"No contacts found"}>
+            <Text style={baseStyles.label17}>Try looking different {''}
+                <Pressable onPress={() => { setText(""); }}>
+                    <Text style={[baseStyles.boldText, baseStyles.link]}>name</Text>
+                </Pressable>
+            </Text>
+        </EmptyList>)
 
         return people.map(friend => (
             <Person key={friend.id} person={friend}>
@@ -58,7 +64,7 @@ export default function addContact() {
 
     return (
         <ScrollView 
-            style={[baseStyles.viewContainerFull]} 
+            contentContainerStyle={[baseStyles.viewContainerFull]} 
             keyboardDismissMode="on-drag"
         >
             <View>

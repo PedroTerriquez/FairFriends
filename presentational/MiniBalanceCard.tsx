@@ -13,7 +13,7 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.viewRow, baseStyles.marginLeft5, {height: 0}]}
+      style={[baseStyles.card, baseStyles.rowCenter, baseStyles.marginLeft5, {height: 0}]}
       onPress={() => navigation.navigate("balance", { id })}
     >
       <View style={[baseStyles.rowCenter, { gap: 5 }]}>

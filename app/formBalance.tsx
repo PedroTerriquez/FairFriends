@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, Pressable } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../presentational/Person';
@@ -80,8 +80,13 @@ export default function Contacts() {
     };
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return EmptyList("No friends");
-        if (friends.length == 0 && text !== "") return EmptyList("No contacts found");
+        if (friends.length == 0 && text === "") return (<EmptyList text={"No friends"}>
+            <Text style={baseStyles.label17}>Try adding some {''}
+                <Pressable onPress={() => { router.push("/addContact") }}>
+                    <Text style={[baseStyles.boldText, baseStyles.link]}>friends</Text>
+                </Pressable>
+            </Text>
+        </EmptyList>);
 
         let fullList = [];
         fullList.push(
@@ -149,7 +154,7 @@ export default function Contacts() {
                 </View>)}
                 {step == 1 && (
                     <>
-                        <TouchableOpacity style={[baseStyles.button, baseStyles.viewRow]} onPress={() => setStep(0)}>
+                        <TouchableOpacity style={[baseStyles.button, baseStyles.rowCenter]} onPress={() => setStep(0)}>
                             <Ionicons name="arrow-back" size={20} color="black" style={{ marginLeft: 5 }} />
                             <Text style={[baseStyles.buttonText, baseStyles.textBlack, baseStyles.marginLeft5]}>Modify members</Text>
                         </TouchableOpacity>

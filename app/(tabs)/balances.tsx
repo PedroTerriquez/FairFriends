@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, TouchableOpacity } from "react-native";
+import { Pressable, RefreshControl, ScrollView, TouchableOpacity, Text } from "react-native";
 
 import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
@@ -30,7 +30,14 @@ export default function Balances() {
   }
   
   const renderBalances = () => {
-    if (balances.length == 0) return EmptyList("No balances")
+    if (balances.length == 0) return (<EmptyList text="No balances">
+      <Text style={baseStyles.label17}>Try adding some {''}
+        <Pressable onPress={() => { router.push("/formBalance") }}>
+          <Text style={[baseStyles.boldText, baseStyles.link]}>balances</Text>
+        </Pressable>
+      </Text>
+    </EmptyList>
+    )
 
     return balances.map(balance => (
       <BalanceCard
@@ -53,11 +60,8 @@ export default function Balances() {
 
   return (
     <>
-      <ScrollView style={baseStyles.viewContainerFull} refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={fetchBalances}
-        />
+      <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} />
       }>
         {renderBalances()}
       </ScrollView>
