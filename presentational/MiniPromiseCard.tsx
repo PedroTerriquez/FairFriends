@@ -1,20 +1,19 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import baseStyles from "./BaseStyles";
 import { getColorHex } from "@/services/getColorHex";
 import Avatar from "./Avatar";
 
 export default MiniPromiseCard = ({ id, name, paidAmount, total }) => {
-  const navigation = useNavigation();
   const percentage = (paidAmount / total * 100);
 
   return (
     <TouchableOpacity
       key={id}
       style={[baseStyles.card, baseStyles.rowCenter, baseStyles.marginLeft5, {height: 10}]}
-      onPress={() => navigation.navigate("balance", { id })}
+      onPress={() => router.push({pathname: 'promise', params: { id }})}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5}}>
         <Avatar name={name || '.'}></Avatar>

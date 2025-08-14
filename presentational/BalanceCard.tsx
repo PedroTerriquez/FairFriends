@@ -1,12 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
-import { useNavigation } from "expo-router";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons"; // Import MaterialIcons
+import { router } from "expo-router";
+import { AntDesign } from "@expo/vector-icons"; // Import MaterialIcons
 import baseStyles from "./BaseStyles";
 
 export default BalanceCard = ({ id, total, name, status, members, myTotal }) => {
-
   const getColorByIndex = (index) => {
     const professionalColors = [
       "#4F81BD", // Blue
@@ -31,7 +30,6 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
     legendFontSize: 11
   }));
 
-  const navigation = useNavigation();
   const membersWithMoney = members.map(member => ({
     name: member.name,
     money: member.money || 0
@@ -46,7 +44,7 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
   const difference = myTotal - avg;
 
   return (
-    <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => navigation.navigate("balance", { id })}>
+    <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => router.push({pathname: 'balance', params: { id }})}>
       <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
       <View style={[baseStyles.rowCenter, {paddingTop: 5}]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
@@ -61,12 +59,12 @@ export default BalanceCard = ({ id, total, name, status, members, myTotal }) => 
               style={{ marginLeft: 5 }}
             />
           </View>
-          <Text style={[baseStyles.smallLabel]}>Total: $<Text style={{ fontWeight: 'bold' }}>{total}</Text></Text>
+          <Text style={[baseStyles.smallLabel]}>Total: $<Text style={baseStyles.boldText}>{total}</Text></Text>
           <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { marginTop: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.lightRedBG, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
           </View>
         </View>
-        <View style={[baseStyles.viewContainerFullOnly, { flex: 3 }]}>
+        <View style={{ flex: 3.5 }}>
           <PieChart
             data={data}
             width={Dimensions.get("window").width - 180}

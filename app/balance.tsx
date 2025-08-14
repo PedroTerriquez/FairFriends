@@ -8,7 +8,7 @@ import baseStyles from '@/presentational/BaseStyles'
 import { useSession } from "@/services/authContext";
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
-import EmptyList from "@/presentational/EmptyList";
+import FloatingButton from "@/presentational/FloatingButton";
 
 export default function Balance() {
     const [payments, setPayments] = useState([]);
@@ -17,6 +17,7 @@ export default function Balance() {
     const { id } = useLocalSearchParams();
     const { session } = useSession();
     const router = useRouter();
+    const payable = balance && balance.status === 'active';
 
     const fetchBalance = async () => {
       if (!session) return;
@@ -76,9 +77,9 @@ export default function Balance() {
         /> }
         <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
           {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
-          {balance && balance.status != 'pending' && balance.status != 'close' && <TouchableOpacity
-            style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
-            onPress={() => {
+          {payable && <FloatingButton
+            icon="add"
+            action={() => {
               if (balance) {
                 router.push({
                   pathname: "/formPayment",
@@ -91,9 +92,7 @@ export default function Balance() {
                 });
               }
             }}
-          >
-            <Ionicons name="add" size={32} color="white" />
-          </TouchableOpacity>
+          />
           }
         </View>
         {renderPayments()}

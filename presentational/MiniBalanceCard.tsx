@@ -1,12 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import baseStyles from "./BaseStyles";
 import Avatar from "./Avatar";
 
 export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
-  const navigation = useNavigation();
   const avg = total / members;
   const difference = myTotal - avg;
 
@@ -14,7 +13,7 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
     <TouchableOpacity
       key={id}
       style={[baseStyles.card, baseStyles.rowCenter, baseStyles.marginLeft5, {height: 0}]}
-      onPress={() => navigation.navigate("balance", { id })}
+      onPress={() => router.push({pathname: 'balance', params: { id }})}
     >
       <View style={[baseStyles.rowCenter, { gap: 5 }]}>
         <Avatar name={name || '.'}></Avatar>

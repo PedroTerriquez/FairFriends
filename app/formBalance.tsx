@@ -9,6 +9,8 @@ import { useSession } from "@/services/authContext";
 import baseStyles from '../presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
 import PlaceholderPerson from "@/presentational/PlaceholderPerson";
+import SearchBarInput from "@/presentational/SearchBarInput";
+import FloatingButton from "@/presentational/FloatingButton";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
@@ -129,26 +131,10 @@ export default function Contacts() {
                         keyboardDismissMode="on-drag"
                         contentContainerStyle={{ flexGrow: 1 }}
                     >
-                        <View>
-                            <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
-                                <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
-                                <TextInput
-                                    style={{ flex: 1 }}
-                                    placeholder="Search"
-                                    placeholderTextColor="#666"
-                                    value={text}
-                                    onChangeText={(newText) => { setText(newText); }}
-                                    autoFocus={true}
-                                />
-                            </View>
-                        </View>
+                        <SearchBarInput text={text} setText={setText} />
                         {renderContacts(friends)}
                         {selectedFriends.length > 0 && (
-                            <TouchableOpacity
-                                style={[baseStyles.floatingButton, baseStyles.greenBG]}
-                                onPress={() => {setStep(1);}}>
-                                <MaterialIcons name="navigate-next" size={32} color="white" />
-                            </TouchableOpacity>
+                            <FloatingButton icon="navigate-next" action={() => {setStep(1);}} />
                         )}
                     </ScrollView>
                 </View>)}

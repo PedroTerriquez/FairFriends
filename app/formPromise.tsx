@@ -4,12 +4,11 @@ import { View, Text, TextInput, ScrollView, Pressable, TouchableWithoutFeedback,
 import { Picker } from "@react-native-picker/picker";
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
 
 export default function formPromise() {
     const { session } = useSession();
-    const navigation = useNavigation();
     const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
     const [promise, setPromise] = useState({
         title: '',

@@ -9,6 +9,7 @@ import { useSession } from "@/services/authContext";
 import Payment from '@/presentational/Payment';
 import PromiseCard from "@/presentational/PromiseCard";
 import { useToast } from "@/services/ToastContext";
+import FloatingButton from "@/presentational/FloatingButton";
 
 export default function Promise() {
     const [payments, setPayments] = useState([]);
@@ -17,6 +18,7 @@ export default function Promise() {
     const { id } = useLocalSearchParams();
     const { session } = useSession();
     const { showToast } = useToast();
+    const payable = promise && promise.status === 'accepted' && !promise.admin;
 
     const fetchPayments = async () => {
         console.log("Fetching payments...");
@@ -110,9 +112,9 @@ export default function Promise() {
             </View>
             <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
                 {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
-                {promise.status == 'accepted' && !promise.admin && <TouchableOpacity
-                    style={[baseStyles.floatingButton, { backgroundColor: '#007AFF' }]}
-                    onPress={() => {
+                {payable && <FloatingButton
+                    icon="add"
+                    action={() => {
                         if (promise) {
                             router.push({
                                 pathname: "/formPayment",
@@ -127,8 +129,7 @@ export default function Promise() {
                         }
                     }}
                 >
-                    <Ionicons name="add" size={32} color="white" />
-                </TouchableOpacity>
+                </FloatingButton>
                 }
             </View>
             {renderPayments()}

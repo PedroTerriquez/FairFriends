@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { router, useNavigation } from "expo-router";
+import { View, Text, Pressable } from "react-native";
+import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
@@ -19,7 +19,6 @@ export default function Payment({
   status,
   title,
 }) {
-  const navigation = useNavigation();
   const { session } = useSession();
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
@@ -144,7 +143,7 @@ export default function Payment({
                   recipient_name: creatorName
                 }
               })}
-              onPress={() => navigation.navigate("formPayment", { payment_id: id, })}
+              onPress={() => { router.push({ pathname: "/formPayment", params: { payment_id: id }}) }}
             >
               <Text style={baseStyles.buttonText}>✎</Text>
             </Pressable>

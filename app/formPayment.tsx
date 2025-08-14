@@ -117,7 +117,7 @@ export default function addPayment() {
 
             {/* Amount Display Section */}
             <View style={{ flex: 1.5, justifyContent: 'center' }}>
-              <View style={[baseStyles.viewAsRowCenter, { alignItems: 'center' }]}>
+              <View style={[baseStyles.rowCenter, { alignItems: 'center', padding: 30 }]}>
                 <Text style={baseStyles.titleBold40}>$</Text>
                 <TextInput
                   placeholder="0"

@@ -7,6 +7,7 @@ import Person from '@/presentational/Person';
 import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
+import SearchBarInput from "@/presentational/SearchBarInput";
 
 export default function addContact() {
     const [people, setPeople] = useState([])
@@ -67,19 +68,7 @@ export default function addContact() {
             contentContainerStyle={[baseStyles.viewContainerFull]} 
             keyboardDismissMode="on-drag"
         >
-            <View>
-                <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
-                    <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
-                    <TextInput
-                        style={{ flex: 1 }}
-                        placeholder="Search"
-                        placeholderTextColor="#666"
-                        value={text}
-                        onChangeText={(newText) => { setText(newText); }}
-                        autoFocus={true}
-                    />
-                </View>
-            </View>
+            <SearchBarInput text={text} setText={setText} />
             {renderPeople()}
         </ScrollView>
     );

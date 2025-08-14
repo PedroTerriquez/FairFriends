@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";

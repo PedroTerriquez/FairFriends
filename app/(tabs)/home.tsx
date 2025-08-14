@@ -98,43 +98,45 @@ export default function Home() {
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      {balances.length > 0 && (<>
+      {balances.length > 0 && (<View style={{ flex: 1}}>
         <Pressable onPress={() => { router.push("/balances") }}>
           <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Balances</Text>
         </Pressable>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
           {renderMiniBalanceCards(balances)}
-        </ScrollView> </>
+        </ScrollView> </View>
       )}
-      {promises.length > 0 && (<>
+      {promises.length > 0 && (<View style={{ flex: 1}}>
         <Pressable onPress={() => { router.push("/promises") }}>
           <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Promises</Text>
         </Pressable>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
           {renderMiniPromiseCards(promises)}
-        </ScrollView></>
+        </ScrollView></View>
       )}
-      <View style={baseStyles.viewRowWithSpace}>
-        <Pressable
-          style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
-          onPress={() => setActiveTab("Promises")}
-        >
-          <Text style={activeTab === "Promises" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
-            Promises
-          </Text>
-        </Pressable>
-        <Pressable
-          style={activeTab === "Balances" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
-          onPress={() => setActiveTab("Balances")}
-        >
-          <Text style={activeTab === "Balances" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
-            Balances
-          </Text>
-        </Pressable>
+      <View style={{ flex: 3.5 }}>
+        <View style={[baseStyles.viewRowWithSpace]}>
+          <Pressable
+            style={activeTab === "Promises" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+            onPress={() => setActiveTab("Promises")}
+          >
+            <Text style={activeTab === "Promises" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+              Promises
+            </Text>
+          </Pressable>
+          <Pressable
+            style={activeTab === "Balances" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
+            onPress={() => setActiveTab("Balances")}
+          >
+            <Text style={activeTab === "Balances" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
+              Balances
+            </Text>
+          </Pressable>
+        </View>
+        <ScrollView contentContainerStyle={[baseStyles.viewContainerFull, { flex: 2 }]}>
+          {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+        </ScrollView>
       </View>
-      <ScrollView contentContainerStyle={[baseStyles.viewContainerFull]}>
-        {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
-      </ScrollView>
     </View>
   );
 }

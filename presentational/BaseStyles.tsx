@@ -7,41 +7,26 @@ const baseStyles = StyleSheet.create({
         backgroundColor: "white",
         paddingHorizontal: 5
     },
-    viewContainerFullOnly: {
-        flex: 1,
-    },
     viewRowWithSpace: {
         flexDirection: "row",
         justifyContent: "space-around",
         padding: 10,
-    },
-    viewAsRowCenter: {
-        flexDirection: "row",
-        justifyContent: "center",
-        padding: 10,
-    },
-    // General Alignments
-    rowCenter: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    rowRight: {
-        flexDirection: "row",
-        alignItems: "flex-end",
-    },
-    alignItemsCenter: {
-        alignItems: "center",
     },
     center: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
+    // General Alignments
+    rowCenter: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    alignItemsCenter: {
+        alignItems: "center",
+    },
     paddingVertical10: {
         paddingVertical: 10,
-    },
-    paddingTop10: {
-        paddingTop: 10,
     },
     // Label Sizes
     titleBold40: {
@@ -52,6 +37,10 @@ const baseStyles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         marginBottom: 20,
+    },
+    title17: {
+        fontSize: 17,
+        fontWeight: "bold",
     },
     title15: {
         fontSize: 15,
@@ -151,21 +140,7 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
         overflow: 'visible',
-        minHeight: 80,
-    },
-    cardAccepted: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#7ECC10",
-        shadowColor: "#7ECC10",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-    },
-    cardRejected: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#dc3545",
-        shadowColor: "#dc3545",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
+        minHeight: 50,
     },
     cardRead: {
         borderColor: "#0000002e",
@@ -188,11 +163,19 @@ const baseStyles = StyleSheet.create({
         shadowOpacity: 0.3, 
         shadowRadius: 8,
     },
-    cardNoBorder: {
-        backgroundColor: "white",
-        padding: 16,
-        borderRadius: 8,
-        elevation: 3,
+    cardAccepted: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "blue",
+        shadowColor: "blue",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+    cardRejected: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#dc3545",
+        shadowColor: "#dc3545",
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
     },
     cardContent: {
         flex: 1,
@@ -293,17 +276,6 @@ const baseStyles = StyleSheet.create({
         paddingHorizontal: 10,
         flexDirection: "row",
     },
-    floatingIconForCard: {
-        position: "absolute",
-        top: 10, 
-        right: 10,
-        width: 40,
-        height: 40,
-        alignItems: "center",
-        justifyContent: "center",
-        elevation: 5,
-        zIndex: 10,
-    },
     floatingButton: {
         position: "absolute",
         bottom: 10, 
@@ -322,9 +294,6 @@ const baseStyles = StyleSheet.create({
         zIndex: 10,
  
     },
-    searchBar: {
-        paddingHorizontal: 0,
-    },
     searchBarInput: {
         backgroundColor: "white",
         borderRadius: 15,
@@ -333,17 +302,6 @@ const baseStyles = StyleSheet.create({
         borderColor: "#ccc",
         padding: 10,
         marginVertical: 10,
-    },
-    searchBarCancelButton: {
-        flex: 1,
-        backgroundColor: "white",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 8,
-        height: 40,
-        marginLeft: 10,
-        borderWidth: 0.1,
-        borderColor: "#c1c1c1",
     },
     tabBarActive: {
         flex: 1,

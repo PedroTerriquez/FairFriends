@@ -17,7 +17,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         status === 'pending' ? baseStyles.cardPending : 
         status === 'close' ? baseStyles.cardClose :
         status === 'rejected' ? baseStyles.cardRejected :
-        status === 'accepted' ? null : null
+        status === 'accepted' ? baseStyles.cardAccepted : null
       ]}
     >
       {status == 'pending' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightOrangeBG]}>
