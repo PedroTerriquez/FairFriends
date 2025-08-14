@@ -7,26 +7,27 @@ import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import FloatingButton from "@/presentational/FloatingButton";
+import Spinner from "@/presentational/Spinner";
 
 export default function Balances() {
   const [balances, setBalances] = useState([])
   const { session } = useSession();
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchBalances = async () => {
+    setLoading(true);
     setRefreshing(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/balances`, session)
       .then((response) => {
-        console.log(response);
         setBalances(response.data);
       })
       .catch((error) => {
-        console.log(error);
       })
       .finally(() => {
         setRefreshing(false);
+        setLoading(false);
       });
   }
   
@@ -58,6 +59,8 @@ export default function Balances() {
       fetchBalances();
     }, [])
   );
+
+  if (loading) return <Spinner />;
 
   return (
     <>

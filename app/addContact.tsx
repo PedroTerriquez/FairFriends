@@ -8,20 +8,24 @@ import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
+import Spinner from "@/presentational/Spinner";
 
 export default function addContact() {
     const [people, setPeople] = useState([])
     const [text, setText] = useState("");
+    const [loading, setLoading] = useState(false);
     const { session } = useSession();
 
     const fetchPeople = async () => {
+        setLoading(true);
         axios.post(`${process.env.EXPO_PUBLIC_API}/user/find`, { search: text }, session)
             .then((response) => {
-                console.log(response)
                 setPeople(response.data)
             })
             .catch((error) => {
-                console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
             })
     }
     
@@ -62,6 +66,8 @@ export default function addContact() {
     useEffect(() => {
         fetchPeople();
     }, [text]);
+
+    if (loading) return <Spinner />;
 
     return (
         <ScrollView 

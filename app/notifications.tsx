@@ -6,19 +6,24 @@ import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
+import Spinner from "@/presentational/Spinner";
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { session } = useSession();
 
     const fetchNotifications = async () => {
+        setLoading(true);
         axios.get(`${process.env.EXPO_PUBLIC_API}/notifications`, session)
             .then((response) => {
                 setNotifications(response.data)
             })
             .catch((error) => {
-                console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
             })
     }
     
@@ -92,6 +97,8 @@ export default function Notifications() {
             fetchNotifications();
         }, [])
     );
+
+    if (loading) return <Spinner />;
 
     return (
         <ScrollView

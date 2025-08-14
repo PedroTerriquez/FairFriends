@@ -7,21 +7,25 @@ import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import Spinner from "@/presentational/Spinner";
 
 export default function Profile() {
   const [info, setInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const { session, signOut} = useSession();
   const { id } = useLocalSearchParams();
 
   const fetchProfile = async() => {
+    setLoading(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/user/${id || ''}`, session)
       .then((response) => {
-        console.log(response)
         setInfo(response.data)
       })
       .catch((error) => {
-        console.log(error);
       })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -32,6 +36,8 @@ export default function Profile() {
     signOut()
     router.replace("/");
   };
+
+  if (loading) return <Spinner />;
 
   if (!info) {
     return <Text>Loading...</Text>;

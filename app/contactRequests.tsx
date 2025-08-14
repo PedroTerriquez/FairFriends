@@ -8,16 +8,19 @@ import Person from '@/presentational/Person';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router } from "expo-router";
+import Spinner from "@/presentational/Spinner";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
   const [sent, setSent] = useState([]);
   const [activeTab, setActiveTab] = useState("Pending");
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { session } = useSession();
 
   const fetchRequests = async () => {
+    setLoading(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/friendships/requests`, session)
       .then((response) => {
         setPending(response.data.pending)
@@ -25,6 +28,9 @@ export default function contactRequests() {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       })
   }
 
@@ -122,6 +128,8 @@ export default function contactRequests() {
   useEffect(() => {
     fetchRequests();
   }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <ScrollView

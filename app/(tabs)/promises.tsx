@@ -7,6 +7,7 @@ import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
+import Spinner from "@/presentational/Spinner";
 
 export default function Promises() {
   const [receiving , setReceiving] = useState([])
@@ -14,20 +15,21 @@ export default function Promises() {
   const [activeTab, setActiveTab] = useState("Receiving");
   const { session } = useSession();
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchPromises = async () => {
+    setLoading(true);
     setRefreshing(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/promises`, session)
       .then((response) => {
-        console.log(response)
         setReceiving(response.data.my_promises)
         setPaying(response.data.owe_promises)
       })
       .catch((error) => {
-        console.log(error);
       })
       .finally(() => {
         setRefreshing(false);
+        setLoading(false);
       });
   }
   
@@ -60,6 +62,8 @@ export default function Promises() {
     }, [])
   );
 
+  if (loading) return <Spinner />;
+
   return (
     <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
       <RefreshControl
@@ -75,7 +79,6 @@ export default function Promises() {
           <Text style={activeTab === "Paying" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Paying</Text>
         </Pressable>
       </View>
-
       {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
     </ScrollView>
   );

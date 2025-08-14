@@ -9,6 +9,7 @@ import EmptyList from "@/presentational/EmptyList";
 import MiniBalanceCard from "@/presentational/MiniBalanceCard";
 import MiniPromiseCard from "@/presentational/MiniPromiseCard";
 import { router } from "expo-router";
+import Spinner from '../../presentational/Spinner';
 
 export default function Home() {
   const [balances, setBalances] = useState([])
@@ -16,10 +17,12 @@ export default function Home() {
   const [balancePayments, setBalancePayments] = useState([])
   const [promisePayments, setPromisePayments] = useState([])
   const [activeTab, setActiveTab] = useState("Promises");
+  const [loading, setLoading] = useState(false);
 
   const { session } = useSession();
 
   const fetchPayments = async () => {
+    setLoading(true);
     axios.get(`${process.env.EXPO_PUBLIC_API}/home`, session).then((response) => {
       setBalances(response.data.balances)
       setPromises(response.data.promises)
@@ -27,7 +30,9 @@ export default function Home() {
       setPromisePayments(response.data.promise_payments)
     }).catch((error) => {
         console.log(error);
-      })
+      }).finally(() => {
+        setLoading(false);
+      });
   }
 
   const showEmptyPayments = () => {
@@ -95,6 +100,8 @@ export default function Home() {
   useEffect(() => {
     fetchPayments();
   }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <View style={baseStyles.viewContainerFull}>

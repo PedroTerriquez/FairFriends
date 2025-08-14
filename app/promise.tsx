@@ -10,29 +10,32 @@ import Payment from '@/presentational/Payment';
 import PromiseCard from "@/presentational/PromiseCard";
 import { useToast } from "@/services/ToastContext";
 import FloatingButton from "@/presentational/FloatingButton";
+import Spinner from "@/presentational/Spinner";
 
 export default function Promise() {
     const [payments, setPayments] = useState([]);
     const [promise, setPromise] = useState(null);
-    const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
     const { session } = useSession();
     const { showToast } = useToast();
     const payable = promise && promise.status === 'accepted' && !promise.admin;
 
     const fetchPayments = async () => {
-        console.log("Fetching payments...");
-        setRefreshing(true); // Start refreshing
+        setLoading(true);
+        setRefreshing(true);
         axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${id}`, session)
             .then((response) => {
-                console.log(response);
                 setPayments(response.data.payments);
                 setPromise(response.data.promise);
             })
             .catch((error) => {
-                console.log(error);
             })
-            .finally(() => setRefreshing(false)); // Stop refreshing
+            .finally(() => {
+                setRefreshing(false);
+                setLoading(false);
+            });
     };
 
     const renderPayments = () => {
@@ -58,9 +61,11 @@ export default function Promise() {
     const acceptPromiseThroughNotification = (id) => {
         axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
             .then((response) => {
-                promise.status = 'accepted';
-                setPromise(promise);
-                showToast('Promise accepted');
+                if (response.status == 200) {
+                    promise.status = 'accepted';
+                    setPromise(promise);
+                    showToast('Promise accepted', 'success');
+                }
             });
     };
 
@@ -69,6 +74,8 @@ export default function Promise() {
             fetchPayments();
         }, [id])
     );
+
+    if (loading) return <Spinner />;
 
     return promise ? (
         <ScrollView

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
 import { useSession } from "@/services/authContext";
@@ -10,15 +10,18 @@ import baseStyles from '../../presentational/BaseStyles'
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
+import Spinner from "@/presentational/Spinner";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { session } = useSession();
 
     const fetchFriends = async () => {
         try {
+            setLoading(true);
             setRefreshing(true);
             const response = await axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session);
             setFriends(response.data);
@@ -26,6 +29,7 @@ export default function Contacts() {
             console.log(error);
         } finally {
             setRefreshing(false);
+            setLoading(false);
         }
     };
 
@@ -108,6 +112,8 @@ export default function Contacts() {
         }, [router, text])
     );
 
+    if (loading) return <Spinner />;
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -123,7 +129,6 @@ export default function Contacts() {
                     {renderContacts(friends)}
                 </ScrollView>
                 <FloatingButton icon="add" action={() => { router.push({ pathname: "/addContact", }) }} />
-
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

@@ -9,11 +9,13 @@ import { useSession } from "@/services/authContext";
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
 import FloatingButton from "@/presentational/FloatingButton";
+import Spinner from "@/presentational/Spinner";
 
 export default function Balance() {
     const [payments, setPayments] = useState([]);
     const [balance, setBalance] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
     const { session } = useSession();
     const router = useRouter();
@@ -23,6 +25,7 @@ export default function Balance() {
       if (!session) return;
       
       try {
+        setLoading(true);
         setRefreshing(true); 
         const response = await axios.get(`${process.env.EXPO_PUBLIC_API}/balances/${id}`, session);
         setPayments(response.data.payments);
@@ -31,6 +34,7 @@ export default function Balance() {
         console.log(error);
       } finally {
         setRefreshing(false);
+        setLoading(false);
       }
     };
 
@@ -60,21 +64,24 @@ export default function Balance() {
         }, [id])
     );
 
+    if (loading) return <Spinner />;
+
     return (
+      <>
       <ScrollView
         style={[baseStyles.viewContainerFull]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={fetchBalance} />
         }
       >
-        { balance && <BalanceCard
+        {balance && <BalanceCard
           id={balance.id}
           total={balance.total}
           name={balance.name}
           status={balance.status}
           members={balance.balance_members}
           myTotal={balance.my_total}
-        /> }
+        />}
         <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
           {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
           {payable && <FloatingButton
@@ -97,5 +104,6 @@ export default function Balance() {
         </View>
         {renderPayments()}
       </ScrollView>
+    </>
     )
 }
