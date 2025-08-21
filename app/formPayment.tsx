@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Dimensions, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { useSession } from '@/services/authContext';
 import baseStyles from '@/presentational/BaseStyles';
 import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
 import { useToast } from '@/services/ToastContext';
@@ -13,9 +12,7 @@ const { height } = Dimensions.get('window');
 
 export default function addPayment() {
   const router = useRouter();
-  const { session } = useSession();
   const params = useLocalSearchParams();
-  const { showToast } = useToast();
   
   const [showConcept, setShowConcept] = useState(false);
   const [concept, setConcept] = useState(params.title || '');
@@ -56,30 +53,22 @@ export default function addPayment() {
   };
 
   const handleSubmit = async () => {
-    if (!session) {
-      showToast('No session available');
-      return;
-    }
-
     try {
       if (params.payment_id) {
         await axios.patch(
           `${process.env.EXPO_PUBLIC_API}/payments/${params.payment_id}`,
           paymentUpdateValues(),
-          session
         );
         setModalVisible(true);
       } else {
         await axios.post(
           `${process.env.EXPO_PUBLIC_API}/payments/`,
           paymentCreationValues(),
-          session
         );
         setModalVisible(true);
       }
     } catch (error) {
       console.error('Error:', error);
-      showToast(error.response?.data?.message || 'An error occurred');
     }
   };
 

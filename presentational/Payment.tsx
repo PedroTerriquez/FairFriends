@@ -1,11 +1,10 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
-import { useSession } from "@/services/authContext";
+import { acceptPayment, rejectPayment } from "@/services/api";
 
 export default function Payment({
   id,
@@ -19,7 +18,6 @@ export default function Payment({
   status,
   title,
 }) {
-  const { session } = useSession();
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
 
@@ -65,40 +63,20 @@ export default function Payment({
   }
 
   const acceptPaymentButton = (id) => {
-    if (!session) {
-      console.error('No session available');
-      return;
-    }
-
     setPendingDecision(false)
-
-    axios.patch(
-      `${process.env.EXPO_PUBLIC_API}/payments/${id}/accept`,
-      { status: 'accepted' },
-      session
-    )
-    .then((response) => {
-      setMutableStatus('accepted')
-    })
-    .catch((error) => {
-      console.error('Error accepting payment:', error);
-    });
+    acceptPayment(id)
+      .then(() => {
+        setMutableStatus('accepted')
+      })
+      .catch((error) => {
+        console.error('Error accepting payment:', error);
+      });
   }
 
   const rejectPaymentButton = (id) => {
-    if (!session) {
-      console.error('No session available');
-      return;
-    }
-
     setPendingDecision(false)
-
-    axios.patch(
-      `${process.env.EXPO_PUBLIC_API}/payments/${id}/reject`,
-      { status: 'rejected' },
-      session
-    )
-      .then((response) => {
+    rejectPayment(id)
+      .then(() => {
         setMutableStatus('rejected')
       })
       .catch((error) => {

@@ -156,32 +156,24 @@ const baseStyles = StyleSheet.create({
         borderWidth: 1,
     },
     cardClose: {
-        borderWidth: 1,
-        borderColor: "#7ECC10",
         shadowColor: "#7ECC10",
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 3, height: 3 }
     },
     cardPending: {
-        borderWidth: 1,
-        borderColor: "#ffc107",
         shadowColor: "#ffc107",
-        shadowOpacity: 0.3, 
-        shadowRadius: 8,
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 3, height: 3 }
     },
     cardAccepted: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "blue",
-        shadowColor: "blue",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
+        shadowColor:  '#e6f3ff',
+        shadowOpacity: 1,
+        shadowOffset: { width: 3, height: 3 }
     },
     cardRejected: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#dc3545",
-        shadowColor: "#dc3545",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
+        shadowColor: "#ffe6e6",
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 3, height: 3 }
     },
     cardContent: {
         flex: 1,

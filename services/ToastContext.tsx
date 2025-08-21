@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import Toast from '@/presentational/Toast';
+import { registerToast } from "./toastService";
 
 const ToastContext = createContext();
 
@@ -8,8 +9,8 @@ export const ToastProvider = ({ children }) => {
   const [message, setMessage] = useState('');
   const [type, setType] = useState('error');
 
-  const showToast = (newMessage, newType = 'error') => {
-    setMessage(newMessage);
+  const showToast = (message, newType = 'error') => {
+    setMessage(message);
     setType(newType);
     setIsVisible(true);
   };
@@ -17,6 +18,10 @@ export const ToastProvider = ({ children }) => {
   const hideToast = () => {
     setIsVisible(false);
   };
+
+  useEffect(() => {
+    registerToast(showToast);
+  }, [showToast]);
 
   return (
     <ToastContext.Provider value={{ showToast }}>

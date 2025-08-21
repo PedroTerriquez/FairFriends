@@ -17,7 +17,7 @@ export default function Login() {
       showToast('Please fill in all fields');
       return;
     }
-    signIn(email, password, showToast);
+    signIn(email, password);
   };
 
   return (

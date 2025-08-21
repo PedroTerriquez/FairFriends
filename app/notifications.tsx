@@ -1,7 +1,6 @@
-import axios from "axios";
+import { getNotifications, patchNotification } from "@/services/api";
 import { useCallback, useState } from "react";
 import { Text, ScrollView, RefreshControl, Pressable } from "react-native";
-import { useSession } from "@/services/authContext";
 import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
@@ -12,11 +11,10 @@ export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { session } = useSession();
 
     const fetchNotifications = async () => {
         setLoading(true);
-        axios.get(`${process.env.EXPO_PUBLIC_API}/notifications`, session)
+        getNotifications()
             .then((response) => {
                 setNotifications(response.data)
             })
@@ -26,25 +24,23 @@ export default function Notifications() {
                 setLoading(false);
             })
     }
-    
     const acceptNotification = (id) => {
-        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
+        patchNotification(id, 'accepted')
             .then((response) => {
                 if (response.status === 200) { updateNotificationStatus(id, 'accepted') }
             })
     }
-
     const rejectNotification = (id) => {
-        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'rejected' }, session)
-            .then((response) => { if (response.status === 200) { updateNotificationStatus(id, 'rejected') } })
+        patchNotification(id, 'rejected')
+        .then((response) => {
+            if (response.status === 200) { updateNotificationStatus(id, 'rejected') }
+        })
     }
 
     const updateNotificationStatus = (id, status) => {
         setNotifications(prev =>
             prev.map(notification =>
-                notification.id === id
-                    ? { ...notification, status }
-                    : notification
+                notification.id === id ? { ...notification, status } : notification
             )
         );
     }

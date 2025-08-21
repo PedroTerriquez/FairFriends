@@ -1,14 +1,18 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
-import { useSession } from "@/services/authContext";
 import Person from '@/presentational/Person';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router } from "expo-router";
 import Spinner from "@/presentational/Spinner";
+import {
+  getContactRequests,
+  cancelFriendshipRequest,
+  rejectFriendshipRequest,
+  acceptFriendshipRequest
+} from "@/services/api";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
@@ -17,17 +21,14 @@ export default function contactRequests() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { session } = useSession();
-
   const fetchRequests = async () => {
     setLoading(true);
-    axios.get(`${process.env.EXPO_PUBLIC_API}/friendships/requests`, session)
+    getContactRequests()
       .then((response) => {
         setPending(response.data.pending)
         setSent(response.data.sent)
       })
       .catch((error) => {
-        console.log(error);
       })
       .finally(() => {
         setLoading(false);
@@ -35,7 +36,7 @@ export default function contactRequests() {
   }
 
   const cancelRequest = (friendship_id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/cancel`, {}, session)
+    cancelFriendshipRequest(friendship_id)
       .then((response) => {
         removeCard(friendship_id, 'sent')
       })
@@ -44,7 +45,7 @@ export default function contactRequests() {
   }
 
   const rejectRequest = (friendship_id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/reject`, {}, session)
+    rejectFriendshipRequest(friendship_id)
       .then((response) => {
         removeCard(friendship_id, 'pending')
       })
@@ -53,7 +54,7 @@ export default function contactRequests() {
   }
 
   const acceptRequest = (friendship_id) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/${friendship_id}/accept`, {}, session)
+    acceptFriendshipRequest(friendship_id)
       .then((response) => {
         removeCard(friendship_id, 'pending')
       })

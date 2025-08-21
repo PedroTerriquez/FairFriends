@@ -1,30 +1,25 @@
-import axios from "axios";
+import { createGroup, searchFriends } from "@/services/api";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, Pressable } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../presentational/Person';
-import { useSession } from "@/services/authContext";
 import baseStyles from '../presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
 import PlaceholderPerson from "@/presentational/PlaceholderPerson";
-import SearchBarInput from "@/presentational/SearchBarInput";
-import FloatingButton from "@/presentational/FloatingButton";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [selectedFriends, setSelectedFriends] = useState([]);
     const [selectedPlaceholders, setSelectedPlaceholders] = useState([]);
-    const { session } = useSession();
     const [step, setStep] = useState(0);
     const [groupName, setGroupName] = useState("");
 
     const fetchFriends = async () => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session)
+        searchFriends(text)
             .then((response) => {
-                console.log(response)
                 setFriends(response.data)
             })
             .catch((error) => {
@@ -67,9 +62,9 @@ export default function Contacts() {
         });
     }
 
-    const createGroup = () => {
+    const createGroupHandler = () => {
         const memberIds = selectedFriends;
-        axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: memberIds, name: groupName }, session)
+        createGroup(memberIds, groupName)
             .then((response) => {
                 router.push({
                     pathname: '/balance',
@@ -82,13 +77,8 @@ export default function Contacts() {
     };
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return (<EmptyList text={"No friends"}>
-            <Text style={baseStyles.label17}>Try adding some {''}
-                <Pressable onPress={() => { router.push("/addContact") }}>
-                    <Text style={[baseStyles.boldText, baseStyles.link]}>friends</Text>
-                </Pressable>
-            </Text>
-        </EmptyList>);
+        if (friends.length == 0 && text === "") return EmptyList("No friends");
+        if (friends.length == 0 && text !== "") return EmptyList("No contacts found");
 
         let fullList = [];
         fullList.push(
@@ -131,16 +121,32 @@ export default function Contacts() {
                         keyboardDismissMode="on-drag"
                         contentContainerStyle={{ flexGrow: 1 }}
                     >
-                        <SearchBarInput text={text} setText={setText} />
+                        <View>
+                            <View style={[baseStyles.searchBarInput, baseStyles.viewRowWithSpace]}>
+                                <Ionicons name="search" size={20} color="gray" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    style={{ flex: 1 }}
+                                    placeholder="Search"
+                                    placeholderTextColor="#666"
+                                    value={text}
+                                    onChangeText={(newText) => { setText(newText); }}
+                                    autoFocus={true}
+                                />
+                            </View>
+                        </View>
                         {renderContacts(friends)}
                         {selectedFriends.length > 0 && (
-                            <FloatingButton icon="navigate-next" action={() => {setStep(1);}} />
+                            <TouchableOpacity
+                                style={[baseStyles.floatingButton, baseStyles.greenBG]}
+                                onPress={() => {setStep(1);}}>
+                                <MaterialIcons name="navigate-next" size={32} color="white" />
+                            </TouchableOpacity>
                         )}
                     </ScrollView>
                 </View>)}
                 {step == 1 && (
                     <>
-                        <TouchableOpacity style={[baseStyles.button, baseStyles.rowCenter]} onPress={() => setStep(0)}>
+                        <TouchableOpacity style={[baseStyles.button, baseStyles.viewRow]} onPress={() => setStep(0)}>
                             <Ionicons name="arrow-back" size={20} color="black" style={{ marginLeft: 5 }} />
                             <Text style={[baseStyles.buttonText, baseStyles.textBlack, baseStyles.marginLeft5]}>Modify members</Text>
                         </TouchableOpacity>
@@ -164,7 +170,7 @@ export default function Contacts() {
                                     baseStyles.successBG,
                                     { padding: 15, alignItems: 'center', borderRadius: 10 }
                                 ]}
-                                onPress={createGroup}
+                                onPress={createGroupHandler}
                             >
                                 <Text style={[baseStyles.buttonText]}>Create Group</Text>
                             </TouchableOpacity>

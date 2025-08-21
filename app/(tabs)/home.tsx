@@ -1,14 +1,13 @@
-import axios from "axios";
+import { getHome } from "@/services/api";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
-import { useSession } from "@/services/authContext";
+import { router } from "expo-router";
 import Payment from '../../presentational/Payment';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import MiniBalanceCard from "@/presentational/MiniBalanceCard";
 import MiniPromiseCard from "@/presentational/MiniPromiseCard";
-import { router } from "expo-router";
 import Spinner from '../../presentational/Spinner';
 
 export default function Home() {
@@ -19,38 +18,36 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("Promises");
   const [loading, setLoading] = useState(false);
 
-  const { session } = useSession();
-
   const fetchPayments = async () => {
     setLoading(true);
-    axios.get(`${process.env.EXPO_PUBLIC_API}/home`, session).then((response) => {
-      setBalances(response.data.balances)
-      setPromises(response.data.promises)
-      setBalancePayments(response.data.balance_payments)
-      setPromisePayments(response.data.promise_payments)
-    }).catch((error) => {
-        console.log(error);
-      }).finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await getHome();
+      setBalances(response.data.balances);
+      setPromises(response.data.promises);
+      setBalancePayments(response.data.balance_payments);
+      setPromisePayments(response.data.promise_payments);
+    } catch {
+    }
+    finally {
+      setLoading(false);
+    }
   }
 
   const showEmptyPayments = () => {
-      return (<EmptyList text="No payments">
-        <>
-          <Text style={[baseStyles.label17]}>
-            Start a{' '}
-            <Pressable onPress={() => { router.push("/contacts") }}>
-              <Text style={baseStyles.link}>Promise</Text>
-            </Pressable>
-            {', or create a new '}
-            <Pressable onPress={() => { router.push("/formBalance") }}>
-              <Text style={baseStyles.link}>Balance</Text>
-            </Pressable>
-          </Text>
-        </>
-      </EmptyList>)
- 
+    return (
+      <EmptyList text="No payments">
+        <Text>
+          <Text style={[baseStyles.label17]}> Start a {''}</Text>
+          <Pressable onPress={() => { router.push("/contacts") }}>
+            <Text style={baseStyles.link}>Promise</Text>
+          </Pressable>
+        <Text> {', or create a new '} </Text>
+        <Pressable onPress={() => { router.push("/formBalance") }}>
+          <Text style={baseStyles.link}>Balance</Text>
+        </Pressable>
+        </Text>
+      </EmptyList>
+      )
   }
   
   const renderPayments = (payments) => {
@@ -73,6 +70,8 @@ export default function Home() {
   }
 
   const renderMiniBalanceCards = (balances) => {
+    if (balances.length === 0) return;
+
     return balances.map(balance => (
       <MiniBalanceCard
         key={balance.id}
@@ -86,6 +85,7 @@ export default function Home() {
   }
 
   const renderMiniPromiseCards = (promises) => {
+    if (promises.length === 0) return;
     return promises.map(promise => (
       <MiniPromiseCard
         key={promise.id}
@@ -105,21 +105,25 @@ export default function Home() {
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      {balances.length > 0 && (<View style={{ flex: 1}}>
-        <Pressable onPress={() => { router.push("/balances") }}>
-          <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Balances</Text>
-        </Pressable>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
-          {renderMiniBalanceCards(balances)}
-        </ScrollView> </View>
+      {balances.length > 0 && (
+        <View style={{ flex: 1 }}>
+          <Pressable onPress={() => { router.push("/balances") }}>
+            <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Balances</Text>
+          </Pressable>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+            {renderMiniBalanceCards(balances)}
+          </ScrollView>
+        </View>
       )}
-      {promises.length > 0 && (<View style={{ flex: 1}}>
-        <Pressable onPress={() => { router.push("/promises") }}>
-          <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Promises</Text>
-        </Pressable>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
-          {renderMiniPromiseCards(promises)}
-        </ScrollView></View>
+      {promises.length > 0 && (
+        <View style={{ flex: 1 }}>
+          <Pressable onPress={() => { router.push("/promises") }}>
+            <Text style={[baseStyles.label17, { fontWeight: 600 }]}>Promises</Text>
+          </Pressable>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+            {renderMiniPromiseCards(promises)}
+          </ScrollView>
+        </View>
       )}
       <View style={{ flex: 3.5 }}>
         <View style={[baseStyles.viewRowWithSpace]}>

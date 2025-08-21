@@ -1,8 +1,7 @@
-import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, TouchableOpacity, Text } from "react-native";
+import { getBalances } from "@/services/api";
+import { useCallback, useState } from "react";
+import { Pressable, RefreshControl, ScrollView, Text } from "react-native";
 
-import { useSession } from "@/services/authContext";
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
@@ -12,14 +11,13 @@ import Spinner from "@/presentational/Spinner";
 
 export default function Balances() {
   const [balances, setBalances] = useState([])
-  const { session } = useSession();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchBalances = async () => {
     setLoading(true);
     setRefreshing(true);
-    axios.get(`${process.env.EXPO_PUBLIC_API}/balances`, session)
+    getBalances()
       .then((response) => {
         setBalances(response.data);
       })

@@ -1,24 +1,22 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Pressable, ScrollView, Text, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import Person from '@/presentational/Person';
-import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import Spinner from "@/presentational/Spinner";
+import { findPeople, addFriend } from "@/services/api";
 
 export default function addContact() {
     const [people, setPeople] = useState([])
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
-    const { session } = useSession();
 
     const fetchPeople = async () => {
         setLoading(true);
-        axios.post(`${process.env.EXPO_PUBLIC_API}/user/find`, { search: text }, session)
+        findPeople(text)
             .then((response) => {
                 setPeople(response.data)
             })
@@ -30,12 +28,11 @@ export default function addContact() {
     }
     
     const onAdd = (id) => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/friendships`, { recipient_user_id: id }, session)
+        addFriend(id, session)
             .then((response) => {
                 removeCard(id)
             })
             .catch((error) => {
-                console.log(error)
             })
     }
 

@@ -1,14 +1,12 @@
-import axios from "axios";
+import { updatePromise, createPromise, getPromiseDetail } from "@/services/api";
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, ScrollView, Pressable, TouchableWithoutFeedback, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import { router, useLocalSearchParams } from "expo-router";
 import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
 
 export default function formPromise() {
-    const { session } = useSession();
     const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
     const [promise, setPromise] = useState({
         title: '',
@@ -34,7 +32,7 @@ export default function formPromise() {
 
     const fetchPromiseData = () => {
         if (paymentable_id == undefined) return;
-        axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${paymentable_id}`, session)
+        getPromiseDetail(paymentable_id)
             .then((response) => {
                 setPromise(response.data.promise)
             })
@@ -45,30 +43,18 @@ export default function formPromise() {
 
     const handleSave = () => {
         if (paymentable_id) {
-            updatePromise(paymentable_id);
+            updatePromise(paymentable_id, promise)
+                .then((response) => {
+                    router.push({pathname:'/promise', params: { id: paymentable_id } })
+                })
+                .catch((error) => {});
         } else {
-            createPromise();
+            createPromise(promise)
+                .then((response) => {
+                    router.push({pathname:'/promise', params: { id: response.data.id } })
+                })
+                .catch((error) => {});
         }
-    }
-
-    const updatePromise = (id) => {
-        axios.patch(`${process.env.EXPO_PUBLIC_API}/promises/${id}`, promise, session)
-            .then((response) => {
-                router.push({pathname:'/promise', params: { id } })
-            })
-            .catch((error) => {
-            })
-    }
-
-    const createPromise = () => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/promises`, promise, session)
-            .then((response) => {
-                debugger;
-                router.push({pathname:'/promise', params: { id: response.data.id } })
-            })
-            .catch((error) => {
-                console.log(error);
-            })
     }
 
     const validateStep1 = () => {

@@ -21,7 +21,7 @@ export default function SignUp() {
       showToast('Passwords do not match');
       return;
     }
-    signUp(firstName, lastName, email, password, confirmPassword, showToast);
+    signUp(firstName, lastName, email, password, confirmPassword);
   };
 
   return (

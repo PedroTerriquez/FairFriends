@@ -1,23 +1,21 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { useSession } from "@/services/authContext";
 import baseStyles from "@/presentational/BaseStyles";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import Spinner from "@/presentational/Spinner";
+import { getProfile, createBalance } from "@/services/api";
 
 export default function Profile() {
   const [info, setInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const { session, signOut} = useSession();
   const { id } = useLocalSearchParams();
 
   const fetchProfile = async() => {
     setLoading(true);
-    axios.get(`${process.env.EXPO_PUBLIC_API}/user/${id || ''}`, session)
+    getProfile(id)
       .then((response) => {
         setInfo(response.data)
       })
@@ -75,7 +73,7 @@ export default function Profile() {
             <TouchableOpacity
               style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
               onPress={() => {
-                axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
+                createBalance([id], undefined)
                   .then((response) => {
                     router.push({
                       pathname: '/balance',

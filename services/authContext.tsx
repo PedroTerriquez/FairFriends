@@ -1,23 +1,10 @@
 import { router } from 'expo-router';
-import { useState, useContext, createContext, type PropsWithChildren, useEffect } from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
 import { getToken, saveToken, deleteToken } from './useStorage';
-import axios from 'axios';
+import { login, signup } from "@/services/api";
+import { registerSessionHandler } from './sessionGlobalSingleton';
 
-type Session = {
-  token: string | null;
-  headers: {
-    Authorization?: string;
-  };
-};
-
-type AuthContextType = {
-  signIn: (email: string, password: string, showToast: (message: string, type?: string) => void) => void;
-  signUp: (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, showToast: (message: string, type?: string) => void) => void;
-  signOut: () => void;
-  session: Session | null;
-};
-
-const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext({
   signIn: () => null,
   signUp: () => null,
   signOut: () => null,
@@ -36,11 +23,11 @@ export function useSession() {
   return value;
 }
 
-export function SessionProvider({ children }: PropsWithChildren) {
-  const [session, setSession] = useState<Session | null>(null);
+export function SessionProvider({ children }) {
+  const [session, setSession] = useState(null);
 
-  const signIn = (email: string, password: string, showToast: (message: string, type?: string) => void) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/login`, { email, password })
+  const signIn = (email, password, showToast) => {
+    login(email, password)
       .then((response) => {
         const token = response.data.auth_token;
         saveToken(token).then(() => {
@@ -58,8 +45,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
       });
   };
 
-  const signUp = (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, showToast: (message: string, type?: string) => void) => {
-    axios.post(`${process.env.EXPO_PUBLIC_API}/users`, { first_name, last_name, email, password, password_confirmation })
+  const signUp = (first_name, last_name, email, password, password_confirmation, showToast) => {
+    signup(first_name, last_name, email, password, password_confirmation)
       .then((response) => {
         const token = response.data.auth_token;
         saveToken(token).then(() => {
@@ -77,10 +64,19 @@ export function SessionProvider({ children }: PropsWithChildren) {
       });
   };
 
+  const getJWT = () => {
+    return session;
+  }
+
   const signOut = () => {
     deleteToken();
     setSession(null);
   };
+
+  useEffect(() => {
+    registerSessionHandler(getJWT);
+  }, [getJWT]);
+
 
   useEffect(() => {
     const fetchToken = async () => {

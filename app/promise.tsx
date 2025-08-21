@@ -1,16 +1,13 @@
-import axios from "axios";
 import { useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Pressable, RefreshControl } from "react-native";
+import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles';
-import { useSession } from "@/services/authContext";
 import Payment from '@/presentational/Payment';
 import PromiseCard from "@/presentational/PromiseCard";
-import { useToast } from "@/services/ToastContext";
 import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
+import { getPromiseDetail, patchNotification } from "@/services/api";
 
 export default function Promise() {
     const [payments, setPayments] = useState([]);
@@ -18,14 +15,12 @@ export default function Promise() {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
-    const { session } = useSession();
-    const { showToast } = useToast();
     const payable = promise && promise.status === 'accepted' && !promise.admin;
 
     const fetchPayments = async () => {
         setLoading(true);
         setRefreshing(true);
-        axios.get(`${process.env.EXPO_PUBLIC_API}/promises/${id}`, session)
+        getPromiseDetail(id)
             .then((response) => {
                 setPayments(response.data.payments);
                 setPromise(response.data.promise);
@@ -59,12 +54,11 @@ export default function Promise() {
     };
 
     const acceptPromiseThroughNotification = (id) => {
-        axios.patch(`${process.env.EXPO_PUBLIC_API}/notifications/${id}`, { status: 'accepted' }, session)
+        patchNotification(id, 'accepted')
             .then((response) => {
                 if (response.status == 200) {
                     promise.status = 'accepted';
                     setPromise(promise);
-                    showToast('Promise accepted', 'success');
                 }
             });
     };
@@ -80,10 +74,7 @@ export default function Promise() {
     return promise ? (
         <ScrollView
             style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={fetchPayments} />
-            }
-        >
+            refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchPayments} /> } >
             <View>
                 <PromiseCard
                     id={promise.id}

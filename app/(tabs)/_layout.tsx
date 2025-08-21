@@ -14,13 +14,8 @@ export default function AppLayout() {
     return <Redirect href="/login" />;
   }
 
-  //TODO: Probably remove bottom margin I added here
   return (
-    <Tabs
-      screenOptions={{
-        tabBarStyle: { marginBottom: 10 }
-      }}
-    >
+    <Tabs>
       <Tabs.Screen
         name="home"
         options={{

@@ -1,36 +1,35 @@
-import axios from "axios";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
-import { useSession } from "@/services/authContext";
 import baseStyles from '../../presentational/BaseStyles'
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
+import { findFriends, createBalance } from "@/services/api";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { session } = useSession();
 
     const fetchFriends = async () => {
-        try {
-            setLoading(true);
-            setRefreshing(true);
-            const response = await axios.post(`${process.env.EXPO_PUBLIC_API}/friendships/find`, { search: text }, session);
-            setFriends(response.data);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setRefreshing(false);
-            setLoading(false);
-        }
+        setLoading(true);
+        setRefreshing(true);
+        findFriends(text)
+            .then((response) => {
+                setFriends(response.data);
+            })
+            .catch((error) => {
+            })
+            .finally(() => {
+                setRefreshing(false);
+                setLoading(false);
+            });
     };
 
     const navigateProfile = (id) => {
@@ -95,7 +94,7 @@ export default function Contacts() {
     }
 
     const startBalance = (id) => {
-        axios.post(`${process.env.EXPO_PUBLIC_API}/balances/`, { members: [id] }, session)
+        createBalance([id], undefined)
             .then((response) => {
                 router.push({
                     pathname: '/balance',

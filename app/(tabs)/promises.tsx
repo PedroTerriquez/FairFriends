@@ -1,8 +1,7 @@
-import axios from "axios";
+import { getPromises } from "@/services/api";
 import { useCallback, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
-import { useSession } from "@/services/authContext";
 import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
@@ -13,14 +12,13 @@ export default function Promises() {
   const [receiving , setReceiving] = useState([])
   const [paying, setPaying] = useState([])
   const [activeTab, setActiveTab] = useState("Receiving");
-  const { session } = useSession();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchPromises = async () => {
     setLoading(true);
     setRefreshing(true);
-    axios.get(`${process.env.EXPO_PUBLIC_API}/promises`, session)
+    getPromises()
       .then((response) => {
         setReceiving(response.data.my_promises)
         setPaying(response.data.owe_promises)

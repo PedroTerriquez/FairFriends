@@ -1,15 +1,14 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Text, RefreshControl, NativeModules } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles' 
-import { useSession } from "@/services/authContext";
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
 import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
+import { getBalanceDetail } from "@/services/api";
 
 export default function Balance() {
     const [payments, setPayments] = useState([]);
@@ -17,25 +16,23 @@ export default function Balance() {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
-    const { session } = useSession();
     const router = useRouter();
     const payable = balance && balance.status === 'active';
 
     const fetchBalance = async () => {
-      if (!session) return;
-      
-      try {
-        setLoading(true);
-        setRefreshing(true); 
-        const response = await axios.get(`${process.env.EXPO_PUBLIC_API}/balances/${id}`, session);
-        setPayments(response.data.payments);
-        setBalance(response.data.balance);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setRefreshing(false);
-        setLoading(false);
-      }
+      setLoading(true);
+      setRefreshing(true); 
+      getBalanceDetail(id)
+        .then((response) => {
+          setPayments(response.data.payments);
+          setBalance(response.data.balance);
+        })
+        .catch((error) => {
+        })
+        .finally(() => {
+          setRefreshing(false);
+          setLoading(false);
+        });
     };
 
     const renderPayments = () => {
