@@ -1,9 +1,8 @@
-import { View, Text, ScrollView } from "react-native";
+import { Text, ScrollView } from "react-native";
 import baseStyles from "./BaseStyles";
 import React from "react";
 
-
-export default function EmptyList({text, children}) {
+export default function EmptyList({ text, children }) {
     return (
         <ScrollView contentContainerStyle={[{ flex: 1 }, baseStyles.viewContainerFull, baseStyles.center]}>
             <Text style={baseStyles.title24}>{text}</Text>

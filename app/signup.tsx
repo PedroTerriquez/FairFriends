@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '../services/authContext';
 import { useToast } from '@/services/ToastContext';
+import baseStyles from "@/presentational/BaseStyles";
 
 export default function SignUp() {
   const { signUp } = useSession();
@@ -30,17 +31,17 @@ export default function SignUp() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={styles.container}>
-          <View style={styles.logoContainer}>
+        <View style={baseStyles.viewContainerFull}>
+          <View style={baseStyles.center}>
             <Ionicons name="people" size={80} color="#2F66FF" />
-            <Text style={styles.appName}>FairFriends</Text>
-            <Text style={styles.tagline}>Split expenses with friends</Text>
+            <Text style={[baseStyles.title32, baseStyles.blueLogo]}>FairFriends</Text>
+            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>Split expenses with friends</Text>
           </View>
 
-          <View style={styles.signupContainer}>
-            <View style={styles.inputContainer}>
+          <View style={baseStyles.center}>
+            <View style={baseStyles.fullWidth}>
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="First Name"
                 placeholderTextColor="#666"
                 value={firstName}
@@ -48,7 +49,7 @@ export default function SignUp() {
                 autoCapitalize="words"
               />
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="Last Name"
                 placeholderTextColor="#666"
                 value={lastName}
@@ -56,7 +57,7 @@ export default function SignUp() {
                 autoCapitalize="words"
               />
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="Email"
                 placeholderTextColor="#666"
                 value={email}
@@ -66,7 +67,7 @@ export default function SignUp() {
                 autoComplete="email"
               />
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="Password"
                 placeholderTextColor="#666"
                 value={password}
@@ -75,7 +76,7 @@ export default function SignUp() {
                 autoComplete="password-new"
               />
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="Confirm Password"
                 placeholderTextColor="#666"
                 value={confirmPassword}
@@ -83,21 +84,21 @@ export default function SignUp() {
                 secureTextEntry
                 autoComplete="password-new"
               />
-              {error && <Text style={styles.errorText}>{error}</Text>}
+              {error && <Text style={baseStyles.errorText}>{error}</Text>}
             </View>
             <TouchableOpacity 
-              style={styles.signupButton}
+              style={baseStyles.loginButton}
               onPress={handleSignUp}
             >
               <Ionicons name="person-add" size={24} color="white" />
-              <Text style={styles.signupButtonText}>Sign Up</Text>
+              <Text style={[baseStyles.textWhite, baseStyles.title17]}>Sign Up</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account?</Text>
+          <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
+            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>Already have an account?</Text>
             <TouchableOpacity onPress={() => router.push('/login')}>
-              <Text style={styles.loginLink}>Login</Text>
+              <Text style={[baseStyles.link, baseStyles.boldText]}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -105,81 +106,3 @@ export default function SignUp() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#2F66FF',
-    marginTop: 20,
-  },
-  tagline: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
-  },
-  signupContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputContainer: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  signupButton: {
-    flexDirection: 'row',
-    backgroundColor: '#2F66FF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  signupButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  footer: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  footerText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  loginLink: {
-    color: '#2F66FF',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  errorText: {
-    color: 'red'
-  }
-  
-});

@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import baseStyles from './BaseStyles';
 
 export default function CustomHeader() {
   const router = useRouter();
@@ -16,38 +17,34 @@ export default function CustomHeader() {
 
   // TODO: Probably remove extra padding to the top of the header
   return (
-    <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-      <View style={styles.headerContent}>
-        <View style={styles.leftSection}>
+    <View style={[baseStyles.header, { paddingTop: insets.top + 10 }]}>
+      <View style={baseStyles.headerContent}>
+        <View style={baseStyles.leftSection}>
           {canGoBack && (
             <TouchableOpacity 
-              style={styles.iconButton}
               onPress={() => router.back()}
             >
               <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
           )}
         </View>
-        <View style={styles.centerSection}>
+        <View style={baseStyles.center}>
           <TouchableOpacity  onPress={() => router.push('/home')}>
-            <Text style={styles.title}>FairFriends</Text>
+            <Text style={baseStyles.title17}>FairFriends</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.rightSection}>
+        <View style={baseStyles.rightSection}>
           <TouchableOpacity 
-            style={styles.iconButton}
             onPressIn={() => router.push('/profile')}
           >
             <MaterialIcons name="account-circle" size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.iconButton}
             onPressIn={() => router.push('/notifications')}
           >
             <Ionicons name="notifications" size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.iconButton}
             onPressIn={() => router.push('/contactRequests')}
           >
             <Ionicons name="person-add" size={24} color="black" />
@@ -57,39 +54,3 @@ export default function CustomHeader() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: 'white',
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-  },
-  leftSection: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  centerSection: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  rightSection: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  iconButton: {
-    marginHorizontal: 5,
-  },
-}); 

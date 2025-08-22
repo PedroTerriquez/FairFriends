@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
+import AcceptButton, { RejectButton } from "./acceptButton";
 
 export default function NotificationCard({
   id,
@@ -15,8 +16,7 @@ export default function NotificationCard({
   amount,
   status,
   creatorName,
-  acceptNotification,
-  rejectNotification,
+  updateStatus,
 }) {
   const [pendingDecision, setPendingDecision] = useState(false)
   const [decisionDone, setDecisionDone] = useState(false)
@@ -75,22 +75,14 @@ export default function NotificationCard({
           </Pressable> }
           {pendingDecision && !decisionDone && (
             <View style={baseStyles.rowCenter}>
-              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}
-                onPress={() => {
-                  acceptNotification(id);
-                  setDecisionDone(true);
-                }}
-              >
-                <Text style={baseStyles.buttonText}>✔</Text>
-              </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]}
-                onPress={() => {
-                  rejectNotification(id);
-                  setDecisionDone(true);
-                }}
-              >
-                <Text style={baseStyles.buttonText}>✖</Text>
-              </Pressable>
+              <AcceptButton onPressAction={() => {
+                updateStatus(id, 'accepted');
+                setDecisionDone(true);
+              }} />
+              <RejectButton onPressAction={() => {
+                updateStatus(id, 'rejected');
+                setDecisionDone(true);
+              }} />
             </View>
           )}
         </View>

@@ -8,6 +8,7 @@ import PromiseCard from "@/presentational/PromiseCard";
 import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
 import { getPromiseDetail, patchNotification } from "@/services/api";
+import EmptyList from "@/presentational/EmptyList";
 
 export default function Promise() {
     const [payments, setPayments] = useState([]);
@@ -15,7 +16,6 @@ export default function Promise() {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
-    const payable = promise && promise.status === 'accepted' && !promise.admin;
 
     const fetchPayments = async () => {
         setLoading(true);
@@ -32,9 +32,36 @@ export default function Promise() {
                 setLoading(false);
             });
     };
+    const renderPaymentsHeader = () => {
+        return (
+            <>
+                <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
+                    <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>
+                    {promise && promise.status === 'accepted' && !promise.admin && <FloatingButton
+                        icon="add"
+                        action={() => {
+                            if (promise) {
+                                router.push({
+                                    pathname: "/formPayment",
+                                    params: {
+                                        paymentable_id: id,
+                                        type: 'Promise',
+                                        recipient_name: promise.admin_name,
+                                        recipient_id: promise.administrator_id,
+                                        amount_payments: promise.amount_payments
+                                    }
+                                });
+                            }
+                        }}
+                    >
+                    </FloatingButton>
+                    }
+                </View>
+            </>)
+    }
 
     const renderPayments = () => {
-        if (payments.length == 0) return;
+        if (payments.length === 0) return <EmptyList text="No payments yet" ><Text>Start adding a new payment</Text></EmptyList>;
 
         return payments.map(payment => (
             <Payment
@@ -57,8 +84,7 @@ export default function Promise() {
         patchNotification(id, 'accepted')
             .then((response) => {
                 if (response.status == 200) {
-                    promise.status = 'accepted';
-                    setPromise(promise);
+                    setPromise({ ...promise, status: 'accepted' });
                 }
             });
     };
@@ -70,11 +96,12 @@ export default function Promise() {
     );
 
     if (loading) return <Spinner />;
+    if (!loading && !promise) return (<EmptyList text="No promise found">{null}</EmptyList>)
 
-    return promise ? (
+    return (
         <ScrollView
-            style={[baseStyles.viewContainerFull, { backgroundColor: "white" }]}
-            refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchPayments} /> } >
+            contentContainerStyle={baseStyles.viewContainerFull}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPayments} />} >
             <View>
                 <PromiseCard
                     id={promise.id}
@@ -91,8 +118,9 @@ export default function Promise() {
                             style={[baseStyles.button, baseStyles.warningBG, { marginTop: 10 }]}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
-                                    id,
-                                    mine: promise.admin
+                                    paymentable_id: id,
+                                    administrator_name: promise.admin_name,
+                                    administrator_id: promise.administrator_id,
                                 }
                             })}
                         >
@@ -108,29 +136,8 @@ export default function Promise() {
                     </>
                 )}
             </View>
-            <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
-                {payments.length > 0 && <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>}
-                {payable && <FloatingButton
-                    icon="add"
-                    action={() => {
-                        if (promise) {
-                            router.push({
-                                pathname: "/formPayment",
-                                params: {
-                                    paymentable_id: id,
-                                    type: 'Promise',
-                                    recipient_name: promise.admin_name,
-                                    recipient_id: promise.administrator_id,
-                                    amount_payments: promise.amount_payments
-                                }
-                            });
-                        }
-                    }}
-                >
-                </FloatingButton>
-                }
-            </View>
+            {promise.status !== 'pending' && renderPaymentsHeader()}
             {renderPayments()}
         </ScrollView>
-    ) : <></>;
+        )
 }

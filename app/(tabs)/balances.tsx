@@ -28,16 +28,19 @@ export default function Balances() {
         setLoading(false);
       });
   }
-  
-  const renderBalances = () => {
-    if (balances.length == 0) return (<EmptyList text="No balances">
+
+  const emptyList = (
+    <EmptyList text="No balances">
       <Text style={baseStyles.label17}>Try adding some {''}
         <Pressable onPress={() => { router.push("/formBalance") }}>
           <Text style={[baseStyles.boldText, baseStyles.link]}>balances</Text>
         </Pressable>
       </Text>
     </EmptyList>
-    )
+  )
+  
+  const renderBalances = () => {
+    if (balances.length == 0) return emptyList
 
     return balances.map(balance => (
       <BalanceCard

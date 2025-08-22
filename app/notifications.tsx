@@ -24,29 +24,22 @@ export default function Notifications() {
                 setLoading(false);
             })
     }
-    const acceptNotification = (id) => {
-        patchNotification(id, 'accepted')
+
+    const updateStatus = (id, status) => {
+        patchNotification(id, status)
             .then((response) => {
-                if (response.status === 200) { updateNotificationStatus(id, 'accepted') }
+                if (response.status === 200) {
+                    setNotifications(prev =>
+                        prev.map(notification =>
+                            notification.id === id ? { ...notification, status } : notification
+                        )
+                    );
+                }
             })
     }
-    const rejectNotification = (id) => {
-        patchNotification(id, 'rejected')
-        .then((response) => {
-            if (response.status === 200) { updateNotificationStatus(id, 'rejected') }
-        })
-    }
 
-    const updateNotificationStatus = (id, status) => {
-        setNotifications(prev =>
-            prev.map(notification =>
-                notification.id === id ? { ...notification, status } : notification
-            )
-        );
-    }
-
-    const showEmptyState = () => {
-        return (<EmptyList text={"No notifications yet"}>
+    const emptyList =
+        <EmptyList text={"No notifications yet"}>
             <>
                 <Text style={baseStyles.label17}>Start by adding your first {''}
                     <Pressable onPress={() => { router.push("/addContact") }}>
@@ -59,11 +52,10 @@ export default function Notifications() {
                     </Pressable>
                 </Text>
             </>
-        </EmptyList>)
-    }
+        </EmptyList>
 
     const renderNotifications = () => {
-        if (notifications.length === 0) return showEmptyState();
+        if (notifications.length === 0) return emptyList;
 
         return notifications.map(notification => (
             <NotificationCard
@@ -77,8 +69,7 @@ export default function Notifications() {
                 amount={notification.amount}
                 status={notification.status}
                 creatorName={notification.sender_name}
-                acceptNotification={acceptNotification}
-                rejectNotification={rejectNotification}
+                updateStatus={updateStatus}
             />
         ))
     }

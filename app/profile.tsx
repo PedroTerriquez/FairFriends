@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
+import { useSession } from "@/services/authContext";
 
 import baseStyles from "@/presentational/BaseStyles";
 import { FontAwesome } from "@expo/vector-icons";
@@ -12,6 +13,7 @@ export default function Profile() {
   const [info, setInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { id } = useLocalSearchParams();
+  const { signOut } = useSession();
 
   const fetchProfile = async() => {
     setLoading(true);

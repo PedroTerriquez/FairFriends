@@ -1,4 +1,4 @@
-const origError = console.error;
+/* const origError = console.error;
 console.error = function (...args) {
   if (
     typeof args[0] === 'string' &&
@@ -8,6 +8,7 @@ console.error = function (...args) {
   }
   origError.apply(console, args);
 };
+*/
 
 import { Redirect, Stack } from 'expo-router';
 import { useSession } from '../services/authContext';

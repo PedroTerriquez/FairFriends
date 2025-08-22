@@ -30,15 +30,17 @@ export default function Promises() {
         setLoading(false);
       });
   }
+
+  const emptyPromises = <EmptyList text="No promises">
+    <Text style={baseStyles.label17}>Try adding some promises to your {''}
+      <Pressable onPress={() => { router.push("/contacts") }}>
+        <Text style={[baseStyles.boldText, baseStyles.link]}>contacts</Text>
+      </Pressable>
+    </Text>
+  </EmptyList>
   
   const renderPromises = (promises) => {
-    if (promises.length === 0) return (<EmptyList text="No promises">
-      <Text style={baseStyles.label17}>Try adding some promises to your {''}
-        <Pressable onPress={() => { router.push("/contacts") }}>
-          <Text style={[baseStyles.boldText, baseStyles.link]}>contacts</Text>
-        </Pressable>
-      </Text>
-    </EmptyList>)
+    if (promises.length === 0) return emptyPromises;
 
     return promises.map(promise => (
       <PromiseCard
@@ -64,10 +66,7 @@ export default function Promises() {
 
   return (
     <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
-      <RefreshControl
-        refreshing={refreshing}
-        onRefresh={fetchPromises}
-      />
+      <RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />
     }>
       <View style={ baseStyles.viewRowWithSpace}>
         <Pressable onPress={() => setActiveTab("Receiving")} style={activeTab === "Receiving" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>

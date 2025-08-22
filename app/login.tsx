@@ -4,6 +4,7 @@ import { useSession } from '../services/authContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useToast } from "@/services/ToastContext";
+import baseStyles from "@/presentational/BaseStyles";
 
 export default function Login() {
   const { signIn } = useSession();
@@ -26,11 +27,11 @@ export default function Login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <View style={styles.logoContainer}>
+        <View style={baseStyles.viewContainerFull}>
+          <View style={[baseStyles.center, { marginTop: 100 }]}>
             <Ionicons name="people" size={80} color="#2F66FF" />
-            <Text style={styles.appName}>FairFriends</Text>
-            <Text style={styles.tagline}>Split expenses with friends</Text>
+            <Text style={[baseStyles.title32, baseStyles.blueLogo]}>FairFriends</Text>
+            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>Split expenses with friends</Text>
             {process.env.NODE_ENV === 'development' && (
               <Button
                 title="Change user"
@@ -41,10 +42,10 @@ export default function Login() {
             )}
           </View>
 
-          <View style={styles.loginContainer}>
-            <View style={styles.inputContainer}>
+          <View style={baseStyles.center}>
+            <View style={baseStyles.fullWidth}>
               <TextInput
-                style={styles.input}
+                style={baseStyles.input}
                 placeholder="Email"
                 placeholderTextColor="#666"
                 value={email}
@@ -54,7 +55,7 @@ export default function Login() {
                 autoComplete="email"
               />
               <TextInput
-                style={styles.input}
+                style={baseStyles.grayInput}
                 placeholder="Password"
                 placeholderTextColor="#666"
                 value={password}
@@ -64,18 +65,18 @@ export default function Login() {
               />
             </View>
             <TouchableOpacity
-              style={styles.loginButton}
+              style={baseStyles.loginButton}
               onPress={handleLogin}
             >
               <Ionicons name="log-in" size={24} color="white" />
-              <Text style={styles.loginButtonText}>Login</Text>
+              <Text style={[baseStyles.textWhite, baseStyles.title17]}>Login</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't have an account?</Text>
+          <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
+            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>Don't have an account?</Text>
             <TouchableOpacity onPress={() => router.push('/signup')}>
-              <Text style={styles.signupLink}>Sign Up</Text>
+              <Text style={[baseStyles.link, baseStyles.boldText]}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -83,78 +84,3 @@ export default function Login() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 100,
-  },
-  appName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#2F66FF',
-    marginTop: 20,
-  },
-  tagline: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
-  },
-  loginContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputContainer: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  loginButton: {
-    flexDirection: 'row',
-    backgroundColor: '#2F66FF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  loginButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  footer: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  footerText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  signupLink: {
-    color: '#2F66FF',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-});

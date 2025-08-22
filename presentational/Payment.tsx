@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { router } from "expo-router";
-import { Ionicons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
 import { acceptPayment, rejectPayment } from "@/services/api";
+import AcceptButton, { EditButton, PendingButton, RejectButton } from "./acceptButton";
 
 export default function Payment({
   id,
@@ -85,64 +85,32 @@ export default function Payment({
   }
 
   const renderStatusSection = () => {
-    return (
-      <>
+    if (pendingDecision) {
+      return (
+        <View style={baseStyles.rowCenter}>
+          <AcceptButton onPressAction={() => acceptPaymentButton(id)} />
+          <RejectButton onPressAction={() => rejectPaymentButton(id)} />
+        </View>)
+    } else if (pending && !pendingDecision) {
+      return <PendingButton onPressAction={() => setPendingDecision(true)} />
+    } else if (editable) {
+      return (<EditButton onPressAction={() => router.push({
+        pathname: "/formPayment", params:
         {
-          pendingDecision && (
-            <View style={baseStyles.rowCenter}>
-              <Pressable style={[baseStyles.circleButton, baseStyles.successBG]} onPress={() => acceptPaymentButton(id)}>
-                <Ionicons name="checkmark" size={20} color="white" />
-              </Pressable>
-              <Pressable style={[baseStyles.circleButton, baseStyles.dangerBG, baseStyles.marginLeft5]} onPress={() => rejectPaymentButton(id)}>
-                <Ionicons name="close" size={20} color="white" />
-              </Pressable>
-            </View>
-          )
+          payment_id: id,
+          recipient_name: creatorName,
+          amount: amount,
+          title: title,
+          type: paymentableType,
+          paymentableId: paymentableId,
         }
-        {
-          pending && !pendingDecision && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.warningBG]} onPress={() => setPendingDecision(true)}>
-              <Ionicons name="warning" size={20} color="white" />
-            </Pressable>
-          )
-        }
-        {
-          editable && (
-            <Pressable
-              style={[baseStyles.circleButton, baseStyles.warningBG]}
-              onPressIn={() => router.push({
-                pathname: "/formPayment",
-                params: {
-                  payment_id: id,
-                  paymentable_id: paymentableId,
-                  type: paymentableType,
-                  title: title,
-                  amount: amount,
-                  recipient_name: creatorName
-                }
-              })}
-              onPress={() => { router.push({ pathname: "/formPayment", params: { payment_id: id }}) }}
-            >
-              <Text style={baseStyles.buttonText}>✎</Text>
-            </Pressable>
-          )
-        }
-        {
-          accepted && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.successBG]}>
-              <Ionicons name="checkmark" size={20} color="white" />
-            </Pressable>
-          )
-        }
-        {
-          rejected && (
-            <Pressable style={[baseStyles.circleButton, baseStyles.redBG]}>
-              <Ionicons name="close" size={20} color="white" />
-            </Pressable>
-          )
-        }
-      </>
-    )};
+      })} />)
+    } else if (accepted) {
+      return <AcceptButton onPressAction={null} />
+    } else if (rejected) {
+      return <RejectButton onPressAction={null} />
+    }
+  };
 
   return (
     <Pressable

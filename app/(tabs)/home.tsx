@@ -33,25 +33,22 @@ export default function Home() {
     }
   }
 
-  const showEmptyPayments = () => {
-    return (
-      <EmptyList text="No payments">
-        <Text>
-          <Text style={[baseStyles.label17]}> Start a {''}</Text>
-          <Pressable onPress={() => { router.push("/contacts") }}>
-            <Text style={baseStyles.link}>Promise</Text>
-          </Pressable>
+  const emptyPayments =
+    <EmptyList text="No payments">
+      <Text>
+        <Text style={[baseStyles.label17]}> Start a {''}</Text>
+        <Pressable onPress={() => { router.push("/contacts") }}>
+          <Text style={baseStyles.link}>Promise</Text>
+        </Pressable>
         <Text> {', or create a new '} </Text>
         <Pressable onPress={() => { router.push("/formBalance") }}>
           <Text style={baseStyles.link}>Balance</Text>
         </Pressable>
-        </Text>
-      </EmptyList>
-      )
-  }
-  
+      </Text>
+    </EmptyList>;
+
   const renderPayments = (payments) => {
-    if (payments.length === 0) return showEmptyPayments();
+    if (payments.length === 0) return emptyPayments;
 
     return payments.map(payment => (
       <Payment

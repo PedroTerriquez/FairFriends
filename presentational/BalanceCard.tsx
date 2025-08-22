@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons"; // Import MaterialIcons
 import baseStyles from "./BaseStyles";
 
-export default BalanceCard = ({ id, total, name, status, members, myTotal }) => {
+export default BalanceCard = ({ id, total, name, members, myTotal }) => {
   const getColorByIndex = (index) => {
     const professionalColors = [
       "#4F81BD", // Blue

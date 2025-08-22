@@ -12,6 +12,9 @@ const baseStyles = StyleSheet.create({
         justifyContent: "space-around",
         padding: 10,
     },
+    fullWidth: {
+        width: '100%',
+    },
     center: {
         flex: 1,
         justifyContent: "center",
@@ -22,6 +25,16 @@ const baseStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(255,255,255,0.5)", // Optional: semi-transparent overlay
+    },
+    leftSection: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+    },
+    rightSection: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
     },
     // General Alignments
     rowCenter: {
@@ -38,6 +51,11 @@ const baseStyles = StyleSheet.create({
     titleBold40: {
         fontSize: 40,
         fontWeight: "bold",
+    },
+    title32: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginTop: 20,
     },
     title24: {
         fontSize: 24,
@@ -95,7 +113,7 @@ const baseStyles = StyleSheet.create({
         fontWeight: "bold"
     },
     link: {
-        color: '#007bff',
+        color: '#2F66FF',
     },
     // Backgrounds
     redBG: {
@@ -127,6 +145,12 @@ const baseStyles = StyleSheet.create({
     },
     lightOrangeBG: {
         backgroundColor: "#fffcf4",
+    },
+    blueLogo: {
+        color: '#2F66FF',
+    },
+    graySubtitle: {
+        color: '#666',
     },
     // Card Styles
     card: {
@@ -214,6 +238,19 @@ const baseStyles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 5,
     },
+    loginButton: {
+        flexDirection: 'row',
+        backgroundColor: '#2F66FF',
+        paddingHorizontal: 30,
+        paddingVertical: 15,
+        borderRadius: 25,
+        alignItems: 'center',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
     saveButton: {
         backgroundColor: "#3e8c41",
     },
@@ -253,6 +290,14 @@ const baseStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderRadius: 8,
         padding: 14,
+        fontSize: 16,
+        marginVertical: 10,
+    },
+    grayInput: {
+        backgroundColor: '#f5f5f5',
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 15,
         fontSize: 16,
     },
     picker: {
@@ -342,6 +387,47 @@ const baseStyles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    // Payment Screen Styles---
+    money: {
+        fontSize: 70,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        color: '#000000',
+        width: '70%',
+    },
+    keypadRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 8, 
+    },
+    keypadButton: {
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderRadius: 35,
+        margin: 8,
+    },
+    keypadText: {
+        fontSize: 32,
+        color: '#000000',
+    },
+
+    // Header
+    header: {
+        backgroundColor: 'white',
+        paddingBottom: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    headerContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
     },
 });
 

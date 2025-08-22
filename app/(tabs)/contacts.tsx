@@ -39,20 +39,24 @@ export default function Contacts() {
         });
     }
 
+    const emptyFriend = <EmptyList text={"No friends"}>
+        <Text style={baseStyles.label17}>Try adding some {''}
+            <Pressable onPress={() => { router.push("/addContact") }}>
+                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>friends</Text>
+            </Pressable>
+        </Text>
+    </EmptyList>
+
+    const noPeopleFound = <EmptyList text={"No people found"}>
+        <Text style={baseStyles.label17}>Try searching for a different {''}
+            <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]} onPress={() => { setText("") }}>name</Text>
+        </Text>
+    </EmptyList>;
+
+
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return (<EmptyList text={"No friends"}>
-            <Text style={baseStyles.label17}>Try adding some {''}
-                <Pressable onPress={() => { router.push("/addContact") }}>
-                    <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>friends</Text>
-                </Pressable>
-            </Text>
-            </EmptyList>
-        );
-        if (friends.length == 0 && text !== "") return (<EmptyList text={"No people found"}>
-            <Text style={baseStyles.label17}>Try searching for a different {''}
-                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]} onPress={() => { setText("") }}>name</Text>
-            </Text>
-        </EmptyList>)
+        if (friends.length == 0 && text === "") return emptyFriend;
+        if (friends.length == 0 && text !== "") return noPeopleFound;
 
         let fullList = [];
 

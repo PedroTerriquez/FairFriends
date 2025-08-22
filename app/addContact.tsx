@@ -28,8 +28,8 @@ export default function addContact() {
     }
     
     const onAdd = (id) => {
-        addFriend(id, session)
-            .then((response) => {
+        addFriend(id)
+            .then(() => {
                 removeCard(id)
             })
             .catch((error) => {
@@ -41,15 +41,17 @@ export default function addContact() {
         setPeople(newPeople)
     }
 
-    const renderPeople = () => {
-        if (people.length == 0) return (<EmptyList text={"No contacts found"}>
-            <Text style={baseStyles.label17}>Try looking different {''}
-                <Pressable onPress={() => { setText(""); }}>
-                    <Text style={[baseStyles.boldText, baseStyles.link]}>name</Text>
-                </Pressable>
-            </Text>
-        </EmptyList>)
+    const noContacts = <EmptyList text={"No contacts found"}>
+        <Text style={baseStyles.label17}>Try looking different {''}
+            <Pressable onPress={() => { setText(""); }}>
+                <Text style={[baseStyles.boldText, baseStyles.link]}>name</Text>
+            </Pressable>
+        </Text>
+    </EmptyList>
 
+
+    const renderPeople = () => {
+        if (people.length == 0) return noContacts;
         return people.map(friend => (
             <Person key={friend.id} person={friend}>
                 { friend.id && (
@@ -67,10 +69,7 @@ export default function addContact() {
     if (loading) return <Spinner />;
 
     return (
-        <ScrollView 
-            contentContainerStyle={[baseStyles.viewContainerFull]} 
-            keyboardDismissMode="on-drag"
-        >
+        <ScrollView contentContainerStyle={[baseStyles.viewContainerFull]} keyboardDismissMode="on-drag" >
             <SearchBarInput text={text} setText={setText} />
             {renderPeople()}
         </ScrollView>

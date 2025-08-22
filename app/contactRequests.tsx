@@ -13,6 +13,7 @@ import {
   rejectFriendshipRequest,
   acceptFriendshipRequest
 } from "@/services/api";
+import AcceptButton, { RejectButton } from "@/presentational/acceptButton";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
@@ -72,19 +73,7 @@ export default function contactRequests() {
     }
   }
   
-  const showEmptyState = () => {
-    return (<EmptyList text={"No friendships pending"}>
-      <Text style={baseStyles.label17}>Start adding some {''}
-        <Pressable onPress={() => { router.push("/addContact") }}>
-          <Text style={baseStyles.link}>friends</Text>
-        </Pressable>
-      </Text>
-    </EmptyList>)
-  }
-  
   const renderRequests = (contacts, type) => {
-    if (contacts.length == 0) return showEmptyState();
-
     if (type == 'pending') {
       return renderPendingContacts(contacts)
     } else if (type == 'sent') {
@@ -92,29 +81,44 @@ export default function contactRequests() {
     }
   }
 
+  const emptySentRequests = <EmptyList text={"No friendship requests sent"}>
+    <Text style={baseStyles.label17}>Start adding some {''}
+      <Pressable onPress={() => { router.push("/addContact") }}>
+        <Text style={baseStyles.link}>friends</Text>
+      </Pressable>
+    </Text>
+  </EmptyList>;
+
   const renderSentRequests = (contacts) => {
+    if (contacts.length == 0) return emptySentRequests;
+
     return contacts.map(contact => (
       <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
-          <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => cancelRequest(contact.friendship_id)}>
-            <MaterialCommunityIcons name="cancel" size={24} color="white" />
-          </TouchableOpacity>
+          <RejectButton onPressAction={() => cancelRequest(contact.friendship_id)}></RejectButton>
         )}
       </Person>
     ))
   }
+  
+  const emptyPendingFriendships =
+    <EmptyList text={"No friendships pending"}>
+      <Text style={baseStyles.label17}>Start adding some {''}
+        <Pressable onPress={() => { router.push("/addContact") }}>
+          <Text style={baseStyles.link}>friends</Text>
+        </Pressable>
+      </Text>
+    </EmptyList>;
 
   const renderPendingContacts = (contacts) => {
+    if (contacts.length == 0) return emptyPendingFriendships;
+
     return contacts.map(contact => (
       <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
           <View style={baseStyles.rowCenter}>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.redBG]} onPress={() => rejectRequest(contact.friendship_id)}>
-                <MaterialIcons name="close" size={24} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity style={[baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft]} onPress={() => acceptRequest(contact.friendship_id)}>
-                <MaterialIcons name="check" size={24} color="white" />
-              </TouchableOpacity>
+              <RejectButton onPressAction={rejectRequest.bind(this, contact.friendship_id)}></RejectButton>
+              <AcceptButton onPressAction={acceptRequest.bind(this, contact.friendship_id)}></AcceptButton>
             </View>
           )}
           </Person>

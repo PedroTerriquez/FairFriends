@@ -3,6 +3,7 @@ import { useState, useContext, createContext, useEffect } from 'react';
 import { getToken, saveToken, deleteToken } from './useStorage';
 import { login, signup } from "@/services/api";
 import { registerSessionHandler } from './sessionGlobalSingleton';
+import { toast } from "./toastService";
 
 const AuthContext = createContext({
   signIn: () => null,
@@ -26,7 +27,7 @@ export function useSession() {
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(null);
 
-  const signIn = (email, password, showToast) => {
+  const signIn = (email, password) => {
     login(email, password)
       .then((response) => {
         const token = response.data.auth_token;
@@ -35,17 +36,17 @@ export function SessionProvider({ children }) {
             token,
             headers: { Authorization: `Bearer ${token}` }
           });
-          showToast('Login successful', 'success');
+          toast('Login successful', 'success');
           router.replace("/(tabs)/home");
         });
       })
       .catch((error) => {
         console.log(error);
-        showToast(error.response?.data?.message || 'Login failed. Please check your credentials.');
+        toast(error.response?.data?.message || 'Login failed. Please check your credentials.');
       });
   };
 
-  const signUp = (first_name, last_name, email, password, password_confirmation, showToast) => {
+  const signUp = (first_name, last_name, email, password, password_confirmation) => {
     signup(first_name, last_name, email, password, password_confirmation)
       .then((response) => {
         const token = response.data.auth_token;
@@ -54,13 +55,13 @@ export function SessionProvider({ children }) {
             token,
             headers: { Authorization: `Bearer ${token}` }
           });
-          showToast('Account created successfully', 'success');
+          toast('Account created successfully', 'success');
           router.replace("/(tabs)/home");
         });
       })
       .catch((error) => {
         console.log(error);
-        showToast(error.response?.data?.message || 'Signup failed. Please try again.');
+        toast(error.response?.data?.message || 'Signup failed. Please try again.');
       });
   };
 

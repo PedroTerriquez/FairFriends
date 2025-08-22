@@ -9,7 +9,7 @@ export default function AvatarInfoHeader({user = '?', text}) {
         <Text style={[baseStyles.title15]}>
           {text}
         </Text>
-        <Text style={[baseStyles.email]}>{user}</Text>
+        <Text style={[baseStyles.graySubtitle]}>{user}</Text>
       </View>
     )
 }   
