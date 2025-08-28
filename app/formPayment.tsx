@@ -54,7 +54,7 @@ function SuccessModal({ visible, onClose, onBack }) {
       <View style={baseStyles.modalContainer}>
         <View style={baseStyles.modalContent}>
           <Feather name="check-circle" size={120} color="#4CAF50" />
-          <Text style={[baseStyles.title24, { marginBottom: 100 }]}>Payment Successful</Text>
+          <Text style={[baseStyles.title24, { marginBottom: 50 }]}>Payment Successful</Text>
           <TouchableOpacity
             style={[baseStyles.circleButton, baseStyles.saveButton, { width: 60, height: 60, borderRadius: 50 }]}
             onPress={onBack}

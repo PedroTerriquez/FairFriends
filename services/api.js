@@ -41,6 +41,9 @@ export const getBalances = () =>
 export const getBalanceDetail = (id) =>
   apiCall(instance.get(`/balances/${id}`));
 
+export const getBalanceInfo = (id) =>
+  apiCall(instance.get(`/balances/${id}/info`));
+
 export const createBalance = (members, name) =>
   apiCall(instance.post("/balances/", { members, name }));
 
