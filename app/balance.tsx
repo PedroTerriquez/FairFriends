@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, View, Text, RefreshControl, NativeModules, Modal } from "react-native";
+import { ScrollView, View, Text, RefreshControl } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 
 import baseStyles from '@/presentational/BaseStyles'
@@ -47,6 +47,26 @@ export default function Balance() {
       });
   };
 
+  const members = () => {
+    return JSON.stringify(balance.balance_members.map(member => {
+      return {
+        id: member.id,
+        name: member.name,
+      };
+    }));
+  }
+
+  const formPaymentParams = () => {
+    return {
+      paymentable_id: id,
+      type: 'Balance',
+      recipient_name: balance.name,
+      recipient_id: balance.id,
+      members: members(),
+      admin: balance.admin
+    }
+  }
+
   const renderPaymentsHeader = () => {
     return (
       <>
@@ -59,12 +79,7 @@ export default function Balance() {
             if (balance) {
               router.push({
                 pathname: "/formPayment",
-                params: {
-                  paymentable_id: id,
-                  type: 'Balance',
-                  recipient_name: balance.name,
-                  recipient_id: balance.id,
-                }
+                params: formPaymentParams()
               });
             }
           }}
@@ -77,12 +92,7 @@ export default function Balance() {
               if (balance) {
                 router.push({
                   pathname: "/formPayment",
-                  params: {
-                    paymentable_id: id,
-                    type: 'Balance',
-                    recipient_name: balance.name,
-                    recipient_id: balance.id,
-                  }
+                  params: formPaymentParams()
                 });
               }
             }}

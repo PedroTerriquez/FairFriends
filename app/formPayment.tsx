@@ -1,14 +1,12 @@
-import axios from 'axios';
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Dimensions, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import baseStyles from '@/presentational/BaseStyles';
 import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
-
-const { height } = Dimensions.get('window');
+import { Picker } from '@react-native-picker/picker';
 
 function Keypad({ onKeyPress, onSubmit, submitLabel }) {
   return (
@@ -43,7 +41,7 @@ function Keypad({ onKeyPress, onSubmit, submitLabel }) {
   );
 }
 
-function SuccessModal({ visible, onClose, onBack }) {
+function SuccessModal({ visible, total, onClose, onBack }) {
   return (
     <Modal
       visible={visible}
@@ -53,8 +51,9 @@ function SuccessModal({ visible, onClose, onBack }) {
     >
       <View style={baseStyles.modalContainer}>
         <View style={baseStyles.modalContent}>
-          <Feather name="check-circle" size={120} color="#4CAF50" />
+          <Feather name="check-circle" size={120} style={{ marginTop: 50 }} color="#4CAF50" />
           <Text style={[baseStyles.title24, { marginBottom: 50 }]}>Payment Successful</Text>
+          <Text style={[baseStyles.titleBold40, { marginBottom: 50 }]}>${total}</Text>
           <TouchableOpacity
             style={[baseStyles.circleButton, baseStyles.saveButton, { width: 60, height: 60, borderRadius: 50 }]}
             onPress={onBack}
@@ -78,6 +77,7 @@ export default function addPayment() {
     return params.amount.replace(/[$,]/g, '') || '0';
   });
   const [isModalVisible, setModalVisible] = useState(false);
+  const [creatorId, setCreatorId] = useState(params.members[0]?.id);
 
   const handleAmountChange = (text) => {
     setAmount(text);
@@ -98,6 +98,7 @@ export default function addPayment() {
       paymentable_id: params.paymentable_id,
       paymentable_type: params.type,
       recipient_id: params.recipient_id,
+      creator_id: creatorId
     };
   };
 
@@ -106,6 +107,7 @@ export default function addPayment() {
       id: params.payment_id,
       title: concept,
       amount: parseFloat(amount),
+      creator_id: creatorId
     };
   };
 
@@ -133,14 +135,13 @@ export default function addPayment() {
               <View style={[baseStyles.alignItemsCenter, { marginVertical: 20 }]}>
                 <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
               </View>
-              <View style={{ paddingHorizontal: 40 }}>
+              <View style={[baseStyles.alignItemsCenter, { paddingHorizontal: 40 }]}>
                 {!showConcept && <TouchableOpacity
-                  style={[baseStyles.button, baseStyles.normalButton, { marginBottom: 10 }]}
+                  style={[baseStyles.button, baseStyles.normalButton, { marginBottom: 5 }]}
                   onPress={() => setShowConcept(!showConcept)}
                 >
                   <Text style={baseStyles.buttonText}>Add concept</Text>
                 </TouchableOpacity>}
-
                 {showConcept && (
                   <View>
                     <TextInput
@@ -152,6 +153,23 @@ export default function addPayment() {
                     />
                   </View>
                 )}
+
+                {params.members && (
+                  <View>
+                    <Text>By</Text>
+                    <Picker
+                      selectedValue={creatorId}
+                      onValueChange={(member_id) => setCreatorId(member_id)}
+                      style={[baseStyles.picker, { height: 50, width: '100%' }]}
+                      itemStyle={{ color: 'black' }} >
+                      {JSON.parse(params.members).map(member => (
+                        <Picker.Item key={member.id} label={member.name} value={member.id} />
+                      ))}
+                    </Picker>
+
+                  </View>
+                )}
+
               </View>
             </View>
 
@@ -185,6 +203,7 @@ export default function addPayment() {
       {/* Success Modal */}
       <SuccessModal
         visible={isModalVisible}
+        total={amount}
         onClose={() => setModalVisible(false)}
         onBack={() => router.back()}
       />

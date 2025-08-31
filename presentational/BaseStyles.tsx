@@ -224,7 +224,7 @@ const baseStyles = StyleSheet.create({
         marginTop: 20,
     },
     button: {
-        padding: 12,
+        padding: 10,
         borderRadius: 8,
         alignItems: "center",
         marginHorizontal: 5,
@@ -377,11 +377,11 @@ const baseStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
     modalContent: {
         width: '80%',
-        height: '50%',
+        height: '60%',
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
