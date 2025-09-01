@@ -1,10 +1,11 @@
 import { updatePromise, createPromise, getPromiseDetail } from "@/services/api";
-import { useEffect, useState } from "react";
-import { View, Text, TextInput, ScrollView, Pressable, TouchableWithoutFeedback, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import baseStyles from "@/presentational/BaseStyles";
 import { router, useLocalSearchParams } from "expo-router";
 import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
+import InputWithLabel from "@/presentational/InputWithLabel";
 
 export default function formPromise() {
     const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
@@ -22,6 +23,7 @@ export default function formPromise() {
     const [errors, setErrors] = useState({});
     const adminEditable = paymentable_id && promise.admin;
     const ownerEditable = paymentable_id == undefined || (paymentable_id && !promise.admin);
+    const scrollRef = useRef(null);
 
     const handleChange = (field, value) => {
         setPromise((prevPromise) => ({
@@ -42,6 +44,7 @@ export default function formPromise() {
     }
 
     const handleSave = () => {
+        if (!validateForm()) return;
         if (paymentable_id) {
             updatePromise(paymentable_id, promise)
                 .then((response) => {
@@ -57,28 +60,29 @@ export default function formPromise() {
         }
     }
 
-    const validateStep1 = () => {
+    const validateForm = () => {
         const newErrors = {};
         if (!promise.title) newErrors.title = "Concept is required.";
         if (!promise.total) newErrors.total = "Amount Requested is required.";
-        if (!promise.amount_payments) newErrors.amount_payments = "Payment Amount is required.";
-        if (!promise.payment_period) newErrors.payment_period = "Payment Interval is required.";
         if (isNaN(promise.total)) newErrors.total = "Amount Required must be a valid number.";
+        if (!promise.payment_period) newErrors.payment_period = "Payment Interval is required.";
+        if (!promise.amount_payments) newErrors.amount_payments = "Payment Amount is required.";
         if (isNaN(promise.amount_payments)) newErrors.amount_payments = "Payment Amount must be a valid number.";
         setErrors(newErrors);
+        //TODO: Scroll to the specific input
+        if (Object.keys(newErrors).length > 0) {
+            scrollRef.current?.scrollTo({ y: 0, animated: true });
+        }
         return Object.keys(newErrors).length === 0;
-    };
-
-    const handleNextStep = () => {
-        if (step === 1 && !validateStep1()) return;
-        setStep(step + 1);
     };
 
     useEffect(() => {
         fetchPromiseData();
     }, [paymentable_id]);
 
-    let percent_interest = (100 + parseInt(promise.interest || 0)) / 100
+    let percentInterest = (100 + parseInt(promise.interest || 0)) / 100
+    let totalWithInterest = (promise.total * percentInterest).toFixed(1)
+    let totalPayments = Math.ceil((promise.total * percentInterest)/promise.amount_payments)
     
     return (
         <KeyboardAvoidingView
@@ -86,136 +90,61 @@ export default function formPromise() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                    <View style={[baseStyles.viewContainerFull, { backgroundColor: 'white', padding: 20 }]}>
+                <ScrollView  ref={scrollRef} contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={[baseStyles.viewContainerFull, { paddingHorizontal: 10, paddingVertical: 5}]}>
                         {paymentable_id ? (
                             <AvatarInfoHeader user={promise.admin_name} text={`Editing Promise made to`} />
                         ) : (
                             <AvatarInfoHeader user={promise.administrator_name} text={`New Promise made to`} />
                         )}
 
-                        {step === 1 && (
-                            <View style={{ gap: 15, marginVertical: 50 }}>
-                                <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}>
-                                    General Information
-                                </Text>
-                                <View>
-                                    <Text style={baseStyles.label17}>Concept</Text>
-                                    <TextInput
-                                        style={baseStyles.input}
-                                        value={promise.title || ''}
-                                        onChangeText={(title) => handleChange('title', title)}
-                                        placeholder="Enter the concept"
-                                        editable={ownerEditable}
-                                    />
-                                    {errors.title && <Text style={baseStyles.errorText}>{errors.title}</Text>}
-                                </View>
-                                <View>
-                                    <Text style={baseStyles.label17}>Amount Requested</Text>
-                                    <TextInput
-                                        style={baseStyles.input}
-                                        value={promise.total || ''}
-                                        onChangeText={(total) => handleChange('total', total)}
-                                        keyboardType="numeric"
-                                        placeholder="Enter the total amount"
-                                        editable={ownerEditable}
-                                    />
-                                    {errors.total && <Text style={baseStyles.errorText}>{errors.total}</Text>}
-                                </View>
-                                <View>
-                                    <Text style={baseStyles.label17}>Payment Amount</Text>
-                                    <TextInput
-                                        style={baseStyles.input}
-                                        value={promise.amount_payments || ''}
-                                        onChangeText={(amountPayments) => handleChange('amount_payments', amountPayments)}
-                                        keyboardType="numeric"
-                                        placeholder="Enter the payment amount"
-                                        editable={ownerEditable}
-                                    />
-                                    {errors.amount_payments && <Text style={baseStyles.errorText}>{errors.amount_payments}</Text>}
-                                </View>
-                                <View>
-                                    <Text style={baseStyles.label17}>Payment Interval</Text>
-                                    {promise.admin ? (
-                                        <TextInput
-                                            style={[baseStyles.input, baseStyles.disabledInput]}
-                                            value={promise.payment_period}
-                                        />
-                                    ) : (
-                                        <Picker
-                                            selectedValue={promise.payment_period || 'month'}
-                                            onValueChange={(payment_period) => handleChange('payment_period', payment_period)}
-                                            style={[baseStyles.picker, { height: 50, width: '100%' }]}
-                                            itemStyle={{ color: 'black' }} >
-                                            <Picker.Item label="Day" value="day" />
-                                            <Picker.Item label="Week" value="week" />
-                                            <Picker.Item label="Bi-week" value="biweek" />
-                                            <Picker.Item label="Month" value="month" />
-                                        </Picker>)}
-                                    {errors.payment_period && <Text style={baseStyles.errorText}>{errors.payment_period}</Text>}
-                                </View>
-                            </View>
-                        )}
+                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> General Information </Text>
+                            <InputWithLabel label='Concept' name='title' value={promise.title} onChangeText={handleChange} placeholder="Enter the concept" error={errors.title} editable={ownerEditable} />
+                            <InputWithLabel label='Amount' name='total' value={promise.total} onChangeText={handleChange} numeric={true} placeholder="Enter the total amount" error={errors.total} editable={ownerEditable} />
+                        </View>
 
-                        {step === 2 && (
-                            <View style={{ gap: 20, marginTop: 20 }}>
-                                <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}>
-                                    Financial Details
-                                </Text>
-                                <View style={{ marginBottom: 15 }}>
-                                    <Text style={baseStyles.label17}>Interest (%)</Text>
-                                    <TextInput
-                                        style={baseStyles.input}
-                                        value={promise.interest || ''} 
-                                        onChangeText={(interest) => handleChange('interest', interest)}
-                                        keyboardType="numeric"
-                                        placeholder="Enter the interest rate"
-                                        editable={adminEditable}
-                                    />
-                                </View>
-                                <View style={{ marginBottom: 15 }}>
-                                    <Text style={baseStyles.label17}>Total With Interest</Text>
+                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> Interval </Text>
+                            <View>
+                                <Text style={baseStyles.label17}>Payment Interval</Text>
+                                {promise.admin ? (
                                     <TextInput
                                         style={[baseStyles.input, baseStyles.disabledInput]}
-                                        value={(promise.total * percent_interest).toFixed(1) || ''}
+                                        value={promise.payment_period}
                                     />
-                                </View>
-                                {promise.total && percent_interest && promise.amount_payments && (
-                                    <View>
-                                        <Text style={baseStyles.label17}>Total Payments</Text>
-                                        <Text style={[baseStyles.input, baseStyles.disabledInput]}>
-                                            {Math.ceil(promise.total * percent_interest / promise.amount_payments)}
-                                        </Text>
-                                    </View>
-                                )}
+                                ) : (
+                                    <Picker
+                                        selectedValue={promise.payment_period || 'month'}
+                                        onValueChange={(payment_period) => handleChange('payment_period', payment_period)}
+                                        style={[baseStyles.picker, { height: 150, width: '100%' }]}
+                                        itemStyle={{ color: 'black' }} >
+                                        <Picker.Item label="Day" value="day" />
+                                        <Picker.Item label="Week" value="week" />
+                                        <Picker.Item label="Bi-week" value="biweek" />
+                                        <Picker.Item label="Month" value="month" />
+                                    </Picker>)}
+                                {errors.payment_period && <Text style={baseStyles.errorText}>{errors.payment_period}</Text>}
                             </View>
-                        )}
+                            <InputWithLabel label='Payment Amount' name='amount_payments' value={promise.amount_payments} numeric={true} onChangeText={handleChange} placeholder="Enter the payment amount" error={errors.amount_payments} editable={ownerEditable} />
+                        </View>
+
+                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}> Financial Details </Text>
+                            <InputWithLabel label='Interest (%)' name='interest' value={promise.interest} numeric={true} onChangeText={handleChange} placeholder="Enter the interest rate" editable={adminEditable} />
+                            <InputWithLabel label='Total with Interest' name='' value={totalWithInterest} onChangeText={() => { }} placeholder="" error={null} editable={false} />
+                            {promise.total && percentInterest && promise.amount_payments && (
+                                <InputWithLabel label='Total Payments' name='' value={totalPayments} onChangeText={() => { }} placeholder="" error={null} editable={true} />
+                            )}
+                        </View>
 
                         <View style={[baseStyles.buttonContainer, { flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }]}>
-                            {step > 1 && (
-                                <TouchableOpacity
-                                    style={[baseStyles.button, baseStyles.cancelButton, { flex: 1, marginRight: 10 }]}
-                                    onPress={() => setStep(step - 1)}
-                                >
-                                    <Text style={baseStyles.buttonText}>Back</Text>
-                                </TouchableOpacity>
-                            )}
-                            {step < 2 && (
-                                <TouchableOpacity
-                                    style={[baseStyles.button, baseStyles.saveButton, { flex: 1, marginLeft: step > 1 ? 10 : 0 }]}
-                                    onPress={handleNextStep}
-                                >
-                                    <Text style={baseStyles.buttonText}>Next</Text>
-                                </TouchableOpacity>
-                            )}
-                            {step === 2 && (
-                                <TouchableOpacity
-                                    style={[baseStyles.button, baseStyles.saveButton, { flex: 1, marginLeft: 10 }]}
-                                    onPress={handleSave}
-                                >
-                                    <Text style={baseStyles.buttonText}>Save</Text>
-                                </TouchableOpacity>
-                            )}
+                            <TouchableOpacity
+                                style={[baseStyles.button, baseStyles.saveButton, { flex: 1, marginLeft: 10 }]}
+                                onPress={handleSave}
+                            >
+                                <Text style={baseStyles.buttonText}>Save</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>

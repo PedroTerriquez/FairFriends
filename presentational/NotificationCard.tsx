@@ -74,7 +74,7 @@ export default function NotificationCard({
             <Ionicons name="notifications" size={20} color="white" />
           </Pressable> }
           {pendingDecision && !decisionDone && (
-            <View style={baseStyles.rowCenter}>
+            <View style={[baseStyles.rowCenter, { gap: 5 }]}>
               <AcceptButton onPressAction={() => {
                 updateStatus(id, 'accepted');
                 setDecisionDone(true);

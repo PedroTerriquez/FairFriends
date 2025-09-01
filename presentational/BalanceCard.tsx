@@ -46,7 +46,7 @@ export default BalanceCard = ({ id, total, name, members, myTotal }) => {
   return (
     <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => router.push({pathname: 'balance', params: { id }})}>
       <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
-      <View style={[baseStyles.rowCenter, {paddingTop: 5}]}>
+      <View style={[baseStyles.rowCenter]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={[baseStyles.titleBold40, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
@@ -60,7 +60,7 @@ export default BalanceCard = ({ id, total, name, members, myTotal }) => {
             />
           </View>
           <Text style={[baseStyles.smallLabel]}>Total: $<Text style={baseStyles.boldText}>{total}</Text></Text>
-          <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { marginTop: 20 }]}>
+          <View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.lightRedBG, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
           </View>
         </View>

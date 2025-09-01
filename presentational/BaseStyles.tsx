@@ -4,8 +4,16 @@ const baseStyles = StyleSheet.create({
     //Containers
     viewContainerFull: {
         flex: 1,
-        backgroundColor: "white",
-        paddingHorizontal: 5
+        backgroundColor: '#f6f6f6',
+        padding: 5,
+    },
+    containerCard: {
+        backgroundColor: 'white',
+        borderRadius: 15,
+        padding: 10,
+        borderWidth: 0.3,
+        borderColor: "#0404044c",
+        marginVertical: 5,
     },
     viewRowWithSpace: {
         flexDirection: "row",
@@ -36,16 +44,12 @@ const baseStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
     },
-    // General Alignments
     rowCenter: {
         flexDirection: "row",
         alignItems: "center",
     },
     alignItemsCenter: {
         alignItems: "center",
-    },
-    paddingVertical10: {
-        paddingVertical: 10,
     },
     // Label Sizes
     titleBold40: {
@@ -154,12 +158,12 @@ const baseStyles = StyleSheet.create({
     },
     // Card Styles
     card: {
-        backgroundColor: "#fff",
+        backgroundColor: "white",
         paddingVertical: 15,
         paddingHorizontal: 20,
-        marginVertical: 8,
+        marginVertical: 5,
         borderRadius: 15,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: "#0000002e",
         shadowColor: "#000",
         shadowOffset: {
@@ -170,7 +174,6 @@ const baseStyles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
         overflow: 'visible',
-        minHeight: 50,
     },
     cardRead: {
         borderColor: "#0000002e",
@@ -186,11 +189,11 @@ const baseStyles = StyleSheet.create({
     },
     cardPending: {
         shadowColor: "#ffc107",
-        shadowOpacity: 0.5,
+        shadowOpacity: 0.3,
         shadowOffset: { width: 3, height: 3 }
     },
     cardAccepted: {
-        shadowColor:  '#e6f3ff',
+        shadowColor: "#4CAF50",
         shadowOpacity: 1,
         shadowOffset: { width: 3, height: 3 }
     },
@@ -200,7 +203,6 @@ const baseStyles = StyleSheet.create({
         shadowOffset: { width: 3, height: 3 }
     },
     cardContent: {
-        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -264,6 +266,13 @@ const baseStyles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
     },
+    buttonWithIcon: {
+        flexDirection: 'row',
+        padding: 10,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     // Rest of utilities
     avatar: {
         width: 30,
@@ -307,6 +316,9 @@ const baseStyles = StyleSheet.create({
     disabledInput: {
         backgroundColor: "#f0f0f0"
     },
+    inputError: {
+        borderColor: "red",
+    },
     floatingBadgeForCard: {
         position: "absolute",
         top: 10, 
@@ -321,8 +333,8 @@ const baseStyles = StyleSheet.create({
     },
     floatingButton: {
         position: "absolute",
-        bottom: 10, 
-        right: 10,
+        bottom: 20, 
+        right: 20,
         width: 50,
         height: 50,
         backgroundColor: "#007AFF",
@@ -362,12 +374,14 @@ const baseStyles = StyleSheet.create({
     },
     tabBarInactive: {
         flex: 1,
-        backgroundColor: '#f6f6f6',
+        backgroundColor: 'white',
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 8,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "#0000002e",
     },
     tabBarTextInactive: {
         color: 'black',
@@ -392,24 +406,23 @@ const baseStyles = StyleSheet.create({
     money: {
         fontSize: 70,
         fontWeight: 'bold',
-        textAlign: 'left',
         color: '#000000',
-        width: '70%',
     },
     keypadRow: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 8, 
+        marginVertical: 5, 
+        gap: 10
     },
     keypadButton: {
-        width: 70,
-        height: 70,
+        width: 80,
+        height: 80,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        borderRadius: 35,
-        margin: 8,
+        backgroundColor: '#c8c8c8ff',
+        borderRadius: 40,
+        margin: 5,
     },
     keypadText: {
         fontSize: 32,

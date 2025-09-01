@@ -12,10 +12,10 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.rowCenter, baseStyles.marginLeft5, {height: 0}]}
+      style={[baseStyles.card, baseStyles.rowCenter]}
       onPress={() => router.push({pathname: 'balance', params: { id }})}
     >
-      <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+      <View style={[baseStyles.rowCenter, { gap: 3 }]}>
         <Avatar name={name || '.'}></Avatar>
         <Text
           style={[
@@ -29,7 +29,6 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
           name={difference >= 0 ? "caretup" : "caretdown"}
           size={24}
           color={difference >= 0 ? "green" : "#dc3545"}
-          style={{ marginLeft: 5 }}
         />
       </View>
     </TouchableOpacity>

@@ -7,7 +7,8 @@ import baseStyles from "@/presentational/BaseStyles";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import Spinner from "@/presentational/Spinner";
-import { getProfile, createBalance } from "@/services/api";
+import { createBalance, getProfile } from "@/services/api";
+import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 
 export default function Profile() {
   const [info, setInfo] = useState<any>(null);
@@ -15,7 +16,7 @@ export default function Profile() {
   const { id } = useLocalSearchParams();
   const { signOut } = useSession();
 
-  const fetchProfile = async() => {
+  const fetchProfile = async () => {
     setLoading(true);
     getProfile(id)
       .then((response) => {
@@ -44,7 +45,7 @@ export default function Profile() {
   }
 
   return (
-    <View style={[baseStyles.alignItemsCenter, baseStyles.viewContainerFull, {backgroundColor: "white"}]}>
+    <View style={[baseStyles.alignItemsCenter, baseStyles.viewContainerFull, { backgroundColor: "white" }]}>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginVertical: 45 }}>{info.name}</Text>
       <Image
         style={{ width: 150, height: 150, borderRadius: 75 }}
@@ -54,42 +55,36 @@ export default function Profile() {
         Member since {info.created_at}
       </Text>
       {info.me == 1 && (<View style={baseStyles.rowCenter}>
-        <TouchableOpacity style={[baseStyles.button, baseStyles.cancelButton, baseStyles.center, {flexDirection: 'row', gap: 10}]} onPress={logout} >
+        <TouchableOpacity style={[baseStyles.button, baseStyles.cancelButton, baseStyles.center, { flexDirection: 'row', gap: 10 }]} onPress={logout} >
           <MaterialIcons name="logout" size={20} color="white" />
           <Text style={[baseStyles.buttonText, baseStyles.textCenter]}>Log out</Text>
         </TouchableOpacity>
       </View>)}
       {info.me != 1 && (
-        <><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
-          <Text style={baseStyles.title15}>Start a promise or a balance with {info.name}</Text>
-        </View><View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
-            <TouchableOpacity
-              style={[baseStyles.circleButton, baseStyles.greenBG]}
-              onPress={() => router.push({
-                pathname: '/formPromise',
-                params: { administrator_id: id, administrator_name: info.name }
-              })}
-            >
-              <MaterialIcons name="attach-money" size={20} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
-              onPress={() => {
-                createBalance([id], undefined)
-                  .then((response) => {
-                    router.push({
-                      pathname: '/balance',
-                      params: { paymentable_id: response.data.id }
-                    });
-                  })
-                  .catch((error) => {
-                    console.log(error);
+        <View style={[baseStyles.rowCenter, { marginTop: 10, gap: 20 }]}>
+          <ButtonWithIcon
+            style={{ backgroundColor: 'green' }}
+            onPress={() => router.push({ pathname: '/formPromise', params: { administrator_id: id, administrator_name: info.name } })}
+            icon={<MaterialIcons name="attach-money" size={20} color="white" />}
+            text="Promise" />
+          <ButtonWithIcon
+            style={{ backgroundColor: '#007aff' }}
+            textStyle={{ marginLeft: 5 }}
+            onPress={() => {
+              createBalance([id], undefined)
+                .then((response) => {
+                  router.push({
+                    pathname: '/balance',
+                    params: { paymentable_id: response.data.id }
                   });
-              } }
-            >
-              <FontAwesome name="balance-scale" size={20} color="white" />
-            </TouchableOpacity>
-          </View></>
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }}
+            icon={<FontAwesome name="balance-scale" size={20} color="white" />}
+            text="Split" />
+        </View>
       )}
     </View>
   );

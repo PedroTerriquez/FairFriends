@@ -87,7 +87,7 @@ export default function Payment({
   const renderStatusSection = () => {
     if (pendingDecision) {
       return (
-        <View style={baseStyles.rowCenter}>
+        <View style={[baseStyles.rowCenter, { gap: 5 }]}>
           <AcceptButton onPressAction={() => acceptPaymentButton(id)} />
           <RejectButton onPressAction={() => rejectPaymentButton(id)} />
         </View>)
@@ -121,13 +121,13 @@ export default function Payment({
           <Avatar name={ creatorName[0] } />
           <View style={baseStyles.marginLeft}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
-            <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text>
-            <Text style={baseStyles.cardDate}>{formattedDate}</Text>
+            { parentTitle && <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text> }
+            <Text style={[baseStyles.cardDate, {paddingTop: 10}]}>{formattedDate}</Text>
           </View>
         </View>
-        <View style={[baseStyles.alignItemsCenter]}>
+        <View style={{alignItems: 'flex-end'}}>
           <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
-          { renderStatusSection() }
+          {renderStatusSection()}
         </View>
       </View>
     </Pressable>

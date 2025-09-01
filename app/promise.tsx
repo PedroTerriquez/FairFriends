@@ -1,14 +1,15 @@
 import { useCallback, useState } from "react";
-import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
+import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 import baseStyles from '@/presentational/BaseStyles';
 import Payment from '@/presentational/Payment';
 import PromiseCard from "@/presentational/PromiseCard";
-import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
 import { getPromiseDetail, patchNotification } from "@/services/api";
 import EmptyList from "@/presentational/EmptyList";
+import ButtonWithIcon from "@/presentational/ButtonWithIcon";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 export default function Promise() {
     const [payments, setPayments] = useState([]);
@@ -35,26 +36,24 @@ export default function Promise() {
     const renderPaymentsHeader = () => {
         return (
             <>
-                <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
-                    <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>
-                    {promise && promise.status === 'accepted' && !promise.admin && <FloatingButton
-                        icon="add"
-                        action={() => {
-                            if (promise) {
-                                router.push({
-                                    pathname: "/formPayment",
-                                    params: {
-                                        paymentable_id: id,
-                                        type: 'Promise',
-                                        recipient_name: promise.admin_name,
-                                        recipient_id: promise.administrator_id,
-                                        amount_payments: promise.amount_payments
-                                    }
-                                });
-                            }
-                        }}
-                    >
-                    </FloatingButton>
+                <View style={[baseStyles.rowCenter, baseStyles.containerCard, { justifyContent: "space-between", height: 70 }]}>
+                    <Text style={[baseStyles.title17]}>Recent Transactions </Text>
+                    {promise && promise.status === 'accepted' && !promise.admin && <TouchableOpacity onPress={() => {
+                        if (promise) {
+                            router.push({
+                                pathname: "/formPayment",
+                                params: {
+                                    paymentable_id: id,
+                                    type: 'Promise',
+                                    recipient_name: promise.admin_name,
+                                    recipient_id: promise.administrator_id,
+                                    amount_payments: promise.amount_payments
+                                }
+                            });
+                        }
+                    }} style={[baseStyles.circleButton, baseStyles.blueBG]}>
+                        <Ionicons name="add" size={31} color="white" />
+                    </TouchableOpacity>
                     }
                 </View>
             </>)
@@ -112,10 +111,12 @@ export default function Promise() {
                     status={promise.status}
                     user={promise.admin_name}
                 />
-                {promise.status === "pending" && (
-                    <>
-                        <Pressable
-                            style={[baseStyles.button, baseStyles.warningBG, { marginTop: 10 }]}
+                { promise.status === "pending" && (
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10}}>
+                        <ButtonWithIcon
+                            style={[baseStyles.buttonWithIcon, baseStyles.warningBG, { gap: 10, marginRight: 10, width: 100 }]}
+                            text="Edit"
+                            icon={<MaterialIcons name="edit" size={20} color="white" />}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
                                     paymentable_id: id,
@@ -123,17 +124,17 @@ export default function Promise() {
                                     administrator_id: promise.administrator_id,
                                 }
                             })}
-                        >
-                            <Text style={baseStyles.buttonText}>Edit</Text>
-                        </Pressable>
-                        {
-                            promise.admin && (<Pressable
-                                style={[baseStyles.button, baseStyles.successBG, { marginTop: 10 }]}
-                                onPress={() => acceptPromiseThroughNotification(promise.notification_id)} >
-                                <Text style={baseStyles.buttonText}>Accept</Text>
-                            </Pressable>)
+                        />
+                        { promise.admin && (
+                            <ButtonWithIcon
+                                style={[baseStyles.buttonWithIcon, baseStyles.successBG, { gap: 10 }]}
+                                text="Accept"
+                                icon={<MaterialIcons name="check" size={20} color="white" />}
+                                onPress={() => acceptPromiseThroughNotification(promise.notification_id)}
+                            />
+                        )
                         }
-                    </>
+                    </View>
                 )}
             </View>
             {promise.status !== 'pending' && renderPaymentsHeader()}

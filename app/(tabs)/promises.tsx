@@ -7,6 +7,7 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
 import Spinner from "@/presentational/Spinner";
+import TopNavBar from "@/presentational/TopNavBar";
 
 export default function Promises() {
   const [receiving , setReceiving] = useState([])
@@ -68,14 +69,7 @@ export default function Promises() {
     <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />
     }>
-      <View style={ baseStyles.viewRowWithSpace}>
-        <Pressable onPress={() => setActiveTab("Receiving")} style={activeTab === "Receiving" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Receiving" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Receiving</Text>
-        </Pressable>
-        <Pressable onPress={() => setActiveTab("Paying")} style={activeTab === "Paying" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Paying" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Paying</Text>
-        </Pressable>
-      </View>
+      <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
       {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
     </ScrollView>
   );

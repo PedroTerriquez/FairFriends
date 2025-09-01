@@ -4,7 +4,7 @@ import React from "react";
 
 export default function EmptyList({ text, children }) {
     return (
-        <ScrollView contentContainerStyle={[{ flex: 1 }, baseStyles.viewContainerFull, baseStyles.center]}>
+        <ScrollView contentContainerStyle={[baseStyles.center, baseStyles.containerCard]}>
             <Text style={baseStyles.title24}>{text}</Text>
             {children}
         </ScrollView>

@@ -12,10 +12,10 @@ export default MiniPromiseCard = ({ id, name, paidAmount, total }) => {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.rowCenter, baseStyles.marginLeft5, {height: 10}]}
+      style={[baseStyles.card, baseStyles.rowCenter]}
       onPress={() => router.push({pathname: 'promise', params: { id }})}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5}}>
+      <View style={[baseStyles.rowCenter, { gap: 3 }]}>
         <Avatar name={name || '.'}></Avatar>
         <Text
           style={[

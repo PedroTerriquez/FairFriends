@@ -116,7 +116,7 @@ export default function contactRequests() {
     return contacts.map(contact => (
       <Person key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
-          <View style={baseStyles.rowCenter}>
+          <View style={[baseStyles.rowCenter, { gap: 5 }]}>
               <RejectButton onPressAction={rejectRequest.bind(this, contact.friendship_id)}></RejectButton>
               <AcceptButton onPressAction={acceptRequest.bind(this, contact.friendship_id)}></AcceptButton>
             </View>

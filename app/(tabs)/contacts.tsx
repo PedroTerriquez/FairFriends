@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
+import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
@@ -10,6 +10,7 @@ import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
 import { findFriends, createBalance } from "@/services/api";
+import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
@@ -69,19 +70,21 @@ export default function Contacts() {
                     onClick={navigateProfile}
                 >
                     {friend.id && (
-                        <View style={baseStyles.rowCenter}>
-                            <TouchableOpacity
-                                style={[baseStyles.circleButton, baseStyles.greenBG, baseStyles.marginLeft]}
+                        <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+                            <ButtonWithIcon
+                                style={baseStyles.greenBG}
+                                textStyle={{ fontSize: 12 }}
+                                text='Promise'
                                 onPress={() => startPromise(friend.id, friend.first_name)}
-                            >
-                                <MaterialIcons name="attach-money" size={20} color="white" />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[baseStyles.circleButton, baseStyles.blueBG, baseStyles.marginLeft]}
+                                icon={<MaterialIcons name="attach-money" size={14} color="white" />}
+                            />
+                            <ButtonWithIcon
+                                style={baseStyles.blueBG}
+                                textStyle={{ fontSize: 12, marginLeft: 5 }}
+                                text='Split'
                                 onPress={() => startBalance(friend.id)}
-                            >
-                                <FontAwesome name="balance-scale" size={20} color="white" />
-                            </TouchableOpacity>
+                                icon={<FontAwesome name="balance-scale" size={14} color="white" />}
+                            />
                         </View>
                     )}
                 </Person>

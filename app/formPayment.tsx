@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, TouchableWithoutFeedback, Keyboard, Modal } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, TouchableWithoutFeedback, Keyboard, Modal, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import baseStyles from '@/presentational/BaseStyles';
@@ -7,17 +7,18 @@ import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
 import { Picker } from '@react-native-picker/picker';
+import InputWithLabel from '@/presentational/InputWithLabel';
 
 function Keypad({ onKeyPress, onSubmit, submitLabel }) {
   return (
-    <View style={{ flex: 4 }}>
+    <View style={{flex: 3}}>
       {[
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],
         ['.', '0', '⌫'],
       ].map((row, id) => (
-        <View key={id} style={[baseStyles.keypadRow, { flex: 1 }]}>
+        <View key={id} style={[baseStyles.keypadRow]}>
           {row.map((num) => (
         <TouchableOpacity
           key={num}
@@ -70,14 +71,14 @@ export default function addPayment() {
   const router = useRouter();
   const params = useLocalSearchParams();
   
-  const [showConcept, setShowConcept] = useState(false);
+  const [step, setStep] = useState(1);
   const [concept, setConcept] = useState(params.title || '');
   const [amount, setAmount] = useState(() => {
     if (!params.amount) return '0';
     return params.amount.replace(/[$,]/g, '') || '0';
   });
   const [isModalVisible, setModalVisible] = useState(false);
-  const [creatorId, setCreatorId] = useState(params.members[0]?.id);
+  const [creatorId, setCreatorId] = useState(params.members ? params?.members[0]?.id : null);
 
   const handleAmountChange = (text) => {
     setAmount(text);
@@ -128,79 +129,60 @@ export default function addPayment() {
   return (
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[baseStyles.viewContainerFull, { flex: 1 }]}>
-          <View style={{ flex: 1 }}>
-            {/* Header Section */}
-            <View style={{ flex: 1.5 }}>
-              <View style={[baseStyles.alignItemsCenter, { marginVertical: 20 }]}>
-                <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
-              </View>
-              <View style={[baseStyles.alignItemsCenter, { paddingHorizontal: 40 }]}>
-                {!showConcept && <TouchableOpacity
-                  style={[baseStyles.button, baseStyles.normalButton, { marginBottom: 5 }]}
-                  onPress={() => setShowConcept(!showConcept)}
-                >
-                  <Text style={baseStyles.buttonText}>Add concept</Text>
-                </TouchableOpacity>}
-                {showConcept && (
-                  <View>
-                    <TextInput
-                      style={baseStyles.input}
-                      value={concept}
-                      placeholder="Add a concept"
-                      placeholderTextColor="#666"
-                      onChangeText={(text) => setConcept(text)}
-                    />
-                  </View>
-                )}
-
-                {params.members && (
-                  <View>
-                    <Text>By</Text>
-                    <Picker
-                      selectedValue={creatorId}
-                      onValueChange={(member_id) => setCreatorId(member_id)}
-                      style={[baseStyles.picker, { height: 50, width: '100%' }]}
-                      itemStyle={{ color: 'black' }} >
-                      {JSON.parse(params.members).map(member => (
-                        <Picker.Item key={member.id} label={member.name} value={member.id} />
-                      ))}
-                    </Picker>
-
-                  </View>
-                )}
-
-              </View>
+        <View style={[baseStyles.viewContainerFull]}>
+          <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
+          {/* Amount Display Section */}
+          {step === 1 && (
+            <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20, flex: 1 }]}>
+              <Text style={[baseStyles.title17]}> Payment Information </Text>
+              <InputWithLabel label='Concept' name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder="Add a concept" error={null} editable={true} />
+              {params.members && (
+                <View>
+                  <Text style={baseStyles.label17}>Done by</Text>
+                  <Picker
+                    selectedValue={creatorId}
+                    onValueChange={(member_id) => setCreatorId(member_id)}
+                    style={[baseStyles.picker, { height: 100 }]}
+                    itemStyle={{ color: 'black' }} >
+                    {JSON.parse(params.members).map(member => (
+                      <Picker.Item key={member.id} label={member.name} value={member.id} />
+                    ))}
+                  </Picker>
+                </View>
+              )}
+              <Pressable style={[baseStyles.button, baseStyles.saveButton, { position: 'absolute', padding: 15, bottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' , alignSelf: 'center'}]} onPress={() => setStep(2)}>
+                <Text style={baseStyles.buttonText}>Next</Text>
+              </Pressable>
             </View>
+          )}
+          {
+            step === 2 && (
+              <View style={[baseStyles.containerCard, { flex: 1 }]}>
+                <View style={{ flex: 1 }}>
+                  <TextInput
+                    placeholder="0"
+                    placeholderTextColor="#666"
+                    style={[baseStyles.money, { width: '100%', marginBottom: 20, textAlign: "center", fontSize: amount.length < 4 ? 100 : 400 / amount.length, marginTop: 50 }]}
+                    value={`$ ${amount}`}
+                    onChangeText={handleAmountChange}
+                    editable={false}
+                    keyboardType="numeric"
+                  />
+                  {params.amout_payment && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${params.amount_payments}</Text>)}
+                </View>
 
-            {/* Amount Display Section */}
-            <View style={{ flex: 1.5, justifyContent: 'center' }}>
-              <View style={[baseStyles.rowCenter, { alignItems: 'center', padding: 30 }]}>
-                <Text style={baseStyles.titleBold40}>$</Text>
-                <TextInput
-                  placeholder="0"
-                  placeholderTextColor="#666"
-                  style={[baseStyles.money, { fontSize: amount.length < 4 ? 100 : 400 / amount.length }]}
-                  value={amount}
-                  onChangeText={handleAmountChange}
-                  editable={false} 
-                  keyboardType="numeric"
+                {/* Keypad Section */}
+                <Keypad
+                  onKeyPress={handleKeyPress}
+                  onSubmit={handleSubmit}
+                  submitLabel={params.payment_id ? 'Update Payment' : 'Fair Pay'}
                 />
               </View>
-              { params.amout_payment && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${params.amount_payments}</Text>)}
-            </View>
-
-            {/* Keypad Section */}
-            <Keypad
-              onKeyPress={handleKeyPress}
-              onSubmit={handleSubmit}
-              submitLabel={params.payment_id ? 'Update Payment' : 'Fair Pay'}
-            />
-          </View>
+            )
+          }
         </View>
       </TouchableWithoutFeedback>
 
-      {/* Success Modal */}
       <SuccessModal
         visible={isModalVisible}
         total={amount}

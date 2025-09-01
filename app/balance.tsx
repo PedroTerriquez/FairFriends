@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, View, Text, RefreshControl } from "react-native";
+import { ScrollView, View, Text, RefreshControl, TouchableOpacity } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 
 import baseStyles from '@/presentational/BaseStyles'
@@ -10,6 +10,7 @@ import Spinner from "@/presentational/Spinner";
 import { getBalanceDetail, getBalanceInfo } from "@/services/api";
 import EmptyList from "@/presentational/EmptyList";
 import ModalInfoSplit from "@/presentational/ModalSplitInfo";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 export default function Balance() {
   const [payments, setPayments] = useState([]);
@@ -69,37 +70,35 @@ export default function Balance() {
 
   const renderPaymentsHeader = () => {
     return (
-      <>
-        <Text style={[baseStyles.title15, { marginTop: 10 }]}>Recent Transactions </Text>
-        {
-          balance?.status === 'active' && <FloatingButton
-          style={{ position: 'absolute', bottom: 10, right: 70 }}
-          icon='split'
-          action={() => {
-            if (balance) {
-              router.push({
-                pathname: "/formPayment",
-                params: formPaymentParams()
-              });
-            }
-          }}
-        />
-        }
-        {
-          payable && <FloatingButton
-            icon="add"
-            action={() => {
+      <View style={[baseStyles.containerCard, { flexDirection: 'row', alignItems: 'center', height: 70}]}>
+        <Text style={[baseStyles.title15, {marginLeft: 15}]}>Recent Transactions </Text>
+        <View style={[baseStyles.rightSection, { gap: 10 }]}>
+          {
+            balance?.status === 'active' && <TouchableOpacity onPress={() => {
               if (balance) {
                 router.push({
                   pathname: "/formPayment",
                   params: formPaymentParams()
                 });
               }
-            }}
-          />
-        }
-
-      </>)
+            }} style={[baseStyles.circleButton, baseStyles.blueBG]}>
+              <MaterialIcons name="call-split" size={23} color="white" />
+            </TouchableOpacity>
+          }
+          {
+            payable && <TouchableOpacity onPress={() => {
+              if (balance) {
+                router.push({
+                  pathname: "/formPayment",
+                  params: formPaymentParams()
+                });
+              }
+            }} style={[baseStyles.circleButton, baseStyles.blueBG]}>
+              <Ionicons name="add" size={31} color="white" />
+            </TouchableOpacity>
+          }
+        </View>
+      </View>)
   }
 
   const renderPayments = () => {
@@ -146,7 +145,7 @@ export default function Balance() {
           members={balance.balance_members}
           myTotal={balance.my_total}
         />
-        <View style={[baseStyles.rowCenter, baseStyles.paddingVertical10, { justifyContent: "space-between", height: 70 }]}>
+        <View style={[{ justifyContent: "space-between", height: 70, marginBottom: 10 }]}>
           {renderPaymentsHeader()}
         </View>
         <FloatingButton

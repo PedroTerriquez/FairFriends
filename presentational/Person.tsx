@@ -5,8 +5,8 @@ import baseStyles from './BaseStyles';
 
 export default Person = ({ person, children, onClick = () => {}}) => {
   return (
-    <TouchableOpacity style={baseStyles.card} key={person.id} onPress={() => onClick() } >
-      <View style={baseStyles.cardContent}>
+    <TouchableOpacity style={[baseStyles.card]} key={person.id} onPress={() => onClick(person.id) } >
+      <View style={[baseStyles.cardContent]}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={person.first_name[0]}/>
           < View style={baseStyles.marginLeft}>

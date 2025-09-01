@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import Person from '@/presentational/Person';
@@ -44,7 +44,7 @@ export default function addContact() {
     const noContacts = <EmptyList text={"No contacts found"}>
         <Text style={baseStyles.label17}>Try looking different {''}
             <Pressable onPress={() => { setText(""); }}>
-                <Text style={[baseStyles.boldText, baseStyles.link]}>name</Text>
+                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>name</Text>
             </Pressable>
         </Text>
     </EmptyList>
@@ -69,9 +69,17 @@ export default function addContact() {
     if (loading) return <Spinner />;
 
     return (
-        <ScrollView contentContainerStyle={[baseStyles.viewContainerFull]} keyboardDismissMode="on-drag" >
-            <SearchBarInput text={text} setText={setText} />
-            {renderPeople()}
-        </ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+                <ScrollView
+                    contentContainerStyle={baseStyles.viewContainerFull}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                >
+                    <SearchBarInput text={text} setText={setText} />
+                    {renderPeople()}
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
