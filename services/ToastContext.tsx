@@ -16,7 +16,8 @@ export const ToastProvider = ({ children }) => {
   };
 
   const hideToast = () => {
-    setIsVisible(false);
+    setTimeout(() => setIsVisible(false), 0);
+
   };
 
   useEffect(() => {

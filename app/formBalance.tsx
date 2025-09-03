@@ -1,22 +1,22 @@
 import { createGroup, findFriends } from "@/services/api";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { View, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import Person from '../presentational/Person';
-import baseStyles from '../presentational/BaseStyles';
+import Person from '@/presentational/Person';
 import EmptyList from "@/presentational/EmptyList";
 import PlaceholderPerson from "@/presentational/PlaceholderPerson";
-import { SearchBar } from "react-native-screens";
 import SearchBarInput from "@/presentational/SearchBarInput";
+import InputWithLabel from "@/presentational/InputWithLabel";
+import FormStepContainer from "@/presentational/FormStepContainer";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [selectedFriends, setSelectedFriends] = useState([]);
     const [selectedPlaceholders, setSelectedPlaceholders] = useState([]);
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(1);
     const [groupName, setGroupName] = useState("");
 
     const fetchFriends = async () => {
@@ -115,95 +115,23 @@ export default function Contacts() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={{ flex: 1 }}>
-                {step == 0 && (
-                    <StepSelectMembers
-                        friends={friends}
-                        text={text}
-                        setText={setText}
-                        renderContacts={renderContacts}
-                        selectedFriends={selectedFriends}
-                        setStep={setStep}
-                    />
-                )}
-                {step == 1 && (
-                    <StepNameGroup
-                        setStep={setStep}
-                        groupName={groupName}
-                        setGroupName={setGroupName}
-                        createGroupHandler={createGroupHandler}
-                    />
-                )}
-            </View>
-        </TouchableWithoutFeedback>
-    );
-}
-
-function StepSelectMembers({
-    friends,
-    text,
-    setText,
-    renderContacts,
-    selectedFriends,
-    setStep
-}) {
-    return (
-        <View style={baseStyles.viewContainerFull}>
-            <ScrollView
-                keyboardDismissMode="on-drag"
-                contentContainerStyle={{ flexGrow: 1 }}
-            >
-                <SearchBarInput text={text} setText={setText} />
-                {renderContacts(friends)}
-                {selectedFriends.length > 0 && (
-                    <TouchableOpacity
-                        style={[baseStyles.floatingButton, baseStyles.greenBG]}
-                        onPress={() => { setStep(1); }}>
-                        <MaterialIcons name="navigate-next" size={32} color="white" />
-                    </TouchableOpacity>
-                )}
+            <ScrollView keyboardDismissMode="on-drag" >
+                <View>
+                    <FormStepContainer step={step} setStep={setStep} stepPosition={1} title="Select Members" icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
+                        <View>
+                            <View >
+                                <SearchBarInput text={text} setText={setText} />
+                                {renderContacts(friends)}
+                            </View>
+                        </View>
+                    </FormStepContainer>
+                </View>
+                <View>
+                    <FormStepContainer step={step} setStep={setStep} stepPosition={2} title="Name Split" onNext={createGroupHandler} icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
+                        <InputWithLabel name='name' label="Group Name" placeholder="e.g., Weekend Trip" value={groupName} onChangeText={(_name, value) => setGroupName(value)} error={null} editable={true} />
+                    </FormStepContainer>
+                </View>
             </ScrollView>
-        </View>
-    );
-}
-
-function StepNameGroup({
-    setStep,
-    groupName,
-    setGroupName,
-    createGroupHandler
-}) {
-    return (
-        <>
-            <TouchableOpacity style={[baseStyles.button, baseStyles.rowCenter]} onPress={() => setStep(0)}>
-                <Ionicons name="arrow-back" size={20} color="black" style={{ marginLeft: 5 }} />
-                <Text style={[baseStyles.buttonText, baseStyles.textBlack, baseStyles.marginLeft5]}>Modify members</Text>
-            </TouchableOpacity>
-            <View style={[baseStyles.viewContainerFull, baseStyles.alignItemsCenter]}>
-                <Text style={[baseStyles.title24, baseStyles.boldText, { paddingTop: '40%' }]}>
-                    New Fair Split
-                </Text>
-                <Text style={{ marginBottom: 20, textAlign: 'center', width: '80%' }}>
-                    We almost finished, pick a good name for your team
-                </Text>
-                <TextInput
-                    style={[baseStyles.searchBarInput, { marginBottom: 20, width: '80%' }]}
-                    placeholder="Group Name"
-                    placeholderTextColor="#666"
-                    value={groupName}
-                    onChangeText={setGroupName}
-                />
-                <TouchableOpacity
-                    style={[
-                        baseStyles.button,
-                        baseStyles.successBG,
-                        { padding: 15, alignItems: 'center', borderRadius: 10 }
-                    ]}
-                    onPress={createGroupHandler}
-                >
-                    <Text style={[baseStyles.buttonText]}>Create Group</Text>
-                </TouchableOpacity>
-            </View>
-        </>
+        </TouchableWithoutFeedback>
     );
 }

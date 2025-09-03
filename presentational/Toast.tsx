@@ -1,28 +1,25 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Text, StyleSheet, Animated } from 'react-native';
 
 const Toast = ({ message, isVisible, onHide, type = 'error' }) => {
-  const opacity = new Animated.Value(0);
-
+  const opacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (isVisible) {
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.delay(3000),
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        onHide();
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setTimeout(() => {
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(onHide);
+        }, 2000);
       });
     }
-  }, [isVisible]);
+  }, [isVisible, opacity, onHide]);
 
   if (!isVisible) return null;
 

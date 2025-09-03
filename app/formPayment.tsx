@@ -1,71 +1,16 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, TouchableWithoutFeedback, Keyboard, Modal, ScrollView, Pressable } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import baseStyles from '@/presentational/BaseStyles';
 import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
 import { Picker } from '@react-native-picker/picker';
 import InputWithLabel from '@/presentational/InputWithLabel';
-
-function Keypad({ onKeyPress, onSubmit, submitLabel }) {
-  return (
-    <View style={{flex: 3}}>
-      {[
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9],
-        ['.', '0', '⌫'],
-      ].map((row, id) => (
-        <View key={id} style={[baseStyles.keypadRow]}>
-          {row.map((num) => (
-        <TouchableOpacity
-          key={num}
-          style={baseStyles.keypadButton}
-          onPress={() => onKeyPress(num.toString())}
-        >
-          <Text style={baseStyles.keypadText}>{num}</Text>
-        </TouchableOpacity>
-          ))}
-        </View>
-      ))}
-      <View style={[baseStyles.keypadRow, { flex: 1 }]}>
-        <TouchableOpacity
-          style={[baseStyles.button, baseStyles.saveButton, { paddingHorizontal: '30%' }]}
-          onPress={onSubmit}
-        >
-          <Text style={baseStyles.buttonText}>{submitLabel}</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
-function SuccessModal({ visible, total, onClose, onBack }) {
-  return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={onClose}
-    >
-      <View style={baseStyles.modalContainer}>
-        <View style={baseStyles.modalContent}>
-          <Feather name="check-circle" size={120} style={{ marginTop: 50 }} color="#4CAF50" />
-          <Text style={[baseStyles.title24, { marginBottom: 50 }]}>Payment Successful</Text>
-          <Text style={[baseStyles.titleBold40, { marginBottom: 50 }]}>${total}</Text>
-          <TouchableOpacity
-            style={[baseStyles.circleButton, baseStyles.saveButton, { width: 60, height: 60, borderRadius: 50 }]}
-            onPress={onBack}
-          >
-            <MaterialIcons name="navigate-next" size={50} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-}
+import PaymentKeyPad from '@/presentational/PaymentKeypad';
+import SuccessPaymentModal from '@/presentational/SuccessPaymentModal';
+import FormStepContainer from '@/presentational/FormStepContainer';
 
 export default function addPayment() {
   const router = useRouter();
@@ -79,10 +24,6 @@ export default function addPayment() {
   });
   const [isModalVisible, setModalVisible] = useState(false);
   const [creatorId, setCreatorId] = useState(params.members ? params?.members[0]?.id : null);
-
-  const handleAmountChange = (text) => {
-    setAmount(text);
-  };
 
   const handleKeyPress = (key) => {
     if (key === '⌫') {
@@ -130,60 +71,40 @@ export default function addPayment() {
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[baseStyles.viewContainerFull]}>
-          <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
-          {/* Amount Display Section */}
-          {step === 1 && (
-            <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20, flex: 1 }]}>
-              <Text style={[baseStyles.title17]}> Payment Information </Text>
-              <InputWithLabel label='Concept' name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder="Add a concept" error={null} editable={true} />
-              {params.members && (
-                <View>
-                  <Text style={baseStyles.label17}>Done by</Text>
-                  <Picker
-                    selectedValue={creatorId}
-                    onValueChange={(member_id) => setCreatorId(member_id)}
-                    style={[baseStyles.picker, { height: 100 }]}
-                    itemStyle={{ color: 'black' }} >
-                    {JSON.parse(params.members).map(member => (
-                      <Picker.Item key={member.id} label={member.name} value={member.id} />
-                    ))}
-                  </Picker>
-                </View>
-              )}
-              <Pressable style={[baseStyles.button, baseStyles.saveButton, { position: 'absolute', padding: 15, bottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' , alignSelf: 'center'}]} onPress={() => setStep(2)}>
-                <Text style={baseStyles.buttonText}>Next</Text>
-              </Pressable>
-            </View>
-          )}
-          {
-            step === 2 && (
-              <View style={[baseStyles.containerCard, { flex: 1 }]}>
-                <View style={{ flex: 1 }}>
-                  <TextInput
-                    placeholder="0"
-                    placeholderTextColor="#666"
-                    style={[baseStyles.money, { width: '100%', marginBottom: 20, textAlign: "center", fontSize: amount.length < 4 ? 100 : 400 / amount.length, marginTop: 50 }]}
-                    value={`$ ${amount}`}
-                    onChangeText={handleAmountChange}
-                    editable={false}
-                    keyboardType="numeric"
-                  />
-                  {params.amout_payment && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${params.amount_payments}</Text>)}
-                </View>
-
-                {/* Keypad Section */}
-                <Keypad
-                  onKeyPress={handleKeyPress}
-                  onSubmit={handleSubmit}
-                  submitLabel={params.payment_id ? 'Update Payment' : 'Fair Pay'}
-                />
+          <View style={{ flex: 0}}>
+            <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
+          </View>
+          {/* Payment Information Section */}
+          <View style={[ step === 2 ? { flex: 0 } : { flex: 6 } ]}>
+            <FormStepContainer step={step} setStep={setStep} stepPosition={1}  icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={'Payment Information'} >
+              <View>
+                <InputWithLabel label='Concept' name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder="Add a concept" error={null} editable={true} />
+                {params.members && (
+                  <View>
+                    <Text style={baseStyles.label17}>Done by</Text>
+                    <Picker
+                      selectedValue={creatorId}
+                      onValueChange={(member_id) => setCreatorId(member_id)}
+                      style={[baseStyles.picker, { height: 100 }]}
+                      itemStyle={{ color: 'black' }} >
+                      {JSON.parse(params.members).map(member => (
+                        <Picker.Item key={member.id} label={member.name} value={member.id} />
+                      ))}
+                    </Picker>
+                  </View>
+                )}
               </View>
+            </FormStepContainer>
+          </View>
+          {/* Payment Section */}
+          {
+            step === 2 && (<PaymentKeyPad amount={amount} amountSuggestion={params.amount_payments} onKeyPress={handleKeyPress} handleSubmit={handleSubmit} />
             )
           }
         </View>
       </TouchableWithoutFeedback>
 
-      <SuccessModal
+      <SuccessPaymentModal
         visible={isModalVisible}
         total={amount}
         onClose={() => setModalVisible(false)}
