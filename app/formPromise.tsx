@@ -19,7 +19,6 @@ export default function formPromise() {
         administrator_id: administrator_id || '',
         administrator_name: administrator_name || '',
     });
-    const [step, setStep] = useState(1);
     const [errors, setErrors] = useState({});
     const adminEditable = paymentable_id && promise.admin;
     const ownerEditable = paymentable_id == undefined || (paymentable_id && !promise.admin);

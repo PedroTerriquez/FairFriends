@@ -77,7 +77,7 @@ export default function Balance() {
             balance?.status === 'active' && <TouchableOpacity onPress={() => {
               if (balance) {
                 router.push({
-                  pathname: "/formPayment",
+                  pathname: "/formUnevenPayment",
                   params: formPaymentParams()
                 });
               }

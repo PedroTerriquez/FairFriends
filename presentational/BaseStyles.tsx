@@ -399,8 +399,8 @@ const baseStyles = StyleSheet.create({
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
     },
     // Payment Screen Styles---
     money: {

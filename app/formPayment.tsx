@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import baseStyles from '@/presentational/BaseStyles';
 import AvatarInfoHeader from '@/presentational/AvatarInfoHeader';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
 import { Picker } from '@react-native-picker/picker';
 import InputWithLabel from '@/presentational/InputWithLabel';
