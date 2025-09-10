@@ -21,8 +21,8 @@ export default function Promises() {
     setRefreshing(true);
     getPromises()
       .then((response) => {
-        setReceiving(response.data.my_promises)
-        setPaying(response.data.owe_promises)
+        setReceiving(response.data.receivable_promises)
+        setPaying(response.data.payable_promises)
       })
       .catch((error) => {
       })
@@ -66,11 +66,11 @@ export default function Promises() {
   if (loading) return <Spinner />;
 
   return (
-    <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />
-    }>
+    <View style={baseStyles.viewContainerFull}>
       <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
-      {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
-    </ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
+        {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
+      </ScrollView>
+    </View>
   );
 }

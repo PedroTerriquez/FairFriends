@@ -12,25 +12,20 @@ export default MiniPromiseCard = ({ id, name, paidAmount, total }) => {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.rowCenter]}
-      onPress={() => router.push({pathname: 'promise', params: { id }})}
+      style={[baseStyles.card, { flexDirection: 'row',alignItems: 'center', gap: 20, minWidth: 200 }]}
+      onPress={() => router.push({ pathname: 'promise', params: { id } })}
     >
-      <View style={[baseStyles.rowCenter, { gap: 3 }]}>
+      <View style={baseStyles.leftSection}>
         <Avatar name={name || '.'}></Avatar>
+      </View>
+      <View style={[baseStyles.rightSection, {alignItems: 'center'}]}>
         <Text
           style={[
             baseStyles.titleBold40,
-            { color: getColorHex(percentage) },
-          ]}
+            { color: getColorHex(percentage) }]}
         >
           {percentage}%
         </Text>
-        <AntDesign
-          name={"caretdown"}
-          size={24}
-          color={ getColorHex(percentage) }
-          style={{ marginLeft: 5 }}
-        />
       </View>
     </TouchableOpacity>
   );

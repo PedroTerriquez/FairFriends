@@ -72,14 +72,14 @@ export default function Contacts() {
                     {friend.id && (
                         <View style={[baseStyles.rowCenter, { gap: 5 }]}>
                             <ButtonWithIcon
-                                style={baseStyles.greenBG}
+                                style={[baseStyles.greenBG, { padding: 10, paddingHorizontal: 10 }]}
                                 textStyle={{ fontSize: 12 }}
                                 text='Promise'
                                 onPress={() => startPromise(friend.id, friend.first_name)}
                                 icon={<MaterialIcons name="attach-money" size={14} color="white" />}
                             />
                             <ButtonWithIcon
-                                style={baseStyles.blueBG}
+                                style={[baseStyles.blueBG, { padding: 10, paddingHorizontal: 10 }]}
                                 textStyle={{ fontSize: 12, marginLeft: 5 }}
                                 text='Split'
                                 onPress={() => startBalance(friend.id)}

@@ -9,7 +9,7 @@ export default function FormStepContainer({ children, step, setStep, stepPositio
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={[{fontSize: 19, fontWeight: 'bold'}]}> {title} </Text>
                 { step == stepPosition && (
-                    <Pressable onPress={() => setStep(stepPosition + 1)}>
+                    <Pressable onPress={() => setStep(stepPosition == 1 ? stepPosition : stepPosition - 1)}>
                         <MaterialCommunityIcons name={'menu-down'} size={24} color="black" />
                     </Pressable>
                 )}

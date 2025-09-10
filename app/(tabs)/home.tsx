@@ -106,7 +106,7 @@ export default function Home() {
     <View style={baseStyles.viewContainerFull}>
       {balances.length > 0 && (
         <View style={[baseStyles.containerCard]}>
-          <SubtitleLink text={"Balances"} onPress={() => { router.push("/balances") }} />
+          <SubtitleLink text={"Latest Balances"} onPress={() => { router.push("/balances") }} />
           <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap: 10}}>
               {renderMiniBalanceCards(balances)}
@@ -116,7 +116,7 @@ export default function Home() {
       )}
       {promises.length > 0 && (
         <View style={[ baseStyles.containerCard ]}>
-          <SubtitleLink text="Promises" onPress={() => { router.push("/promises") }} />
+          <SubtitleLink text="Payables Promises" onPress={() => { router.push("/promises") }} />
           <View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap: 10}}>
               {renderMiniPromiseCards(promises)}

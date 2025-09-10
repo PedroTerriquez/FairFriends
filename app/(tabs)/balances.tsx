@@ -1,6 +1,6 @@
 import { getBalances } from "@/services/api";
 import { useCallback, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, Text } from "react-native";
+import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
@@ -64,13 +64,11 @@ export default function Balances() {
   if (loading) return <Spinner />;
 
   return (
-    <>
-      <ScrollView contentContainerStyle={baseStyles.viewContainerFull} refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} />
-      }>
+    <View style={baseStyles.viewContainerFull} >
+      <ScrollView refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
         {renderBalances()}
       </ScrollView>
       <FloatingButton icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />
-    </>
+    </View>
   );
 }

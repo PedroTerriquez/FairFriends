@@ -138,7 +138,9 @@ export default function Promise() {
                 )}
             </View>
             {promise.status !== 'pending' && renderPaymentsHeader()}
-            {renderPayments()}
+            <ScrollView>
+                {renderPayments()}
+            </ScrollView>
         </ScrollView>
         )
 }

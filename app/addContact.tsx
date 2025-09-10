@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import Person from '@/presentational/Person';
@@ -71,14 +71,15 @@ export default function addContact() {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-                <ScrollView
-                    contentContainerStyle={baseStyles.viewContainerFull}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="on-drag"
-                >
+                <View style={baseStyles.viewContainerFull} >
                     <SearchBarInput text={text} setText={setText} />
-                    {renderPeople()}
-                </ScrollView>
+                    <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        keyboardDismissMode="on-drag"
+                    >
+                        {renderPeople()}
+                    </ScrollView>
+                </View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

@@ -1,6 +1,6 @@
 import { getNotifications, patchNotification } from "@/services/api";
 import { useCallback, useState } from "react";
-import { Text, ScrollView, RefreshControl, Pressable } from "react-native";
+import { Text, View, ScrollView, RefreshControl, Pressable } from "react-native";
 import NotificationCard from "@/presentational/NotificationCard";
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
@@ -88,13 +88,10 @@ export default function Notifications() {
     if (loading) return <Spinner />;
 
     return (
-        <ScrollView
-            contentContainerStyle={[baseStyles.viewContainerFull]}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-        >
-            {renderNotifications()}
-        </ScrollView>
+        <View style={[baseStyles.viewContainerFull]} >
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
+                {renderNotifications()}
+            </ScrollView>
+        </View>
     );
 }

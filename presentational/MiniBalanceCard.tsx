@@ -12,11 +12,13 @@ export default MiniBalanceCard = ({ id, total, name, members, myTotal }) => {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, baseStyles.rowCenter]}
+      style={[baseStyles.card, { flexDirection: 'row',alignItems: 'center', minWidth: 200 }]}
       onPress={() => router.push({pathname: 'balance', params: { id }})}
     >
-      <View style={[baseStyles.rowCenter, { gap: 3 }]}>
+      <View style={baseStyles.leftSection}>
         <Avatar name={name || '.'}></Avatar>
+      </View>
+      <View style={[baseStyles.rightSection, {alignItems: 'center'}]}>
         <Text
           style={[
             baseStyles.titleBold40,

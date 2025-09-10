@@ -137,12 +137,7 @@ export default function contactRequests() {
   if (loading) return <Spinner />;
 
   return (
-    <ScrollView
-      contentContainerStyle={baseStyles.viewContainerFull}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <View style={baseStyles.viewContainerFull} >
       <View style={baseStyles.viewRowWithSpace}>
         <Pressable onPress={() => setActiveTab("Pending")} style={activeTab === "Pending" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
           <Text style={activeTab === "Pending" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Pending</Text>
@@ -151,7 +146,13 @@ export default function contactRequests() {
           <Text style={activeTab === "Sent" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Sent</Text>
         </Pressable>
       </View>
-      {activeTab === "Pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
-    </ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {activeTab === "Pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
+      </ScrollView>
+    </View>
   );
 }

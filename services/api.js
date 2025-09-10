@@ -26,7 +26,7 @@ instance.interceptors.request.use(
 export async function apiCall(promise) {
   try {
     const response = await Promise.resolve(promise);
-    toast(`${response.config.url}`, 'success');
+    //toast(`${response.config.url}`, 'success');
     return response;
   } catch (error) {
     toast(error.response?.data?.errors || "An error occurred", "error");

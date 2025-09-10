@@ -21,7 +21,7 @@ const baseStyles = StyleSheet.create({
         padding: 10,
     },
     fullWidth: {
-        width: '100%',
+        width: '90%',
     },
     center: {
         flex: 1,
@@ -143,6 +143,9 @@ const baseStyles = StyleSheet.create({
     },
     lightBlueBG: {
         backgroundColor: "#e6f3ff",
+    },
+    grayBG: {
+        backgroundColor: "#b5b5b5ff",
     },
     lightRedBG: {
         backgroundColor: "#ffe6e6",
@@ -268,8 +271,9 @@ const baseStyles = StyleSheet.create({
     },
     buttonWithIcon: {
         flexDirection: 'row',
-        padding: 10,
-        borderRadius: 8,
+        padding: 15,
+        paddingHorizontal: 20,
+        borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -303,7 +307,9 @@ const baseStyles = StyleSheet.create({
         marginVertical: 10,
     },
     grayInput: {
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#e7e7e7ff',
+        borderColor: "#0000002e",
+        borderWidth: 1,
         padding: 15,
         borderRadius: 10,
         marginBottom: 15,
@@ -395,12 +401,12 @@ const baseStyles = StyleSheet.create({
     },
     modalContent: {
         width: '80%',
-        height: '60%',
+        height: 'auto',
         padding: 20,
         backgroundColor: 'white',
         borderRadius: 10,
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
     },
     // Payment Screen Styles---
     money: {

@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Pressable, Text } from "react-native";
 import baseStyles from "./BaseStyles";
 
@@ -19,6 +19,16 @@ export function RejectButton({ onPressAction }) {
             style={[baseStyles.circleButton, baseStyles.redBG]}
             onPress={onPressAction}>
             <Ionicons name="close" size={21} color="white" />
+        </Pressable>
+    )
+}
+
+export function InSplitButton({ onPressAction }) {
+    return (
+        <Pressable
+            style={[baseStyles.circleButton, baseStyles.grayBG]}
+            onPress={onPressAction}>
+            <MaterialIcons name="call-split" size={23} color="white" />
         </Pressable>
     )
 }

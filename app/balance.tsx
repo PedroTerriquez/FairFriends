@@ -48,10 +48,10 @@ export default function Balance() {
       });
   };
 
-  const members = () => {
+  const membersAsString = () => {
     return JSON.stringify(balance.balance_members.map(member => {
       return {
-        id: member.id,
+        id: member.user_id,
         name: member.name,
       };
     }));
@@ -62,8 +62,8 @@ export default function Balance() {
       paymentable_id: id,
       type: 'Balance',
       recipient_name: balance.name,
-      recipient_id: balance.id,
-      members: members(),
+      recipient_id: balance.creator_id,
+      members: membersAsString(),
       admin: balance.admin
     }
   }
@@ -77,7 +77,7 @@ export default function Balance() {
             balance?.status === 'active' && <TouchableOpacity onPress={() => {
               if (balance) {
                 router.push({
-                  pathname: "/formPayment",
+                  pathname: "/formUnevenPayment",
                   params: formPaymentParams()
                 });
               }
@@ -136,7 +136,7 @@ export default function Balance() {
       <ScrollView
         contentContainerStyle={[baseStyles.viewContainerFull]}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchBalance} />} >
-        { showSplit && <ModalInfoSplit visible={showSplit} payments={balanceSplitted} onClose={() => setShowSplit(false)} /> }
+        { showSplit && <ModalInfoSplit visible={showSplit} balanceSplittedInfo={balanceSplitted} onClose={() => setShowSplit(false)} /> }
         <BalanceCard
           id={balance.id}
           total={balance.total}
@@ -150,7 +150,7 @@ export default function Balance() {
         </View>
         <FloatingButton
           icon='close'
-          style={{ backgroundColor: 'red' }}
+          style={{ backgroundColor: 'red', left: 20 }}
           action={() => { setShowSplit(true) }}
         />
         {renderPayments()}

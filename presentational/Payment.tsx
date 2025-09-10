@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Modal } from "react-native";
 import { router } from "expo-router";
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
 import { acceptPayment, rejectPayment } from "@/services/api";
-import AcceptButton, { EditButton, PendingButton, RejectButton } from "./acceptButton";
+import AcceptButton, { EditButton, InSplitButton, PendingButton, RejectButton } from "./acceptButton";
+import ButtonWithIcon from "./ButtonWithIcon";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Payment({
   id,
@@ -20,11 +22,13 @@ export default function Payment({
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
+  const [showSplitWarning, setShowSplitWarning] = useState(false)
 
   const pending = !canEdit && mutableStatus === "pending";
   const editable = canEdit && mutableStatus === "pending";
   const accepted = mutableStatus === "accepted";
   const rejected = mutableStatus === "rejected";
+  const in_split = mutableStatus === "in_split";
 
   let moneyColor = baseStyles.boldText;
   if (accepted) {
@@ -33,6 +37,8 @@ export default function Payment({
     moneyColor = baseStyles.redText;
   } else if (pending || editable) {
     moneyColor = baseStyles.orangeText;
+  } else if (in_split) {
+    moneyColor = baseStyles.textGray;
   }
 
   const formattedDate = (() => {
@@ -109,6 +115,8 @@ export default function Payment({
       return <AcceptButton onPressAction={null} />
     } else if (rejected) {
       return <RejectButton onPressAction={null} />
+    } else if (in_split) {
+      return <InSplitButton onPressAction={() => setShowSplitWarning(true) } />
     }
   };
 
@@ -130,6 +138,26 @@ export default function Payment({
           {renderStatusSection()}
         </View>
       </View>
+      <Modal
+        visible={showSplitWarning}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowSplitWarning(false)}
+      >
+        <View style={[baseStyles.modalContainer]}>
+          <View style={[baseStyles.modalContent]}>
+            <Text style={[baseStyles.title24, { marginTop: 40, textAlign: 'center' }]}> ⚠️ This payment was split unequally.</Text>
+            <Text style={baseStyles.label17}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
+            <ButtonWithIcon
+              style={[baseStyles.successBG, {marginTop: 50}]}
+              textStyle={{ fontSize: 15, marginLeft: 10 }}
+              text='OK, understood'
+              onPress={() => setShowSplitWarning(false)}
+              icon={<Ionicons name="close-sharp" size={31} color="white" />}
+            />
+          </View>
+        </View>
+      </Modal>
     </Pressable>
   );
 }
