@@ -22,12 +22,13 @@ const getToken = async () => {
   if (cachedToken) {
     return { headers: { Authorization: `Bearer ${cachedToken}` } };
   }
-  
+
   try {
     if (Platform.OS === 'web') {
       cachedToken = await AsyncStorage.getItem('authToken');
       if (!cachedToken) {
-        alert('No values stored under that key.');
+        //TODO: Think in something better like creating a toast
+        //alert('No values stored under that key.');
       }
     } else {
       cachedToken = await SecureStore.getItemAsync("authToken");

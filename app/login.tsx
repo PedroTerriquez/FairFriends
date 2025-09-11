@@ -53,6 +53,8 @@ export default function Login() {
                 autoCapitalize="none"
                 keyboardType="email-address"
                 autoComplete="email"
+                textContentType="none"
+                secureTextEntry={false}
               />
               <TextInput
                 style={baseStyles.grayInput}
@@ -61,7 +63,8 @@ export default function Login() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                autoComplete="password"
+                autoComplete="off"
+                textContentType="password"
               />
             </View>
             <TouchableOpacity

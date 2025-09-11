@@ -1,6 +1,7 @@
 import { getHome } from "@/services/api";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useSession } from "@/services/authContext";
 
 import { router } from "expo-router";
 import Payment from '../../presentational/Payment';
@@ -19,6 +20,7 @@ export default function Home() {
   const [promisePayments, setPromisePayments] = useState([])
   const [activeTab, setActiveTab] = useState("Promises");
   const [loading, setLoading] = useState(false);
+  const { signOut } = useSession();
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -29,6 +31,8 @@ export default function Home() {
       setBalancePayments(response.data.balance_payments);
       setPromisePayments(response.data.promise_payments);
     } catch {
+      signOut()
+      router.replace("/");
     }
     finally {
       setLoading(false);

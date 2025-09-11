@@ -1,27 +1,48 @@
-/* const origError = console.error;
-console.error = function (...args) {
-  if (
-    typeof args[0] === 'string' &&
-    args[0].includes('Unexpected text node')
-  ) {
-    throw new Error(args.join(' ')); // force debugger to stop
-  }
-  origError.apply(console, args);
-};
-*/
-
-import { Redirect, Stack } from 'expo-router';
-import { useSession } from '../services/authContext';
+import { useEffect, useState } from "react";
+import { View, Text, ActivityIndicator } from "react-native";
+import { Redirect } from "expo-router";
+import { useSession } from "../services/authContext";
 
 export default function Index() {
   const { session } = useSession();
+  const [serverReady, setServerReady] = useState(false);
+  const [countdown, setCountdown] = useState(90);
 
-  if (session) {
-    return <Redirect href="/home" />;
-  } else {
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const wakeUpServer = async () => {
+      try {
+        await fetch(process.env.EXPO_PUBLIC_API +"/home");
+        setServerReady(true);
+      } catch {
+        console.log("Wake up failed, retrying…");
+      }
+    };
+
+    wakeUpServer();
+
+    interval = setInterval(() => {
+      setCountdown((prev) => Math.max(prev - 5, 0));
+      wakeUpServer();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (serverReady) {
+    if (session) return <Redirect href="/home" />;
     return <Redirect href="/login" />;
   }
 
-  return <Stack />;
+  // Splash screen
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+      <Text style={{ marginTop: 20 }}>Waking up server…</Text>
+      <Text style={{ marginTop: 10 }}>
+        {countdown} seconds remaining
+      </Text>
+    </View>
+  );
 }
-
