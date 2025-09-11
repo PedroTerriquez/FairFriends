@@ -1,5 +1,6 @@
 import axios from "axios";
-const API = process.env.EXPO_PUBLIC_API;
+import Constants from 'expo-constants';
+const API = Constants.expoConfig.extra.EXPO_PUBLIC_API;
 import { toast } from "./toastService";
 import { getSession } from "./sessionGlobalSingleton";
 
