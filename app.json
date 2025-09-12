@@ -13,6 +13,7 @@
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
+
     "updates": {
       "url": "https://u.expo.dev/b2f48f01-eee6-48f6-b861-102b897a600b"
     },
@@ -31,6 +32,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+
     "plugins": [
       "expo-router",
       [
@@ -44,14 +46,17 @@
       ],
       "expo-secure-store"
     ],
+
     "experiments": {
       "typedRoutes": true
     },
+
     "extra": {
       "router": {},
       "eas": {
         "projectId": "b2f48f01-eee6-48f6-b861-102b897a600b"
-      }
+      },
+      "EXPO_PUBLIC_API": process.env.EXPO_PUBLIC_API
     }
   }
 }
