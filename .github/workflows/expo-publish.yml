@@ -1,12 +1,12 @@
-name: Expo Publish
+name: Expo EAS Update
 
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main   # change this if your default branch is different
 
 jobs:
-  publish:
+  update:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
 
-      - name: Publish to Expo
-        run: expo publish --non-interactive
+      - name: Publish update with EAS
+        run: eas update --non-interactive --auto
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
