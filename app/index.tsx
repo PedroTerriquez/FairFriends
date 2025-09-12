@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Redirect } from "expo-router";
 import { useSession } from "../services/authContext";
+import Constants from 'expo-constants';
 
 export default function Index() {
   const { session } = useSession();
   const [serverReady, setServerReady] = useState(false);
   const [countdown, setCountdown] = useState(90);
+  const API_URL = Constants.expoConfig.extra.EXPO_PUBLIC_API;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     const wakeUpServer = async () => {
       try {
-        await fetch(process.env.EXPO_PUBLIC_API +"/home");
+        await fetch(API_URL +"/home");
         setServerReady(true);
       } catch {
         console.log("Wake up failed, retrying…");
