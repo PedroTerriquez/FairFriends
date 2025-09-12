@@ -3,7 +3,7 @@ name: Expo EAS Update
 on:
   push:
     branches:
-      - main   # change this if your default branch is different
+      - main
 
 jobs:
   update:
@@ -24,7 +24,8 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Publish update with EAS
+      - name: Publish OTA update with EAS
         run: eas update --non-interactive --auto
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_API: ${{ secrets.EXPO_PUBLIC_API }}
