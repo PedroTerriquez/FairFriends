@@ -130,6 +130,7 @@ export default function Payment({
           <View style={baseStyles.marginLeft}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
             { parentTitle && <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text> }
+            { title && <Text style={baseStyles.cardSubtitle}>{title}</Text> }
             <Text style={[baseStyles.cardDate, {paddingTop: 10}]}>{formattedDate}</Text>
           </View>
         </View>
