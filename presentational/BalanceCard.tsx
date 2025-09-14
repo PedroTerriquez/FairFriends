@@ -49,7 +49,7 @@ export default BalanceCard = ({ id, total, name, members, myTotal }) => {
       <View style={[baseStyles.rowCenter]}>
         <View style={{ flex: 2, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[baseStyles.titleBold40, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
+            <Text style={[baseStyles.title32, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
               ${Math.abs(myTotal)}
             </Text>
             <AntDesign
