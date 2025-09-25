@@ -73,6 +73,9 @@ export default function Balance() {
       <View style={[baseStyles.containerCard, { flexDirection: 'row', alignItems: 'center', height: 70}]}>
         <Text style={[baseStyles.title15, {marginLeft: 15}]}>Recent Transactions </Text>
         <View style={[baseStyles.rightSection, { gap: 10 }]}>
+          <TouchableOpacity onPress={() => setShowSplit(true)} style={[baseStyles.circleButton, baseStyles.redBG]}>
+            <Ionicons name="close-sharp" size={33} color="white" />
+          </TouchableOpacity>
           {
             balance?.status === 'active' && <TouchableOpacity onPress={() => {
               if (balance) {
@@ -134,7 +137,7 @@ export default function Balance() {
   return (
     <>
       <ScrollView
-        contentContainerStyle={[baseStyles.viewContainerFull]}
+        contentContainerStyle={[baseStyles.viewContainerFullScrollable]}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchBalance} />} >
         { showSplit && <ModalInfoSplit visible={showSplit} balanceSplittedInfo={balanceSplitted} onClose={() => setShowSplit(false)} /> }
         <BalanceCard
@@ -148,11 +151,6 @@ export default function Balance() {
         <View style={[{ justifyContent: "space-between", height: 70, marginBottom: 10 }]}>
           {renderPaymentsHeader()}
         </View>
-        <FloatingButton
-          icon='close'
-          style={{ backgroundColor: 'red', left: 20 }}
-          action={() => { setShowSplit(true) }}
-        />
         {renderPayments()}
       </ScrollView>
     </>

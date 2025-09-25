@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import Avatar from './Avatar';
 import baseStyles from './BaseStyles';
 
-export default Person = ({ person, children, onClick = () => {}}) => {
+export default function Person({ person, children, onClick = () => {}}) {
   return (
     <TouchableOpacity style={[baseStyles.card]} key={person.id} onPress={() => onClick(person.id) } >
       <View style={[baseStyles.cardContent]}>

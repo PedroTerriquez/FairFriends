@@ -6,7 +6,7 @@ import baseStyles from "./BaseStyles";
 import { getColorHex } from "@/services/getColorHex";
 import Avatar from "./Avatar";
 
-export default MiniPromiseCard = ({ id, name, paidAmount, total }) => {
+export default function MiniPromiseCard({ id, name, paidAmount, total })  {
   const percentage = (paidAmount / total * 100);
 
   return (

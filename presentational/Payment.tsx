@@ -149,6 +149,7 @@ export default function Payment({
           <View style={[baseStyles.modalContent]}>
             <Text style={[baseStyles.title24, { marginTop: 40, textAlign: 'center' }]}> ⚠️ This payment was split unequally.</Text>
             <Text style={baseStyles.label17}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
+            <Text>Details</Text>
             <ButtonWithIcon
               style={[baseStyles.successBG, {marginTop: 50}]}
               textStyle={{ fontSize: 15, marginLeft: 10 }}

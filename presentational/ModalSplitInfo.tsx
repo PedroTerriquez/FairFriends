@@ -2,6 +2,7 @@ import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
 import baseStyles from "./BaseStyles";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ButtonWithIcon from "./ButtonWithIcon";
+import Avatar from "./Avatar";
 
 export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }) {
     return (
@@ -26,6 +27,8 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                     paddingVertical: 4
                                 }}
                             >
+                                <Avatar name={payment.from} />
+                                <Avatar name={payment.to} />
                                 <Text style={{ flex: 5 }}>
                                     {payment.from} owes {payment.to}
                                 </Text>
@@ -35,7 +38,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                             </View>
                         ))}
                     </View>
-                    <Text style={[baseStyles.title24, { marginTop: 80 }]}>Detail</Text>
+                    <Text style={[baseStyles.title24, { marginTop: 40 }]}>Detail</Text>
                     <Text style={[baseStyles.title15, { marginTop: 15 }]}>Debt per member: {balanceSplittedInfo.debt_per_member} </Text>
                     <Text style={[baseStyles.title15, { marginTop: 15 }]}>Paid per member</Text>
                     <View style={{marginTop: 10, width: '100%'}}>

@@ -4,8 +4,9 @@ import { PieChart } from "react-native-chart-kit";
 import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons"; // Import MaterialIcons
 import baseStyles from "./BaseStyles";
+import formatMoney from "../services/formatMoney";
 
-export default BalanceCard = ({ id, total, name, members, myTotal }) => {
+export default function BalanceCard({ id, total, name, members, myTotal }) {
   const getColorByIndex = (index) => {
     const professionalColors = [
       "#4F81BD", // Blue
@@ -47,21 +48,26 @@ export default BalanceCard = ({ id, total, name, members, myTotal }) => {
     <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => router.push({pathname: 'balance', params: { id }})}>
       <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
       <View style={[baseStyles.rowCenter]}>
-        <View style={{ flex: 2, justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[baseStyles.title32, { color: difference >= 0 ? 'green' : '#dc3545' }]}>
-              ${Math.abs(myTotal)}
-            </Text>
-            <AntDesign
-              name={difference >= 0 ? "caretup" : "caretdown"}
-              size={24}
-              color={difference >= 0 ? "green" : "#dc3545"}
-              style={{ marginLeft: 5 }}
-            />
+        <View style={{ flex: 2.5, justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "column" }}>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Text style={[baseStyles.blackBG, baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10 }]}>Avg</Text>
+              <Text style={[baseStyles.title24, baseStyles.boldText]}>{formatMoney(avg)}</Text>
+            </View>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Text style={[baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10, backgroundColor: difference >= 0 ? 'green' : '#dc3545'  }]}>You</Text>
+              <Text style={[baseStyles.title24, { color: difference >= 0 ? 'green' : '#dc3545' }]}>{formatMoney(myTotal)}</Text>
+              <AntDesign
+                name={difference >= 0 ? "caretup" : "caretdown"}
+                size={20}
+                color={difference >= 0 ? "green" : "#dc3545"}
+                style={{ marginLeft: 5 }}
+              />
+            </View>
           </View>
-          <Text style={[baseStyles.smallLabel]}>Total: $<Text style={baseStyles.boldText}>{total}</Text></Text>
-          <View style={[baseStyles.rowCenter, { marginTop: 20 }]}>
-            <Text style={[baseStyles.label14, baseStyles.lightRedBG, { borderRadius: 10, paddingHorizontal: 10 }]}>Next on: <Text style={[baseStyles.boldText]}>{lessPaid}</Text></Text>
+          <View style={[{ flexDirection: 'column', marginTop: 10, alignItems: 'center', padding: 5, borderRadius: 10, paddingHorizontal: 5 }, baseStyles.lightRedBG]}>
+            <Text style={[baseStyles.smallLabel]}>Suggested payment by: </Text>
+            <Text style={[baseStyles.boldText]}>{lessPaid}</Text>
           </View>
         </View>
         <View style={{ flex: 3.5 }}>

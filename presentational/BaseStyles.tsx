@@ -7,6 +7,11 @@ const baseStyles = StyleSheet.create({
         backgroundColor: '#f6f6f6',
         padding: 5,
     },
+    viewContainerFullScrollable: {
+        flexGrow: 1,
+        backgroundColor: '#f6f6f6',
+        padding: 5,
+    },
     containerCard: {
         backgroundColor: 'white',
         borderRadius: 15,
@@ -59,12 +64,18 @@ const baseStyles = StyleSheet.create({
     title32: {
         fontSize: 32,
         fontWeight: 'bold',
-        marginTop: 20,
     },
     title24: {
         fontSize: 24,
         fontWeight: "bold",
-        marginBottom: 20,
+    },
+    title26: {
+        fontSize: 26,
+        fontWeight: "bold",
+    },
+    title20: {
+        fontSize: 20,
+        fontWeight: "bold",
     },
     title17: {
         fontSize: 17,
@@ -122,6 +133,9 @@ const baseStyles = StyleSheet.create({
     // Backgrounds
     redBG: {
         backgroundColor: '#a8312e',
+    },
+    blackBG: {
+        backgroundColor: 'black',
     },
     greenBG: {
         backgroundColor: 'green',
