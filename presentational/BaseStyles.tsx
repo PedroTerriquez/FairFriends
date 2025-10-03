@@ -2,10 +2,14 @@ import { StyleSheet } from 'react-native';
 
 const baseStyles = StyleSheet.create({
     //Containers
+    generalBackground: {
+        backgroundColor: '#F2F4F5',
+    },
     viewContainerFull: {
         flex: 1,
-        backgroundColor: '#f6f6f6',
-        padding: 5,
+        //backgroundColor: '#f6f6f6',
+        backgroundColor: '#F2F4F5',
+        padding: 15,
     },
     viewContainerFullScrollable: {
         flexGrow: 1,
@@ -116,6 +120,12 @@ const baseStyles = StyleSheet.create({
         color: "green",
         fontWeight: "bold"
     },
+    postiveValueText: {
+        color: "green",
+    },
+    negativeValueText: {
+        color: "#dc3545",
+    },
     errorText: {
         color: "red",
     },
@@ -180,15 +190,15 @@ const baseStyles = StyleSheet.create({
         paddingHorizontal: 20,
         marginVertical: 5,
         borderRadius: 15,
-        borderWidth: 0.5,
-        borderColor: "#0000002e",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        //borderWidth: 0.1,
+        //borderColor: "#0000002e",
+        //shadowColor: "#000",
+        //shadowOffset: {
+            //width: 0,
+            //height: 2,
+        //},
+        //shadowOpacity: 0.25,
+        //shadowRadius: 3.84,
         elevation: 5,
         overflow: 'visible',
     },
@@ -284,12 +294,13 @@ const baseStyles = StyleSheet.create({
         fontSize: 16,
     },
     buttonWithIcon: {
-        flexDirection: 'row',
-        padding: 15,
-        paddingHorizontal: 20,
-        borderRadius: 12,
+        flexDirection: 'column',
+        padding: 10,
+        paddingHorizontal: 25,
+        gap: 3,
+        maxWidth: 55,
+        borderRadius: 10,
         alignItems: 'center',
-        justifyContent: 'center',
     },
     // Rest of utilities
     avatar: {
@@ -338,6 +349,10 @@ const baseStyles = StyleSheet.create({
     },
     inputError: {
         borderColor: "red",
+    },
+    badge: {
+        borderRadius: 10,
+        padding: 5,
     },
     floatingBadgeForCard: {
         position: "absolute",

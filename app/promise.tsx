@@ -112,11 +112,11 @@ export default function Promise() {
                     user={promise.admin_name}
                 />
                 { promise.status === "pending" && (
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10, gap: 10}}>
                         <ButtonWithIcon
-                            style={[baseStyles.buttonWithIcon, baseStyles.warningBG, { gap: 10, marginRight: 10, width: 100 }]}
+                            style={[baseStyles.buttonWithIcon, baseStyles.warningBG, { width: 100 }]}
                             text="Edit"
-                            icon={<MaterialIcons name="edit" size={20} color="white" />}
+                            icon={<MaterialIcons name="edit" size={18} color="white" />}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
                                     paymentable_id: id,
@@ -127,9 +127,9 @@ export default function Promise() {
                         />
                         { promise.admin && (
                             <ButtonWithIcon
-                                style={[baseStyles.buttonWithIcon, baseStyles.successBG, { gap: 10 }]}
+                                style={[baseStyles.buttonWithIcon, baseStyles.successBG]}
                                 text="Accept"
-                                icon={<MaterialIcons name="check" size={20} color="white" />}
+                                icon={<MaterialIcons name="check" size={18} color="white" />}
                                 onPress={() => acceptPromiseThroughNotification(promise.notification_id)}
                             />
                         )

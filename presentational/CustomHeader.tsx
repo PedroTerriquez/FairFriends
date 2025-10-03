@@ -8,12 +8,13 @@ import baseStyles from './BaseStyles';
 export default function CustomHeader() {
   const router = useRouter();
   const pathname = usePathname();
-  const canGoBack = router.canGoBack();
   const insets = useSafeAreaInsets();
 
   if (pathname === '/login' || pathname === '/signup') {
     return null;
   }
+
+  const canGoBack = pathname !== '/home' && router.canGoBack();
 
   // TODO: Probably remove extra padding to the top of the header
   return (
@@ -29,11 +30,11 @@ export default function CustomHeader() {
           )}
         </View>
         <View style={baseStyles.center}>
-          <TouchableOpacity  onPress={() => router.push('/home')}>
+          <TouchableOpacity onPress={() => router.push('/home')}>
             <Text style={baseStyles.title17}>FairFriends</Text>
           </TouchableOpacity>
         </View>
-        <View style={baseStyles.rightSection}>
+        <View style={[baseStyles.rightSection, {gap : 5}]}>
           <TouchableOpacity 
             onPressIn={() => router.push('/profile')}
           >

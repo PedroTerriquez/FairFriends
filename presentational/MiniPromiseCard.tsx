@@ -12,20 +12,17 @@ export default function MiniPromiseCard({ id, name, paidAmount, total })  {
   return (
     <TouchableOpacity
       key={id}
-      style={[baseStyles.card, { flexDirection: 'row',alignItems: 'center', gap: 20, minWidth: 200 }]}
+      style={[baseStyles.card, { flexDirection: 'column',alignItems: 'center', gap: 10, minWidth: 160 }]}
       onPress={() => router.push({ pathname: 'promise', params: { id } })}
     >
-      <View style={baseStyles.leftSection}>
-        <Avatar name={name || '.'}></Avatar>
-      </View>
-      <View style={[baseStyles.rightSection, {alignItems: 'center'}]}>
-        <Text
-          style={[
-            baseStyles.titleBold40,
-            { color: getColorHex(percentage) }]}
-        >
+      <View style={[baseStyles.rowCenter]}>
+        <Text style={[ baseStyles.title32, { color: getColorHex(percentage) }]} >
           {percentage}%
         </Text>
+      </View>
+      <View style={[baseStyles.rowCenter, {gap: 10}]}>
+        <Avatar name={name || '.'} size={20}></Avatar>
+        <Text> {name.length > 12 ? name.slice(0, 12) + "…" : name}</Text>
       </View>
     </TouchableOpacity>
   );

@@ -19,6 +19,7 @@ export default function Payment({
   parentTitle,
   status,
   title,
+  promises,
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
@@ -147,9 +148,15 @@ export default function Payment({
       >
         <View style={[baseStyles.modalContainer]}>
           <View style={[baseStyles.modalContent]}>
-            <Text style={[baseStyles.title24, { marginTop: 40, textAlign: 'center' }]}> ⚠️ This payment was split unequally.</Text>
+            <Text style={[baseStyles.title24, { marginTop: 40, marginBottom: 20, textAlign: 'center' }]}> ⚠️ This payment was split unequally.</Text>
             <Text style={baseStyles.label17}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
-            <Text>Details</Text>
+            <Text style={[baseStyles.title24, {marginTop: 20}]}>Details:</Text>
+            { promises && promises.map((promise, index) => (
+              <View key={index} style={[baseStyles.rowCenter, {justifyContent: 'space-between', width: '100%', marginTop: 10}]}>
+                <Text style={baseStyles.label17}>{promise.name}</Text>
+                <Text style={baseStyles.label17}>{promise.paid}/{promise.total}</Text>
+                </View>
+            )) }
             <ButtonWithIcon
               style={[baseStyles.successBG, {marginTop: 50}]}
               textStyle={{ fontSize: 15, marginLeft: 10 }}

@@ -5,12 +5,12 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import baseStyles from '@/presentational/BaseStyles'
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
-import FloatingButton from "@/presentational/FloatingButton";
 import Spinner from "@/presentational/Spinner";
 import { getBalanceDetail, getBalanceInfo } from "@/services/api";
 import EmptyList from "@/presentational/EmptyList";
 import ModalInfoSplit from "@/presentational/ModalSplitInfo";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 
 export default function Balance() {
   const [payments, setPayments] = useState([]);
@@ -70,35 +70,40 @@ export default function Balance() {
 
   const renderPaymentsHeader = () => {
     return (
-      <View style={[baseStyles.containerCard, { flexDirection: 'row', alignItems: 'center', height: 70}]}>
+      <View style={[ baseStyles.rowCenter, {height: 80}]}>
         <Text style={[baseStyles.title15, {marginLeft: 15}]}>Recent Transactions </Text>
-        <View style={[baseStyles.rightSection, { gap: 10 }]}>
-          <TouchableOpacity onPress={() => setShowSplit(true)} style={[baseStyles.circleButton, baseStyles.redBG]}>
-            <Ionicons name="close-sharp" size={33} color="white" />
-          </TouchableOpacity>
+        <View style={[baseStyles.rightSection, { gap: 5 }]}>
+          <ButtonWithIcon
+          style={baseStyles.redBG}
+          onPress={() => setShowSplit(true)}
+          text='Close'
+          icon={<Ionicons name="close-sharp" size={25} color="white" />}
+          />
           {
-            balance?.status === 'active' && <TouchableOpacity onPress={() => {
+            balance?.status === 'active' && <ButtonWithIcon onPress={() => {
               if (balance) {
                 router.push({
                   pathname: "/formUnevenPayment",
                   params: formPaymentParams()
                 });
               }
-            }} style={[baseStyles.circleButton, baseStyles.blueBG]}>
-              <MaterialIcons name="call-split" size={23} color="white" />
-            </TouchableOpacity>
+            }} style={baseStyles.blueBG}
+              text='Uneven'
+              icon={<MaterialIcons name="call-split" size={23} color="white" />}
+            />
           }
           {
-            payable && <TouchableOpacity onPress={() => {
+            payable && <ButtonWithIcon onPress={() => {
               if (balance) {
                 router.push({
                   pathname: "/formPayment",
                   params: formPaymentParams()
                 });
               }
-            }} style={[baseStyles.circleButton, baseStyles.blueBG]}>
-              <Ionicons name="add" size={31} color="white" />
-            </TouchableOpacity>
+            }} style={[baseStyles.blueBG]}
+            text='Add'
+            icon={<Ionicons name="add" size={25} color="white" />}
+            />
           }
         </View>
       </View>)
@@ -120,6 +125,7 @@ export default function Balance() {
         parentTitle={payment.parent_title}
         status={payment.status}
         title={payment.title}
+        promises={payment.promises}
       />
     ))
   }

@@ -42,6 +42,18 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                     <Text style={[baseStyles.title15, { marginTop: 15 }]}>Debt per member: {balanceSplittedInfo.debt_per_member} </Text>
                     <Text style={[baseStyles.title15, { marginTop: 15 }]}>Paid per member</Text>
                     <View style={{marginTop: 10, width: '100%'}}>
+                        <View
+                            key={0}
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                paddingVertical: 4
+                            }}
+                        >
+                            <View style={{ flex: 1 }}><Text>Name</Text></View>
+                            <View style={{ flex: 1.5 }}><Text>Paid</Text></View>
+                            <View style={{ flex: 1.5 }}><Text>Getting Back/Owes</Text></View>
+                        </View>
                         {
                             balanceSplittedInfo.paid_per_member.map((payment, index) => (
                             <View
@@ -53,14 +65,14 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                 }}
                             >
                                 <Text style={{ flex: 1 }}>
-                                    {payment[0]}
+                                    {payment[0].length > 8 ? payment[0].slice(0, 8) + "..." : payment[0]}
                                 </Text>
-                                <Text style={{ flex: 1, textAlign: "left" }}>
-                                    Paid ${payment[1]}
-                                </Text>
-                                <Text style={{ flex: 1, textAlign: "left" }}>
-                                    Paying ${-1*(payment[1] - balanceSplittedInfo.debt_per_member)}
-                                </Text>
+                                <View style={{ flex: 1.5, textAlign: "left" }}>
+                                    <Text>${payment[1]}</Text>
+                                </View>
+                                <View style={{ flex: 1.5, textAlign: "left" }}>
+                                    <Text>${(payment[1] - balanceSplittedInfo.debt_per_member)}</Text>
+                                </View>
                             </View>
                         ))}
                     </View>

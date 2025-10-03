@@ -25,7 +25,7 @@ export default function FormStepContainer({ children, step, setStep, stepPositio
                     icon={icon}
                     text='Next'
                     onPress={() => { onNext ? onNext() : setStep(stepPosition + 1); }}
-                    style={[baseStyles.greenBG, { marginVertical: 10 }]} />
+                    style={[baseStyles.greenBG, { marginVertical: 10, alignItems: 'flex-end' }]} />
             </View>)}
         </View>
     );

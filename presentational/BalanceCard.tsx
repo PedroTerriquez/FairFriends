@@ -66,7 +66,7 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
             </View>
           </View>
           <View style={[{ flexDirection: 'column', marginTop: 10, alignItems: 'center', padding: 5, borderRadius: 10, paddingHorizontal: 5 }, baseStyles.lightRedBG]}>
-            <Text style={[baseStyles.smallLabel]}>Suggested payment by: </Text>
+            <Text style={[baseStyles.smallLabel]}>Next payment on: </Text>
             <Text style={[baseStyles.boldText]}>{lessPaid}</Text>
           </View>
         </View>
