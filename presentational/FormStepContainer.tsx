@@ -8,7 +8,7 @@ export default function FormStepContainer({ children, step, setStep, stepPositio
         <View style={[baseStyles.containerCard]}>
             {/* Header with title and toggle button */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={[{fontSize: 19, fontWeight: 'bold'}]}> {title} </Text>
+            <Text style={[{fontSize: 19, fontWeight: 'bold', paddingBottom: 10}]}> {title} </Text>
             { step == stepPosition && (
                 <Pressable onPress={() => setStep(stepPosition == 1 ? stepPosition + 1 : stepPosition - 1)}>
                 <MaterialCommunityIcons name={'menu-down'} size={24} color="black" />

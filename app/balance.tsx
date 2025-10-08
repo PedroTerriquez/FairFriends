@@ -1,15 +1,15 @@
 import { useCallback, useState } from "react";
-import { ScrollView, View, Text, RefreshControl, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, RefreshControl } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { getBalanceDetail, getBalanceInfo } from "@/services/api";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import baseStyles from '@/presentational/BaseStyles'
 import Payment from '../presentational/Payment';
 import BalanceCard from '../presentational/BalanceCard';
 import Spinner from "@/presentational/Spinner";
-import { getBalanceDetail, getBalanceInfo } from "@/services/api";
 import EmptyList from "@/presentational/EmptyList";
 import ModalInfoSplit from "@/presentational/ModalSplitInfo";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 import TopNavBar from "@/presentational/TopNavBar";
 

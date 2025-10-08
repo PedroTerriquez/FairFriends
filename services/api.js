@@ -119,3 +119,7 @@ export const findPeople = (search) =>
 // Home
 export const getHome = () =>
   apiCall(instance.get("/home"));
+
+// Split Promises
+export const getSplitPromises = (payment_id) =>
+  apiCall(instance.get(`/split_promises/${payment_id}`));

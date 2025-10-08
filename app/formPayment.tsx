@@ -76,9 +76,13 @@ export default function addPayment() {
           </View>
           {/* Payment Information Section */}
           <View style={[ step === 2 ? { flex: 0 } : { flex: 6 } ]}>
-            <FormStepContainer step={step} setStep={setStep} stepPosition={1}  icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={'Payment Information'} >
+            <FormStepContainer step={step} setStep={setStep} stepPosition={1}
+              icon={<MaterialIcons name="navigate-next" size={32} color="white" />}
+              title={'Payment Information'} >
               <View>
-                <InputWithLabel label='Concept' name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder="Add a concept" error={null} editable={true} />
+                <InputWithLabel label='Concept' name='concept' value={concept}
+                  onChangeText={(_name, value) => setConcept(value)}
+                  placeholder="Add a concept" error={null} editable={true} />
                 {params.members && params.admin == true && (
                   <View>
                     <Text style={baseStyles.label17}>Done by</Text>

@@ -5,8 +5,6 @@ import baseStyles from './BaseStyles'
 import Avatar from "./Avatar";
 import { acceptPayment, rejectPayment } from "@/services/api";
 import AcceptButton, { EditButton, InSplitButton, PendingButton, RejectButton } from "./acceptButton";
-import ButtonWithIcon from "./ButtonWithIcon";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function Payment({
   id,
@@ -24,7 +22,6 @@ export default function Payment({
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
-  const [showSplitWarning, setShowSplitWarning] = useState(false)
 
   const pending = !canEdit && mutableStatus === "pending";
   const editable = canEdit && mutableStatus === "pending";
@@ -93,6 +90,10 @@ export default function Payment({
       });
   }
 
+  const navigateSplitPromise = () => {
+    router.push({ pathname: "splitPromise", params: { payment_id: id } });
+  }
+
   const renderStatusSection = () => {
     if (pendingDecision) {
       return (
@@ -119,7 +120,7 @@ export default function Payment({
     } else if (rejected) {
       return <RejectButton onPressAction={null} />
     } else if (in_split) {
-      return <InSplitButton onPressAction={() => setShowSplitWarning(true) } />
+      return <InSplitButton onPressAction={() => navigateSplitPromise(true) } />
     }
   };
 
@@ -142,33 +143,6 @@ export default function Payment({
           {renderStatusSection()}
         </View>
       </View>
-      <Modal
-        visible={showSplitWarning}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowSplitWarning(false)}
-      >
-        <View style={[baseStyles.modalContainer]}>
-          <View style={[baseStyles.modalContent]}>
-            <Text style={[baseStyles.title24, { marginTop: 40, marginBottom: 20, textAlign: 'center' }]}> ⚠️ This payment was split unequally.</Text>
-            <Text style={baseStyles.label17}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
-            <Text style={[baseStyles.title24, {marginTop: 20}]}>Details:</Text>
-            { promises && promises.map((promise, index) => (
-              <View key={index} style={[baseStyles.rowCenter, {justifyContent: 'space-between', width: '100%', marginTop: 10}]}>
-                <Text style={baseStyles.label17}>{promise.name}</Text>
-                <Text style={baseStyles.label17}>{promise.paid}/{promise.total}</Text>
-                </View>
-            )) }
-            <ButtonWithIcon
-              style={[baseStyles.successBG, {marginTop: 50}]}
-              textStyle={{ fontSize: 15, marginLeft: 10 }}
-              text='OK, understood'
-              onPress={() => setShowSplitWarning(false)}
-              icon={<Ionicons name="close-sharp" size={31} color="white" />}
-            />
-          </View>
-        </View>
-      </Modal>
     </Pressable>
   );
 }
