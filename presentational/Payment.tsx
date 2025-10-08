@@ -20,6 +20,7 @@ export default function Payment({
   status,
   title,
   promises,
+  handleAccept,
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
   const [pendingDecision, setPendingDecision] = useState(false)
@@ -72,8 +73,9 @@ export default function Payment({
   const acceptPaymentButton = (id) => {
     setPendingDecision(false)
     acceptPayment(id)
-      .then(() => {
+      .then((response) => {
         setMutableStatus('accepted')
+        handleAccept(response.data.amount);
       })
       .catch((error) => {
         console.error('Error accepting payment:', error);

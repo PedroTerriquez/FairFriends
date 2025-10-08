@@ -18,7 +18,7 @@ export default function Promise() {
     const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
 
-    const fetchPayments = async () => {
+    const fetchPromiseDetails = async () => {
         setLoading(true);
         setRefreshing(true);
         getPromiseDetail(id)
@@ -75,11 +75,13 @@ export default function Promise() {
                 parentTitle={payment.parent_title}
                 status={payment.status}
                 title={payment.title}
+                handleAccept={acceptPayment}
             />
         ));
     };
 
-    const acceptPromiseThroughNotification = (id) => {
+    const acceptPromise = (id) => {
+        //Through the notification we accept the promise
         patchNotification(id, 'accepted')
             .then((response) => {
                 if (response.status == 200) {
@@ -88,9 +90,13 @@ export default function Promise() {
             });
     };
 
+    const acceptPayment = (quantity) => {
+        setPromise({ ...promise, paid_amount: (promise.paid_amount || 0) + quantity });
+    }
+
     useFocusEffect(
         useCallback(() => {
-            fetchPayments();
+            fetchPromiseDetails();
         }, [id])
     );
 
@@ -100,7 +106,7 @@ export default function Promise() {
     return (
         <ScrollView
             contentContainerStyle={baseStyles.viewContainerFull}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPayments} />} >
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromiseDetails} />} >
             <View>
                 <PromiseCard
                     id={promise.id}
@@ -130,7 +136,7 @@ export default function Promise() {
                                 style={[baseStyles.buttonWithIcon, baseStyles.successBG]}
                                 text="Accept"
                                 icon={<MaterialIcons name="check" size={18} color="white" />}
-                                onPress={() => acceptPromiseThroughNotification(promise.notification_id)}
+                                onPress={() => acceptPromise(promise.notification_id)}
                             />
                         )
                         }

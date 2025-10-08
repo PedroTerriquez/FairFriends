@@ -11,14 +11,17 @@ import EmptyList from "@/presentational/EmptyList";
 import ModalInfoSplit from "@/presentational/ModalSplitInfo";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ButtonWithIcon from "@/presentational/ButtonWithIcon";
+import TopNavBar from "@/presentational/TopNavBar";
 
 export default function Balance() {
   const [payments, setPayments] = useState([]);
+  const [uneven, setUneven] = useState([]);
   const [balance, setBalance] = useState(null);
   const [balanceSplitted, setBalanceSplitted] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
+  const [activeTab, setActiveTab] = useState( "Payments");
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const payable = balance && balance.status === 'active';
@@ -29,6 +32,7 @@ export default function Balance() {
     getBalanceDetail(id)
       .then((response) => {
         setPayments(response.data.payments);
+        setUneven(response.data.uneven_payments);
         setBalance(response.data.balance);
       })
       .catch((error) => {
@@ -77,7 +81,7 @@ export default function Balance() {
           style={baseStyles.redBG}
           onPress={() => setShowSplit(true)}
           text='Close'
-          icon={<Ionicons name="close-sharp" size={25} color="white" />}
+          icon={<Ionicons name="close-sharp" size={20} color="white" />}
           />
           {
             balance?.status === 'active' && <ButtonWithIcon onPress={() => {
@@ -89,7 +93,7 @@ export default function Balance() {
               }
             }} style={baseStyles.blueBG}
               text='Uneven'
-              icon={<MaterialIcons name="call-split" size={23} color="white" />}
+              icon={<MaterialIcons name="call-split" size={20} color="white" />}
             />
           }
           {
@@ -102,14 +106,14 @@ export default function Balance() {
               }
             }} style={[baseStyles.blueBG]}
             text='Add'
-            icon={<Ionicons name="add" size={25} color="white" />}
+            icon={<Ionicons name="add" size={23} color="white" />}
             />
           }
         </View>
       </View>)
   }
 
-  const renderPayments = () => {
+  const renderPayments = (payments) => {
     if (payments.length === 0) return <EmptyList text="No payments yet" ><Text>Start adding a new payment</Text></EmptyList>;
 
     return payments.map(payment => (
@@ -125,7 +129,7 @@ export default function Balance() {
         parentTitle={payment.parent_title}
         status={payment.status}
         title={payment.title}
-        promises={payment.promises}
+        promises={payment?.promises}
       />
     ))
   }
@@ -157,7 +161,8 @@ export default function Balance() {
         <View style={[{ justifyContent: "space-between", height: 70, marginBottom: 10 }]}>
           {renderPaymentsHeader()}
         </View>
-        {renderPayments()}
+        <TopNavBar menus={['Payments', 'Uneven']} activeTab={activeTab} setActiveTab={setActiveTab} />
+          {activeTab === "Payments" ? renderPayments(payments) : renderPayments(uneven)}
       </ScrollView>
     </>
   )

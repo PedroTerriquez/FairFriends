@@ -34,7 +34,7 @@ export default function MiniBalanceCard({ id, total, name, members, myTotal }) {
         </View>
         <View style={[{ flexDirection: 'row', alignItems: 'center', marginTop: 15, gap: 5 }]}>
           <Avatar name={name || '.'} size={15}></Avatar>
-          <Text>{name}</Text>
+          <Text>{name?.slice(0, 14)}</Text>
         </View>
       </View>
     </TouchableOpacity>

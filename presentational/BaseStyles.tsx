@@ -9,7 +9,8 @@ const baseStyles = StyleSheet.create({
         flex: 1,
         //backgroundColor: '#f6f6f6',
         backgroundColor: '#F2F4F5',
-        padding: 15,
+        paddingHorizontal: 15,
+        paddingVertical: 5,
     },
     viewContainerFullScrollable: {
         flexGrow: 1,
@@ -296,9 +297,9 @@ const baseStyles = StyleSheet.create({
     buttonWithIcon: {
         flexDirection: 'column',
         padding: 10,
-        paddingHorizontal: 25,
         gap: 3,
-        maxWidth: 55,
+        maxWidth: 100,
+        minWidth: 70,
         borderRadius: 10,
         alignItems: 'center',
     },

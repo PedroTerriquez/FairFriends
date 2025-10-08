@@ -8,7 +8,7 @@ export default function ButtonWithIcon({ onPress, icon, text, style, textStyle =
       onPress={() => onPress() }
     >
       {icon}
-      <Text style={[baseStyles.textWhite, { fontSize: 12 }, textStyle]}>{text}</Text>
+      <Text style={[baseStyles.textWhite, baseStyles.boldText, { fontSize: 12 }, textStyle]}>{text}</Text>
     </TouchableOpacity>
   );
   

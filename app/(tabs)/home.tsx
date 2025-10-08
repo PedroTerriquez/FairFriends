@@ -18,7 +18,7 @@ export default function Home() {
   const [promises, setPromises] = useState([]);
   const [balancePayments, setBalancePayments] = useState([]);
   const [promisePayments, setPromisePayments] = useState([]);
-  const [activeTab, setActiveTab] = useState( promises.length > 1 ? "Promises" : 'Balances');
+  const [activeTab, setActiveTab] = useState('');
   const [loading, setLoading] = useState(false);
   const { signOut } = useSession();
   const router = useRouter();
@@ -31,6 +31,12 @@ export default function Home() {
       setPromises(response.data.promises);
       setBalancePayments(response.data.balance_payments);
       setPromisePayments(response.data.promise_payments);
+
+      if (response.data.promises.length === 0) {
+        setActiveTab("Balances");
+      } else {
+        setActiveTab("Promises");
+      }
     } catch {
       signOut();
       router.replace("/");
@@ -105,7 +111,7 @@ export default function Home() {
     if (router?.pathname) {
       router.replace(router.pathname);
     }
-    fetchPayments();
+    fetchPayments()
   }, []);
 
   if (loading) return <Spinner />;

@@ -47,13 +47,13 @@ export default function formPromise() {
         if (paymentable_id) {
             updatePromise(paymentable_id, promise)
                 .then((response) => {
-                    router.push({pathname:'/promise', params: { id: paymentable_id } })
+                    router.replace({ pathname: '/promise', params: { id: paymentable_id } });
                 })
                 .catch((error) => {});
         } else {
             createPromise(promise)
                 .then((response) => {
-                    router.push({pathname:'/promise', params: { id: response.data.id } })
+                    router.replace({pathname:'/promise', params: { id: response.data.id } })
                 })
                 .catch((error) => {});
         }
