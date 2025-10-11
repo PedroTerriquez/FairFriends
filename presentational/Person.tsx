@@ -9,7 +9,7 @@ export default function Person({ person, children, onClick = () => {}}) {
       <View style={[baseStyles.cardContent]}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={person.first_name[0]}/>
-          < View style={baseStyles.marginLeft}>
+          < View style={baseStyles.marginLeft10}>
             <Text style={baseStyles.label17}>
               {person.first_name} {person.last_name}
             </Text>

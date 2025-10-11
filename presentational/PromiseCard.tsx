@@ -42,7 +42,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
       }
       <View style={baseStyles.rowCenter}>
         <Avatar name={user} />
-        <Text style={[baseStyles.cardTitle, baseStyles.marginLeft]}>{user}</Text>
+        <Text style={[baseStyles.cardTitle, baseStyles.marginLeft10]}>{user}</Text>
       </View>
       <Text style={[baseStyles.title15, baseStyles.textGray]}>{title}</Text>
       <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>

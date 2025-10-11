@@ -9,7 +9,7 @@ export default function PlaceholderPerson({ children, onClick = () => {}}) {
       <View style={baseStyles.cardContent}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={'Placeholder'}/>
-          <View style={baseStyles.marginLeft}>
+          <View style={baseStyles.marginLeft10}>
             <Text style={baseStyles.label17}> Placeholder Member </Text>
           </View>
         </View>

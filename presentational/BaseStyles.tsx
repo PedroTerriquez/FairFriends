@@ -28,7 +28,6 @@ const baseStyles = StyleSheet.create({
     viewRowWithSpace: {
         flexDirection: "row",
         justifyContent: "space-around",
-        padding: 10,
     },
     fullWidth: {
         width: '90%',
@@ -56,6 +55,10 @@ const baseStyles = StyleSheet.create({
     },
     rowCenter: {
         flexDirection: "row",
+        alignItems: "center",
+    },
+    columnCenter: {
+        flexDirection: "column",
         alignItems: "center",
     },
     alignItemsCenter: {
@@ -317,7 +320,7 @@ const baseStyles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
     },
-    marginLeft: {
+    marginLeft10: {
         marginLeft: 10,
     },
     marginLeft5: {
@@ -394,34 +397,36 @@ const baseStyles = StyleSheet.create({
         padding: 10,
         marginVertical: 10,
     },
-    tabBarActive: {
-        flex: 1,
-        backgroundColor: '#007bff',
+    tabBarContainer: {
+        backgroundColor: '#f0f0f0ff',
         borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 8,
         alignItems: "center",
         justifyContent: "center",
-        marginHorizontal: 10,
+        borderColor: "#0000002e",
+        borderWidth: 0.5,
     },
-    tabBarTextActive: {
-        color: 'white',
-        fontWeight: "bold"
-    },
-    tabBarInactive: {
+    tabBarActive: {
         flex: 1,
         backgroundColor: 'white',
         borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 1,
         borderColor: "#0000002e",
+        borderWidth: 1,
+    },
+    tabBarTextActive: {
+        color: 'black',
+    },
+    tabBarInactive: {
+        flex: 1,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
     },
     tabBarTextInactive: {
-        color: 'black',
-        fontWeight: "normal"
+        color: '#5f5f5fff',
     }, 
     modalContainer: {
         flex: 1,

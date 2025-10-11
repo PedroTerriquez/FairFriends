@@ -60,7 +60,7 @@ export default function NotificationCard({
       <View style={baseStyles.cardContent}>
         <View style={baseStyles.rowCenter}>
           <Avatar name={creatorName[0]} />
-          <View style={baseStyles.marginLeft}>
+          <View style={baseStyles.marginLeft10}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
             <Text style={baseStyles.cardSubtitle}>New {notifiableType}</Text>
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>

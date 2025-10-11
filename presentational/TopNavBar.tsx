@@ -3,7 +3,7 @@ import baseStyles from "./BaseStyles";
 
 export default function TopNavBar({menus, setActiveTab, activeTab}) {
   return (
-    <View style={baseStyles.viewRowWithSpace}>
+    <View style={[baseStyles.viewRowWithSpace, baseStyles.tabBarContainer]}>
       {(menus ?? []).map((menu) => {
         const isActive = activeTab === menu;
         return (

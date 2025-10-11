@@ -79,7 +79,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                     <Text style={[baseStyles.title15, { marginTop: 15 }]}>Uneven payments (personal):</Text>
                     <View style={{marginTop: 10, width: '100%'}}>
                         {
-                            balanceSplittedInfo.unevent_payments.map((payment, index) => (
+                            balanceSplittedInfo.uneven_payments.map((payment, index) => (
                                 <View
                                     key={index}
                                     style={{

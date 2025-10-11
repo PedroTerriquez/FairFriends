@@ -129,18 +129,23 @@ export default function Payment({
       onPress={() => handleShow() }
       style={[baseStyles.card, mutableStatus == 'pending' ? baseStyles.cardPending : null]}>
       <View style={baseStyles.cardContent}>
-        <View style={[baseStyles.rowCenter]}>
-          <Avatar name={ creatorName[0] } />
-          <View style={baseStyles.marginLeft}>
-            <Text style={baseStyles.cardTitle}>{creatorName}</Text>
+        <View style={[baseStyles.rowCenter, {flex: 1, gap: 15}]}>
+          {/* Avatar */}
+          <View style={[baseStyles.columnCenter]}>
+            <Avatar name={ creatorName[0] } />
+            <Text style={[baseStyles.label14, {marginTop: 5 }]}>{creatorName}</Text>
+          </View>
+          {/* Data */}
+          <View style={{ flex: 7 }}>
             { parentTitle && <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text> }
             { title && <Text style={baseStyles.cardSubtitle}>{title}</Text> }
             <Text style={[baseStyles.cardDate, {paddingTop: 10}]}>{formattedDate}</Text>
           </View>
-        </View>
-        <View style={{alignItems: 'flex-end'}}>
-          <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
-          {renderStatusSection()}
+          {/* Action buttons section */}
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={moneyColor}>{accepted ? "+" : ""}{amount}</Text>
+            {renderStatusSection()}
+          </View>
         </View>
       </View>
     </Pressable>

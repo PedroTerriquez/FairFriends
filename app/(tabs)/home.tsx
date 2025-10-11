@@ -1,6 +1,6 @@
 import { getHome } from "@/services/api";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import { useRouter } from 'expo-router';
 
@@ -12,6 +12,7 @@ import MiniPromiseCard from "@/presentational/MiniPromiseCard";
 import Spinner from '../../presentational/Spinner';
 import SubtitleLink from "@/presentational/SubtitleLink";
 import TopNavBar from "@/presentational/TopNavBar";
+import Avatar from "@/presentational/Avatar";
 
 export default function Home() {
   const [balances, setBalances] = useState([]);
@@ -20,7 +21,7 @@ export default function Home() {
   const [promisePayments, setPromisePayments] = useState([]);
   const [activeTab, setActiveTab] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signOut } = useSession();
+  const { signOut, user } = useSession();
   const router = useRouter();
 
   const fetchPayments = async () => {
@@ -111,13 +112,27 @@ export default function Home() {
     if (router?.pathname) {
       router.replace(router.pathname);
     }
-    fetchPayments()
+    fetchPayments();
   }, []);
 
   if (loading) return <Spinner />;
 
   return (
-    <View style={[baseStyles.viewContainerFull, {gap: 15}]}>
+    <View style={[baseStyles.viewContainerFull, { gap: 15 }]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }}>
+        <TouchableOpacity
+          onPressIn={() => router.push('/profile')}
+        >
+          <Avatar name={user?.first_name || "User"} size={50} />
+        </TouchableOpacity>
+        <View>
+          <Text style={{ color: '#8c8b8bff' }}>Welcome Back</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
+            <Text>Hello</Text>
+            <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
+          </View>
+        </View>
+      </View>
       {balances.length > 0 && (
         <View>
           <SubtitleLink text={"Latest Balances"} onPress={() => { router.push("/balances"); }} />
@@ -141,7 +156,9 @@ export default function Home() {
       <View>
         <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
         <View>
-          <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <View style={{ margin: 5}}>
+            <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
+          </View>
           <ScrollView>
             {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
           </ScrollView>

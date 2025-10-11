@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState, useContext, createContext, useEffect } from 'react';
-import { getToken, saveToken, deleteToken } from './useStorage';
+import { getSession, saveSession, deleteSession } from './useStorage';
 import { login, signup } from "@/services/api";
 import { registerSessionHandler } from './sessionGlobalSingleton';
 import { toast } from "./toastService";
@@ -10,9 +10,9 @@ const AuthContext = createContext({
   signUp: () => null,
   signOut: () => null,
   session: null,
+  user: null,
 });
 
-// This hook can be used to access the user info.
 export function useSession() {
   const value = useContext(AuthContext);
   if (process.env.NODE_ENV !== 'production') {
@@ -26,16 +26,19 @@ export function useSession() {
 
 export function SessionProvider({ children }) {
   const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
 
   const signIn = (email, password) => {
     login(email, password)
       .then((response) => {
         const token = response.data.auth_token;
-        saveToken(token).then(() => {
+        const user = response.data.user;
+        saveSession(token, user).then(() => {
           setSession({
             token,
             headers: { Authorization: `Bearer ${token}` }
           });
+          setUser(user);
           toast('Login successful', 'success');
           router.replace("/(tabs)/home");
         });
@@ -50,7 +53,9 @@ export function SessionProvider({ children }) {
     signup(first_name, last_name, email, password, password_confirmation)
       .then((response) => {
         const token = response.data.auth_token;
-        saveToken(token).then(() => {
+        const user = response.data.user;
+        saveSession(token, user).then(() => {
+          setUser(user);
           setSession({
             token,
             headers: { Authorization: `Bearer ${token}` }
@@ -70,8 +75,9 @@ export function SessionProvider({ children }) {
   }
 
   const signOut = () => {
-    deleteToken();
+    deleteSession();
     setSession(null);
+    setUser(null);
   };
 
   useEffect(() => {
@@ -81,12 +87,13 @@ export function SessionProvider({ children }) {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const tokenData = await getToken();
-      if (tokenData.headers.Authorization) {
-        const token = tokenData.headers.Authorization.replace('Bearer ', '');
+      const { token, user, headers } = await getSession();
+
+      if (headers.Authorization) {
+        setUser(user);
         setSession({
           token,
-          headers: tokenData.headers
+          headers: headers
         });
       }
     };
@@ -100,7 +107,8 @@ export function SessionProvider({ children }) {
         signIn,
         signUp,
         signOut,
-        session
+        session,
+        user
       }}>
       {children}
     </AuthContext.Provider>
