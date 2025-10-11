@@ -480,8 +480,7 @@ const baseStyles = StyleSheet.create({
     headerContent: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 15,
+        justifyContent: 'space-between'
     },
 });
 

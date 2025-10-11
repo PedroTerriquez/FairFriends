@@ -119,6 +119,7 @@ export default function Home() {
 
   return (
     <View style={[baseStyles.viewContainerFull, { gap: 15 }]}>
+    <ScrollView>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }}>
         <TouchableOpacity
           onPressIn={() => router.push('/profile')}
@@ -159,11 +160,10 @@ export default function Home() {
           <View style={{ margin: 5}}>
             <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
           </View>
-          <ScrollView>
-            {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
-          </ScrollView>
+          {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
         </View>
       </View>
-    </View>
+    </ScrollView>
+</View>
   );
 }

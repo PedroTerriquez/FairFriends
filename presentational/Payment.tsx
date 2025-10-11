@@ -133,7 +133,7 @@ export default function Payment({
           {/* Avatar */}
           <View style={[baseStyles.columnCenter]}>
             <Avatar name={ creatorName[0] } />
-            <Text style={[baseStyles.label14, {marginTop: 5 }]}>{creatorName}</Text>
+            <Text style={[baseStyles.label14, {marginTop: 5 }]}>{creatorName?.slice(0,5)}</Text>
           </View>
           {/* Data */}
           <View style={{ flex: 7 }}>

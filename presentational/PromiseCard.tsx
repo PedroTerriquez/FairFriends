@@ -40,13 +40,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'red', marginLeft: 5}]}>Rejected</Text>
       </Pressable>
       }
-      <View style={baseStyles.rowCenter}>
-        <Avatar name={user} />
-        <Text style={[baseStyles.cardTitle, baseStyles.marginLeft10]}>{user}</Text>
-      </View>
-      <Text style={[baseStyles.title15, baseStyles.textGray]}>{title}</Text>
-      <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>
-      <View style={[baseStyles.rowCenter]}>
+      <View style={[baseStyles.rowCenter, {marginBottom: 20}]}>
         <View style={{ flex: 1}}>
           <Text style={[baseStyles.titleBold40, baseStyles.textCenter, { color: getColorHex(parseInt(percentage)) }]}>${paid_amount}</Text>
           <View style={[ baseStyles.rowCenter, { alignContent: 'center', justifyContent: 'center' }]}>
@@ -54,6 +48,16 @@ export default function PromiseCard({ id, title, percentage, user, status, total
             <PromiseGraph percentage={percentage} />
             <Text> 100% </Text>
           </View>
+        </View>
+      </View>
+      <Text style={[baseStyles.label14, baseStyles.textCenter]}>{title}</Text>
+      <View style={[baseStyles.headerContent, {marginTop: 20}]}>
+        <View style={baseStyles.leftSection}>
+          <Avatar name={user} />
+          <Text style={[baseStyles.cardTitle, baseStyles.marginLeft10, {alignSelf: 'center'}]}>{user}</Text>
+        </View>
+        <View style={baseStyles.rightSection}>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>
         </View>
       </View>
     </TouchableOpacity>
