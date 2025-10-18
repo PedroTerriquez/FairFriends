@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { toast } from "./toastService";
 
 
 const saveSession = async (token: string, user: object) => {
@@ -14,9 +15,9 @@ const saveSession = async (token: string, user: object) => {
       await SecureStore.setItemAsync("authToken", token);
       await SecureStore.setItemAsync("user", userString);
     }
-    console.log('Data saved successfully');
+    toast('Data saved successfully', 'success');
   } catch (error) {
-    console.error("Error saving data:", error);
+    toast('Error getting user successfully', 'error');
   }
 };
 
@@ -47,7 +48,7 @@ const getSession = async () => {
     const user = userString ? JSON.parse(userString) : null;
 
     if (!token) {
-      throw new Error('Token not found');
+      toast('Couldnt recover the user session', 'error');
     }
 
     cachedToken = token;
@@ -59,7 +60,7 @@ const getSession = async () => {
       headers: { Authorization: `Bearer ${token}` },
     };
   } catch (error) {
-    console.error('Error getting session:', error);
+    toast('Error recovering the user session', 'error');
     return {
       token: null,
       user: null,

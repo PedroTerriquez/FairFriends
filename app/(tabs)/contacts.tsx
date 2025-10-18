@@ -41,11 +41,12 @@ export default function Contacts() {
     }
 
     const emptyFriend = <EmptyList text={"No friends"}>
-        <Text style={baseStyles.label17}>Try adding some {''}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Text style={baseStyles.label17}>Try adding some </Text>
             <Pressable onPress={() => { router.push("/addContact") }}>
                 <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>friends</Text>
             </Pressable>
-        </Text>
+        </View>
     </EmptyList>
 
     const noPeopleFound = <EmptyList text={"No people found"}>

@@ -33,11 +33,12 @@ export default function Promises() {
   }
 
   const emptyPromises = <EmptyList text="No promises">
-    <Text style={baseStyles.label17}>Try adding some promises to your {''}
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+      <Text style={baseStyles.label17}>Start a promises with your </Text>
       <Pressable onPress={() => { router.push("/contacts") }}>
-        <Text style={[baseStyles.boldText, baseStyles.link]}>contacts</Text>
+        <Text style={[baseStyles.label17, baseStyles.boldText, baseStyles.link]}>contacts</Text>
       </Pressable>
-    </Text>
+    </View>
   </EmptyList>
   
   const renderPromises = (promises) => {
@@ -68,7 +69,7 @@ export default function Promises() {
   return (
     <View style={baseStyles.viewContainerFull}>
       <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
+      <ScrollView contentContainerStyle={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
         {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
       </ScrollView>
     </View>

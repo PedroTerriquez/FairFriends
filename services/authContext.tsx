@@ -84,17 +84,18 @@ export function SessionProvider({ children }) {
     registerSessionHandler(getJWT);
   }, [getJWT]);
 
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchToken = async () => {
-      const { token, user, headers } = await getSession();
+      try {
+        const { token, user, headers } = await getSession();
 
-      if (headers.Authorization) {
-        setUser(user);
-        setSession({
-          token,
-          headers: headers
-        });
+        if (headers.Authorization) {
+          setUser(user);
+          setSession({ token, headers });
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -108,7 +109,8 @@ export function SessionProvider({ children }) {
         signUp,
         signOut,
         session,
-        user
+        user,
+        loading,
       }}>
       {children}
     </AuthContext.Provider>

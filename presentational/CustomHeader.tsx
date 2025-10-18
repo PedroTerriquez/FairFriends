@@ -18,7 +18,7 @@ export default function CustomHeader() {
 
   // TODO: Probably remove extra padding to the top of the header
   return (
-    <View style={[baseStyles.header, { paddingTop: insets.top + 10 }]}>
+    <View style={[baseStyles.header, { paddingTop: insets.top + 10, paddingHorizontal: 15 }]}>
       <View style={baseStyles.headerContent}>
         <View style={baseStyles.leftSection}>
           {canGoBack && (

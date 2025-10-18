@@ -31,11 +31,12 @@ export default function Balances() {
 
   const emptyList = (
     <EmptyList text="No balances">
-      <Text style={baseStyles.label17}>Try adding some {''}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+        <Text style={baseStyles.label17}>Try adding some </Text>
         <Pressable onPress={() => { router.push("/formBalance") }}>
-          <Text style={[baseStyles.boldText, baseStyles.link]}>balances</Text>
+          <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>balances</Text>
         </Pressable>
-      </Text>
+      </View>
     </EmptyList>
   )
   
@@ -65,7 +66,7 @@ export default function Balances() {
 
   return (
     <View style={baseStyles.viewContainerFull} >
-      <ScrollView refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
+      <ScrollView contentContainerStyle={{flex: 1}} refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
         {renderBalances()}
       </ScrollView>
       <FloatingButton icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />

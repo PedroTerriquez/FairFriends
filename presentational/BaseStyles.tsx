@@ -95,7 +95,6 @@ const baseStyles = StyleSheet.create({
     },
     label17: {
         fontSize: 17,
-        marginBottom: 5,
     },
     label14: {
         fontSize: 14,

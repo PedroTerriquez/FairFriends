@@ -27,13 +27,18 @@ instance.interceptors.request.use(
 export async function apiCall(promise) {
   try {
     const response = await Promise.resolve(promise);
-    //toast(`${response.config.url}`, 'success');
     return response;
   } catch (error) {
-    toast(error.response?.data?.errors || "An error occurred", "error");
-    throw error;
+    if (error.message === "Network Error") {
+      //toast("Server unavailable. Please try again later.", "error");
+    } else {
+      toast(error.response?.data?.errors || "An error occurred", "error");
+    }
+    return null;
   }
 }
+
+
 
 // Balances
 export const getBalances = () =>

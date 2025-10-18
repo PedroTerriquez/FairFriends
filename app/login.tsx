@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Button } from "react-native";
+import { Text, View, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Button } from "react-native";
 import { useState } from 'react';
 import { useSession } from '../services/authContext';
 import { useRouter } from 'expo-router';

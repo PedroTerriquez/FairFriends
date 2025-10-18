@@ -1,8 +1,9 @@
 import { getHome } from "@/services/api";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import { useRouter } from 'expo-router';
+import { useServer } from "@/services/serverContext";
 
 import Payment from '../../presentational/Payment';
 import baseStyles from "@/presentational/BaseStyles";
@@ -13,34 +14,36 @@ import Spinner from '../../presentational/Spinner';
 import SubtitleLink from "@/presentational/SubtitleLink";
 import TopNavBar from "@/presentational/TopNavBar";
 import Avatar from "@/presentational/Avatar";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import ServerReconnectBar from "@/presentational/ServerReconnectBar";
 
 export default function Home() {
-  const [balances, setBalances] = useState([]);
+  //const [balances, setBalances] = useState([]);
   const [promises, setPromises] = useState([]);
   const [balancePayments, setBalancePayments] = useState([]);
   const [promisePayments, setPromisePayments] = useState([]);
-  const [activeTab, setActiveTab] = useState('');
+  const [activeTab, setActiveTab] = useState('Promises');
   const [loading, setLoading] = useState(false);
-  const { signOut, user } = useSession();
+  const { user } = useSession();
+  const { serverReady, serverLoading } = useServer();
+
   const router = useRouter();
 
   const fetchPayments = async () => {
     setLoading(true);
     try {
       const response = await getHome();
-      setBalances(response.data.balances);
-      setPromises(response.data.promises);
-      setBalancePayments(response.data.balance_payments);
-      setPromisePayments(response.data.promise_payments);
-
-      if (response.data.promises.length === 0) {
-        setActiveTab("Balances");
-      } else {
-        setActiveTab("Promises");
+      if (response?.data) {
+        //setBalances(response.data.balances);
+        setPromises(response.data.promises);
+        setBalancePayments(response.data.balance_payments);
+        setPromisePayments(response.data.promise_payments);
+        if (response.data.promises.length === 0) {
+          setActiveTab("Balances");
+        } else {
+          setActiveTab("Promises");
+        }
       }
-    } catch {
-      signOut();
-      router.replace("/");
     } finally {
       setLoading(false);
     }
@@ -48,16 +51,16 @@ export default function Home() {
 
   const emptyPayments = (
     <EmptyList text="No payments">
-      <Text>
-        <Text style={[baseStyles.label17]}> Start a {''}</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+        <Text style={[baseStyles.label17]}>Start a </Text>
         <Pressable onPress={() => { router.push("/contacts"); }}>
-          <Text style={baseStyles.link}>Promise</Text>
+          <Text style={[baseStyles.link, baseStyles.label17]}>Promise</Text>
         </Pressable>
-        <Text> {', or create a new '} </Text>
+        <Text style={[baseStyles.label17]}>, or create a new </Text>
         <Pressable onPress={() => { router.push("/formBalance"); }}>
-          <Text style={baseStyles.link}>Balance</Text>
+          <Text style={[baseStyles.link, baseStyles.label17]}>Balance</Text>
         </Pressable>
-      </Text>
+      </View>
     </EmptyList>
   );
 
@@ -109,6 +112,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (serverReady) {
+      fetchPayments();
+    }
+  }, [serverReady]);
+
+  useEffect(() => {
     if (router?.pathname) {
       router.replace(router.pathname);
     }
@@ -119,51 +128,44 @@ export default function Home() {
 
   return (
     <View style={[baseStyles.viewContainerFull, { gap: 15 }]}>
-    <ScrollView>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }}>
-        <TouchableOpacity
-          onPressIn={() => router.push('/profile')}
-        >
-          <Avatar name={user?.first_name || "User"} size={50} />
-        </TouchableOpacity>
-        <View>
-          <Text style={{ color: '#8c8b8bff' }}>Welcome Back</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
-            <Text>Hello</Text>
-            <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
-          </View>
-        </View>
-      </View>
-      {balances.length > 0 && (
-        <View>
-          <SubtitleLink text={"Latest Balances"} onPress={() => { router.push("/balances"); }} />
-          <View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
-              {renderMiniBalanceCards(balances)}
-            </ScrollView>
-          </View>
-        </View>
+      {!serverReady && (
+        <ServerReconnectBar serverReady={serverReady} serverLoading={serverLoading} />
       )}
-      {promises.length > 0 && (
-        <View>
-          <SubtitleLink text="Payables Promises" onPress={() => { router.push("/promises"); }} />
+      <ScrollView contentContainerStyle={{ flex: 1 }}>
+        <View style={[baseStyles.card, { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }]}>
+          <TouchableOpacity
+            onPressIn={() => router.push('/profile')}
+          >
+            <Avatar name={user?.first_name || "User"} size={50} />
+          </TouchableOpacity>
           <View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
-              {renderMiniPromiseCards(promises)}
-            </ScrollView>
+            <Text style={{ color: '#8c8b8bff' }}>Welcome Back</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
+              <Text>Hello</Text>
+              <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
+            </View>
           </View>
         </View>
-      )}
-      <View>
-        <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
-        <View>
-          <View style={{ margin: 5}}>
-            <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
+        {promises.length > 0 && (
+          <View>
+            <SubtitleLink text="Payables Promises" onPress={() => { router.push("/promises"); }} />
+            <View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                {renderMiniPromiseCards(promises)}
+              </ScrollView>
+            </View>
           </View>
-          {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+        )}
+        <View style={{ flex: 1 }}>
+          <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
+          <View style={{ flex: 1 }}>
+            <View style={{ margin: 5 }}>
+              <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
+            </View>
+            {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+          </View>
         </View>
-      </View>
-    </ScrollView>
-</View>
+      </ScrollView >
+    </View >
   );
 }
