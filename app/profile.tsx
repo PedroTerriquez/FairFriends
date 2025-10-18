@@ -63,13 +63,13 @@ export default function Profile() {
       {info.me != 1 && (
         <View style={[baseStyles.rowCenter, { marginTop: 10, gap: 20 }]}>
           <ButtonWithIcon
-            style={{ backgroundColor: 'green' }}
+            style={ baseStyles.successBG }
             onPress={() => router.push({ pathname: '/formPromise', params: { administrator_id: id, administrator_name: info.name } })}
             icon={<MaterialIcons name="attach-money" size={20} color="white" />}
             text="Promise" />
           <ButtonWithIcon
-            style={{ backgroundColor: '#007aff' }}
-            textStyle={{ marginLeft: 5 }}
+            style={ baseStyles.blueBG }
+            onPress={() => router.push({ pathname: '/formPromise', params: { administrator_id: id, administrator_name: info.name } })}
             onPress={() => {
               createBalance([id], undefined)
                 .then((response) => {

@@ -54,6 +54,7 @@ export default function Promises() {
             percentage={promise.percentage}
             user={promise.user}
             status={promise.status}
+            interest={promise.interest || 0}
       />
     ))
   }
@@ -69,7 +70,7 @@ export default function Promises() {
   return (
     <View style={baseStyles.viewContainerFull}>
       <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
-      <ScrollView contentContainerStyle={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
         {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
       </ScrollView>
     </View>

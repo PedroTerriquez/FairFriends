@@ -14,7 +14,7 @@ import Spinner from '../../presentational/Spinner';
 import SubtitleLink from "@/presentational/SubtitleLink";
 import TopNavBar from "@/presentational/TopNavBar";
 import Avatar from "@/presentational/Avatar";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import ServerReconnectBar from "@/presentational/ServerReconnectBar";
 
 export default function Home() {
@@ -131,19 +131,28 @@ export default function Home() {
       {!serverReady && (
         <ServerReconnectBar serverReady={serverReady} serverLoading={serverLoading} />
       )}
-      <ScrollView contentContainerStyle={{ flex: 1 }}>
-        <View style={[baseStyles.card, { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 }]}>
-          <TouchableOpacity
-            onPressIn={() => router.push('/profile')}
-          >
-            <Avatar name={user?.first_name || "User"} size={50} />
-          </TouchableOpacity>
-          <View>
-            <Text style={{ color: '#8c8b8bff' }}>Welcome Back</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
-              <Text>Hello</Text>
-              <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[baseStyles.card, baseStyles.rowSpaceBetween]}>
+          <View style={[baseStyles.rowCenter, {  gap: 10 }]}>
+            <TouchableOpacity
+              onPressIn={() => router.push('/profile')}
+            >
+              <Avatar name={user?.first_name || "User"} size={50} />
+            </TouchableOpacity>
+            <View>
+              <Text style={baseStyles.textGray}>Welcome Back</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
+                <Text>Hello</Text>
+                <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
+              </View>
             </View>
+          </View>
+          <View style={[baseStyles.rowCenter, { gap: 10, paddingVertical: 10 }]}>
+            <TouchableOpacity
+              onPressIn={() => router.push('/notifications')}
+            >
+              <Ionicons name="notifications" size={24} color="black" />
+            </TouchableOpacity>
           </View>
         </View>
         {promises.length > 0 && (

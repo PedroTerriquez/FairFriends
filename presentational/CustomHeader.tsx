@@ -35,16 +35,6 @@ export default function CustomHeader() {
           </TouchableOpacity>
         </View>
         <View style={[baseStyles.rightSection, {gap : 5}]}>
-          <TouchableOpacity 
-            onPressIn={() => router.push('/notifications')}
-          >
-            <Ionicons name="notifications" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPressIn={() => router.push('/contactRequests')}
-          >
-            <Ionicons name="person-add" size={24} color="black" />
-          </TouchableOpacity>
         </View>
       </View>
     </View>

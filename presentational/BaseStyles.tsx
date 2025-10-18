@@ -8,7 +8,7 @@ const baseStyles = StyleSheet.create({
     viewContainerFull: {
         flex: 1,
         //backgroundColor: '#f6f6f6',
-        backgroundColor: '#F2F4F5',
+        backgroundColor: '#EFEEF3',
         paddingHorizontal: 15,
         paddingVertical: 5,
     },
@@ -56,6 +56,10 @@ const baseStyles = StyleSheet.create({
     rowCenter: {
         flexDirection: "row",
         alignItems: "center",
+    },
+    rowSpaceBetween: {
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     columnCenter: {
         flexDirection: "column",
@@ -110,6 +114,9 @@ const baseStyles = StyleSheet.create({
     textGray: {
         color: "gray",
     },
+    textLightBlack: {
+        color: "#4b4b4bff",
+    },
     textBlack: {
         color: "black",
     },
@@ -154,7 +161,7 @@ const baseStyles = StyleSheet.create({
         backgroundColor: 'green',
     },
     blueBG: {
-        backgroundColor: '#007aff',
+        backgroundColor: '#449cfaff',
     },
     warningBG: {
         backgroundColor: "#f8c146",
@@ -196,11 +203,11 @@ const baseStyles = StyleSheet.create({
         //borderWidth: 0.1,
         //borderColor: "#0000002e",
         //shadowColor: "#000",
-        //shadowOffset: {
-            //width: 0,
-            //height: 2,
-        //},
-        //shadowOpacity: 0.25,
+        shadowOffset: {
+            width: 1,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
         //shadowRadius: 3.84,
         elevation: 5,
         overflow: 'visible',
@@ -209,28 +216,21 @@ const baseStyles = StyleSheet.create({
         borderColor: "#0000002e",
     },
     cardUnread: {
-        backgroundColor: "#2887ec1f",
+        backgroundColor: "#8bd4ee8a",
         borderWidth: 1,
+        borderColor: "#007bff49",
     },
     cardClose: {
         shadowColor: "#7ECC10",
-        shadowOpacity: 0.5,
-        shadowOffset: { width: 3, height: 3 }
     },
     cardPending: {
         shadowColor: "#ffc107",
-        shadowOpacity: 0.3,
-        shadowOffset: { width: 3, height: 3 }
     },
     cardAccepted: {
         shadowColor: "#4CAF50",
-        shadowOpacity: 1,
-        shadowOffset: { width: 3, height: 3 }
     },
     cardRejected: {
         shadowColor: "#ffe6e6",
-        shadowOpacity: 0.5,
-        shadowOffset: { width: 3, height: 3 }
     },
     cardContent: {
         flexDirection: "row",
@@ -298,12 +298,12 @@ const baseStyles = StyleSheet.create({
     },
     buttonWithIcon: {
         flexDirection: 'column',
-        padding: 10,
+        padding: 5,
         gap: 3,
-        maxWidth: 100,
-        minWidth: 70,
+        minWidth: 75,
         borderRadius: 10,
         alignItems: 'center',
+        backgroundColor: "white",
     },
     // Rest of utilities
     avatar: {
@@ -395,6 +395,7 @@ const baseStyles = StyleSheet.create({
         borderColor: "#ccc",
         padding: 10,
         marginVertical: 10,
+        width: '100%',
     },
     tabBarContainer: {
         backgroundColor: '#f0f0f0ff',
@@ -434,9 +435,9 @@ const baseStyles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
     },
     modalContent: {
-        width: '80%',
-        height: 'auto',
-        padding: 20,
+        width: '100%',
+        height: '100%',
+        padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
         justifyContent: 'center',

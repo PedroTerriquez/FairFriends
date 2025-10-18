@@ -51,10 +51,6 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
         <View style={{ flex: 2.5, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "column" }}>
             <View style={{flexDirection: "row", alignItems: "center"}}>
-              <Text style={[baseStyles.blackBG, baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10 }]}>Avg</Text>
-              <Text style={[baseStyles.title24, baseStyles.boldText]}>{formatMoney(avg)}</Text>
-            </View>
-            <View style={{flexDirection: "row", alignItems: "center"}}>
               <Text style={[baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10, backgroundColor: difference >= 0 ? 'green' : '#dc3545'  }]}>You</Text>
               <Text style={[baseStyles.title24, { color: difference >= 0 ? 'green' : '#dc3545' }]}>{formatMoney(myTotal)}</Text>
               <AntDesign
@@ -63,6 +59,10 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
                 color={difference >= 0 ? "green" : "#dc3545"}
                 style={{ marginLeft: 5 }}
               />
+            </View>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Text style={[baseStyles.blackBG, baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10 }]}>Avg</Text>
+              <Text style={[baseStyles.title24, baseStyles.boldText]}>{formatMoney(avg)}</Text>
             </View>
           </View>
           <View style={[{ flexDirection: 'column', marginTop: 10, alignItems: 'center', padding: 5, borderRadius: 10, paddingHorizontal: 5 }, baseStyles.lightRedBG]}>
@@ -73,20 +73,37 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
         <View style={{ flex: 3.5 }}>
           <PieChart
             data={data}
-            width={Dimensions.get("window").width - 180}
-            height={130}
+            width={Dimensions.get("window").width - 200}
+            height={100}
             chartConfig={{
               color: () => "black",
             }}
             accessor="population"
             backgroundColor="transparent"
-            paddingLeft="10"
             absolute={false}
-            center={[-5, 0]}
+            center={[10, 0]}
           >
           </PieChart>
+          <View style={{
+            flexDirection: "row",
+            justifyContent: 'flex-end',
+            marginTop: 20
+          }}>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: 'black',
+              paddingBottom: 4,
+              gap: 5,
+              justifyContent: "flex-end"
+            }}>
+              <Text style={[baseStyles.textBlack, { textAlign: "right" }]}>Total:</Text>
+              <Text style={[baseStyles.title15, baseStyles.boldText, { textAlign: "right" }]}>{formatMoney(total)}</Text>
+            </View>
+          </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableOpacity >
   );
 };

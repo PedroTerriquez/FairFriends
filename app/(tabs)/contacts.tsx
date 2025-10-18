@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable } from "react-native";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable, TouchableOpacity } from "react-native";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import Person from '../../presentational/Person';
 import baseStyles from '../../presentational/BaseStyles'
@@ -73,15 +73,15 @@ export default function Contacts() {
                     {friend.id && (
                         <View style={[baseStyles.rowCenter, { gap: 5 }]}>
                             <ButtonWithIcon
-                                style={[baseStyles.greenBG]}
-                                textStyle={{ fontSize: 10 }}
+                                style={[baseStyles.successBG]}
+                                textStyle={{ fontSize: 10, color: 'white' }}
                                 text='Promise'
                                 onPress={() => startPromise(friend.id, friend.first_name)}
                                 icon={<MaterialIcons name="attach-money" size={18} color="white" />}
                             />
                             <ButtonWithIcon
                                 style={[baseStyles.blueBG]}
-                                textStyle={{ fontSize: 10 }}
+                                textStyle={{ fontSize: 10, color: 'white' }}
                                 text='Split'
                                 onPress={() => startBalance(friend.id)}
                                 icon={<FontAwesome name="balance-scale" size={18} color="white" />}
@@ -132,7 +132,17 @@ export default function Contacts() {
                         <RefreshControl refreshing={refreshing} onRefresh={fetchFriends} />
                     }
                 >
-                    <SearchBarInput text={text} setText={setText} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <View style={{ flex: 1 }}>
+                            <SearchBarInput text={text} setText={setText} />
+                        </View>
+                        <TouchableOpacity
+                            onPressIn={() => router.push('/contactRequests')}
+                            style={{ padding: 15 }}
+                        >
+                            <Ionicons name="person-add-outline" size={24} color="black" />
+                        </TouchableOpacity>
+                    </View>
                     {renderContacts(friends)}
                 </ScrollView>
                 <FloatingButton icon="add" action={() => { router.push({ pathname: "/addContact", }) }} />

@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getColorHex } from "../services/getColorHex";
 
-export default function PromiseCard({ id, title, percentage, user, status, total, paid_amount }) {
+export default function PromiseCard({ id, title, percentage, user, status, total, paid_amount, interest }) {
   const router = useRouter();
 
   return (
@@ -40,24 +40,30 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <Text style={[baseStyles.label14, baseStyles.textGray, {color: 'red', marginLeft: 5}]}>Rejected</Text>
       </Pressable>
       }
-      <View style={[baseStyles.rowCenter, {marginBottom: 20}]}>
-        <View style={{ flex: 1}}>
-          <Text style={[baseStyles.titleBold40, baseStyles.textCenter, { color: getColorHex(parseInt(percentage)) }]}>${paid_amount}</Text>
-          <View style={[ baseStyles.rowCenter, { alignContent: 'center', justifyContent: 'center' }]}>
-            <Text> 0% </Text>
-            <PromiseGraph percentage={percentage} />
-            <Text> 100% </Text>
-          </View>
+      <View style={[baseStyles.rowCenter, {gap: 20, marginTop: 30}]}>
+        <View style={baseStyles.columnCenter}>
+          <Avatar name={user} />
+          <Text style={[baseStyles.cardTitle, {alignSelf: 'center'}]}>{user}</Text>
+        </View>
+        <View style={{ flex: 1, gap: 10}}>
+          <Text style={[baseStyles.label17, baseStyles.textCenter]}>{title}</Text>
         </View>
       </View>
-      <Text style={[baseStyles.label14, baseStyles.textCenter]}>{title}</Text>
-      <View style={[baseStyles.headerContent, {marginTop: 20}]}>
-        <View style={baseStyles.leftSection}>
-          <Avatar name={user} />
-          <Text style={[baseStyles.cardTitle, baseStyles.marginLeft10, {alignSelf: 'center'}]}>{user}</Text>
+      <View style={[{ marginTop: 20, flexDirection: 'row', gap: 20 }]}>
+        <View >
+        <View>
+          <Text style={[baseStyles.title20]}>{total}</Text>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>Total</Text>
         </View>
-        <View style={baseStyles.rightSection}>
-          <Text style={[baseStyles.label14, baseStyles.textGray]}>Total ${total}</Text>
+        <View>
+          <Text style={[baseStyles.title20]}>{interest}%</Text>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>Interest</Text>
+        </View></View>
+        <View style={{flex: 1}}>
+          <Text style={[baseStyles.title32, baseStyles.textCenter, { color: getColorHex(parseInt(percentage)) }]}>${paid_amount}</Text>
+          <View style={{ height: 15, justifyContent: 'center' }}>
+            <PromiseGraph percentage={percentage} />
+          </View>
         </View>
       </View>
     </TouchableOpacity>

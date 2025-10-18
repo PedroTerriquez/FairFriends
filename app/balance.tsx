@@ -72,44 +72,48 @@ export default function Balance() {
     }
   }
 
-  const renderPaymentsHeader = () => {
+  const renderBalanceCardFooter = () => {
     return (
-      <View style={[ baseStyles.rowCenter, {height: 80}]}>
-        <Text style={[baseStyles.title15, {marginLeft: 15}]}>Recent Transactions </Text>
-        <View style={[baseStyles.rightSection, { gap: 5 }]}>
-          <ButtonWithIcon
-          style={baseStyles.redBG}
+      <View style={[baseStyles.card, baseStyles.rowCenter]}>
+        <ButtonWithIcon
+          style={{ flex: 1 }}
+          textStyle={baseStyles.textLightBlack}
           onPress={() => setShowSplit(true)}
-          text='Close'
-          icon={<Ionicons name="close-sharp" size={20} color="white" />}
-          />
-          {
-            balance?.status === 'active' && <ButtonWithIcon onPress={() => {
+          text='Close Balance'
+          icon={<Ionicons name="close-sharp" size={20} color="#4b4b4bff" />}
+        />
+        {
+          balance?.status === 'active' && <ButtonWithIcon
+            style={{ flex: 1, borderRadius: 0, borderRightWidth: 0.5, borderLeftWidth: 0.5, borderColor: "#d3d3d3" }}
+            textStyle={baseStyles.textLightBlack}
+            onPress={() => {
               if (balance) {
                 router.push({
                   pathname: "/formUnevenPayment",
                   params: formPaymentParams()
                 });
               }
-            }} style={baseStyles.blueBG}
-              text='Uneven'
-              icon={<MaterialIcons name="call-split" size={20} color="white" />}
-            />
-          }
-          {
-            payable && <ButtonWithIcon onPress={() => {
+            }}
+            text='Uneven Pay'
+            icon={<MaterialIcons name="call-split" size={20} color="#4b4b4bff" />}
+          />
+        }
+        {
+          payable && <ButtonWithIcon
+            style={{ flex: 1 }}
+            onPress={() => {
               if (balance) {
                 router.push({
                   pathname: "/formPayment",
                   params: formPaymentParams()
                 });
               }
-            }} style={[baseStyles.blueBG]}
-            text='Add'
-            icon={<Ionicons name="add" size={23} color="white" />}
-            />
-          }
-        </View>
+            }}
+            textStyle={baseStyles.textLightBlack}
+            text='Add Payment'
+            icon={<Ionicons name="add" size={20} color="#4b4b4bff" />}
+          />
+        }
       </View>)
   }
 
@@ -158,9 +162,8 @@ export default function Balance() {
           members={balance.balance_members}
           myTotal={balance.my_total}
         />
-        <View style={[{ justifyContent: "space-between", height: 70, marginBottom: 10 }]}>
-          {renderPaymentsHeader()}
-        </View>
+        {renderBalanceCardFooter()}
+        <Text style={[baseStyles.label17, { fontWeight: 600, paddingVertical: 10 }]}>Recent Payments</Text>
         <TopNavBar menus={['Payments', 'Uneven']} activeTab={activeTab} setActiveTab={setActiveTab} />
           {activeTab === "Payments" ? renderPayments(payments) : renderPayments(uneven)}
       </ScrollView>

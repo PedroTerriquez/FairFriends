@@ -66,7 +66,7 @@ export default function Balances() {
 
   return (
     <View style={baseStyles.viewContainerFull} >
-      <ScrollView contentContainerStyle={{flex: 1}} refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
+      <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
         {renderBalances()}
       </ScrollView>
       <FloatingButton icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />
