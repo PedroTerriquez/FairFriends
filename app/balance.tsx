@@ -61,6 +61,28 @@ export default function Balance() {
     }));
   }
 
+  const handleAcceptPayment = (data) => {
+    setBalance((prevBalance) => {
+      if (!prevBalance) return prevBalance;
+
+      const updatedBalanceMembers = prevBalance.balance_members.map((member) => {
+        if (member.user_id === data.creator_id) {
+          return {
+            ...member,
+            money: member.money + data.amount,
+          };
+        }
+        return member;
+      });
+
+      return {
+        ...prevBalance,
+        total: prevBalance.total + data.amount,
+        balance_members: updatedBalanceMembers,
+      };
+    });
+  }
+
   const formPaymentParams = () => {
     return {
       paymentable_id: id,
@@ -124,16 +146,18 @@ export default function Balance() {
       <Payment
         key={payment.id}
         id={payment.id}
+        admin={balance.admin}
         amount={payment.amount}
-        canEdit={(balance.admin && balance.balance_members.length > 2) || payment.mine}
+        canEdit={balance.admin || payment.mine}
         creatorName={payment.creator_name}
         date={payment.created_at}
         paymentableId={payment.paymentable_id}
         paymentableType={payment.paymentable_type}
         parentTitle={payment.parent_title}
+        promises={payment?.promises}
         status={payment.status}
         title={payment.title}
-        promises={payment?.promises}
+        handleAccept={handleAcceptPayment}
       />
     ))
   }

@@ -17,6 +17,7 @@ export default function NotificationCard({
   status,
   creatorName,
   updateStatus,
+  message,
 }) {
   const [pendingDecision, setPendingDecision] = useState(false)
   const [decisionDone, setDecisionDone] = useState(false)
@@ -62,19 +63,19 @@ export default function NotificationCard({
           <Avatar name={creatorName[0]} />
           <View style={baseStyles.marginLeft10}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
-            <Text style={baseStyles.cardSubtitle}>New {notifiableType}</Text>
+            <Text style={baseStyles.smallLabel}>{message}</Text>
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>
-        <View style={baseStyles.alignItemsCenter}>
+        <View style={{ gap: 10, flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
           {amount && <Text style={baseStyles.boldText}>{amount}</Text>}
           {!pendingDecision && status == 'pending' && <Pressable
             style={[baseStyles.circleButton, baseStyles.warningBG]}
             onPress={() => setPendingDecision(true)}>
             <Ionicons name="notifications" size={20} color="white" />
-          </Pressable> }
+          </Pressable>}
           {pendingDecision && !decisionDone && (
-            <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+            <View style={[baseStyles.rowCenter, { gap: 5, justifyContent: 'flex-end' }]}>
               <AcceptButton onPressAction={() => {
                 updateStatus(id, 'accepted');
                 setDecisionDone(true);

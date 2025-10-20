@@ -22,6 +22,7 @@ export default function Home() {
   const [promises, setPromises] = useState([]);
   const [balancePayments, setBalancePayments] = useState([]);
   const [promisePayments, setPromisePayments] = useState([]);
+  const [notificationsQuantity, setNotificationsQuantity] = useState(0);
   const [activeTab, setActiveTab] = useState('Promises');
   const [loading, setLoading] = useState(false);
   const { user } = useSession();
@@ -38,6 +39,7 @@ export default function Home() {
         setPromises(response.data.promises);
         setBalancePayments(response.data.balance_payments);
         setPromisePayments(response.data.promise_payments);
+        setNotificationsQuantity(response.data.notifications.quantity);
         if (response.data.promises.length === 0) {
           setActiveTab("Balances");
         } else {
@@ -132,6 +134,7 @@ export default function Home() {
         <ServerReconnectBar serverReady={serverReady} serverLoading={serverLoading} />
       )}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        { /* Header Section */ }
         <View style={[baseStyles.card, baseStyles.rowSpaceBetween]}>
           <View style={[baseStyles.rowCenter, {  gap: 10 }]}>
             <TouchableOpacity
@@ -147,14 +150,31 @@ export default function Home() {
               </View>
             </View>
           </View>
-          <View style={[baseStyles.rowCenter, { gap: 10, paddingVertical: 10 }]}>
+            <View style={[baseStyles.rowCenter, { gap: 10, paddingVertical: 10 }]}>
             <TouchableOpacity
               onPressIn={() => router.push('/notifications')}
+              style={{}}
             >
-              <Ionicons name="notifications" size={24} color="black" />
+              <View style={{  marginRight: 10 }}>
+                <Ionicons name="notifications" size={24} color="black" />
+                <Text
+                  style={[
+                    baseStyles.quantityBadge,
+                    baseStyles.warningBG,
+                    {
+                      position: 'fixed',
+                      top: -30,
+                      right: -18,
+                    },
+                  ]}
+                >
+                  {notificationsQuantity}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
+        { /* Promises Section */ }
         {promises.length > 0 && (
           <View>
             <SubtitleLink text="Payables Promises" onPress={() => { router.push("/promises"); }} />
@@ -165,6 +185,7 @@ export default function Home() {
             </View>
           </View>
         )}
+        { /* Payments Section */ }
         <View style={{ flex: 1 }}>
           <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
           <View style={{ flex: 1 }}>

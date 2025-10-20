@@ -6,11 +6,13 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
 import Spinner from "@/presentational/Spinner";
+import TopNavBar from "@/presentational/TopNavBar";
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState('Payment');
 
     const fetchNotifications = async () => {
         setLoading(true);
@@ -54,10 +56,13 @@ export default function Notifications() {
             </>
         </EmptyList>
 
-    const renderNotifications = () => {
-        if (notifications.length === 0) return emptyList;
+    const renderNotifications = (type) => {
+        const filteredNotifications = notifications
+            .filter(notification => notification.notifiable_type === type);
 
-        return notifications.map(notification => (
+        if (filteredNotifications.length === 0) return emptyList;
+
+        return filteredNotifications.map(notification => (
             <NotificationCard
                 id={notification.id}
                 key={notification.id}
@@ -70,8 +75,13 @@ export default function Notifications() {
                 status={notification.status}
                 creatorName={notification.sender_name}
                 updateStatus={updateStatus}
+                message={notification.message}
             />
         ))
+    }
+
+    const countNotificationsByType = (type) => {
+        return notifications.filter(notification => notification.notifiable_type === type).length;
     }
 
     const onRefresh = useCallback(() => {
@@ -89,8 +99,12 @@ export default function Notifications() {
 
     return (
         <View style={[baseStyles.viewContainerFull]} >
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
-                {renderNotifications()}
+            <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
+                <TopNavBar
+                    menus={['Payment', 'Balance', 'Promise']}
+                    quantityPerMenu={{ 'Payment': countNotificationsByType('Payment'), 'Balance': countNotificationsByType('Balance'), 'Promise': countNotificationsByType('Promise') }} activeTab={activeTab} setActiveTab={setActiveTab}
+                />
+                {renderNotifications(activeTab)}
             </ScrollView>
         </View>
     );

@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import baseStyles from "./BaseStyles";
 
-export default function TopNavBar({menus, setActiveTab, activeTab}) {
+export default function TopNavBar({menus, quantityPerMenu = {}, setActiveTab, activeTab}) {
   return (
     <View style={[baseStyles.viewRowWithSpace, baseStyles.tabBarContainer]}>
       {(menus ?? []).map((menu) => {
@@ -12,9 +12,11 @@ export default function TopNavBar({menus, setActiveTab, activeTab}) {
             onPress={() => setActiveTab(menu)}
             style={isActive ? baseStyles.tabBarActive : baseStyles.tabBarInactive}
           >
-            <Text style={isActive ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>
-              {menu}
-            </Text>
+            <View style={[ { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }, isActive ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive as any]}>
+              <Text>{menu}</Text> 
+              { quantityPerMenu[menu] > 0 && 
+              <Text style={[baseStyles.quantityBadge, baseStyles.warningBG, {marginLeft: 4}]}>{quantityPerMenu[menu]}</Text> }
+            </View>
           </Pressable>
         );
       })}

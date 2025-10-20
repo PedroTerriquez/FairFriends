@@ -200,25 +200,13 @@ const baseStyles = StyleSheet.create({
         paddingHorizontal: 20,
         marginVertical: 5,
         borderRadius: 15,
-        //borderWidth: 0.1,
-        //borderColor: "#0000002e",
-        //shadowColor: "#000",
-        shadowOffset: {
-            width: 1,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        //shadowRadius: 3.84,
-        elevation: 5,
         overflow: 'visible',
     },
     cardRead: {
         borderColor: "#0000002e",
     },
     cardUnread: {
-        backgroundColor: "#8bd4ee8a",
-        borderWidth: 1,
-        borderColor: "#007bff49",
+        backgroundColor: "#F3F5FE",
     },
     cardClose: {
         shadowColor: "#7ECC10",
@@ -356,6 +344,11 @@ const baseStyles = StyleSheet.create({
     badge: {
         borderRadius: 10,
         padding: 5,
+    },
+    quantityBadge: {
+        borderRadius: 15,
+        paddingHorizontal: 5,
+        paddingVertical: 3,
     },
     floatingBadgeForCard: {
         position: "absolute",

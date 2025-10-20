@@ -8,6 +8,7 @@ import AcceptButton, { EditButton, InSplitButton, PendingButton, RejectButton } 
 
 export default function Payment({
   id,
+  admin,
   amount,
   canEdit,
   creatorName,
@@ -17,13 +18,12 @@ export default function Payment({
   parentTitle,
   status,
   title,
-  promises,
   handleAccept,
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
-  const [pendingDecision, setPendingDecision] = useState(false)
+  const [showDecision, setShowDecision] = useState(false)
 
-  const pending = !canEdit && mutableStatus === "pending";
+  const pendingDecision = ( !canEdit || admin ) && mutableStatus === "pending";
   const editable = canEdit && mutableStatus === "pending";
   const accepted = mutableStatus === "accepted";
   const rejected = mutableStatus === "rejected";
@@ -34,7 +34,7 @@ export default function Payment({
     moneyColor = baseStyles.greenText;
   } else if (rejected) {
     moneyColor = baseStyles.redText;
-  } else if (pending || editable) {
+  } else if (pendingDecision || editable) {
     moneyColor = baseStyles.orangeText;
   } else if (in_split) {
     moneyColor = baseStyles.textGray;
@@ -68,11 +68,11 @@ export default function Payment({
   }
 
   const acceptPaymentButton = (id) => {
-    setPendingDecision(false)
+    setShowDecision(false)
     acceptPayment(id)
       .then((response) => {
         setMutableStatus('accepted')
-        handleAccept(response.data.amount);
+        handleAccept(response.data);
       })
       .catch((error) => {
         console.error('Error accepting payment:', error);
@@ -80,7 +80,7 @@ export default function Payment({
   }
 
   const rejectPaymentButton = (id) => {
-    setPendingDecision(false)
+    setShowDecision(false)
     rejectPayment(id)
       .then(() => {
         setMutableStatus('rejected')
@@ -95,14 +95,53 @@ export default function Payment({
   }
 
   const renderStatusSection = () => {
-    if (pendingDecision) {
-      return (
-        <View style={[baseStyles.rowCenter, { gap: 5 }]}>
-          <AcceptButton onPressAction={() => acceptPaymentButton(id)} />
-          <RejectButton onPressAction={() => rejectPaymentButton(id)} />
-        </View>)
-    } else if (pending && !pendingDecision) {
-      return <PendingButton onPressAction={() => setPendingDecision(true)} />
+    if (showDecision) {
+      if (admin) {
+        return (
+          <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+            <AcceptButton onPressAction={() => acceptPaymentButton(id)} />
+            <RejectButton onPressAction={() => rejectPaymentButton(id)} />
+            <EditButton onPressAction={() => router.push({
+              pathname: "/formPayment", params:
+              {
+                payment_id: id,
+                recipient_name: creatorName,
+                amount: amount,
+                title: title,
+                type: paymentableType,
+                paymentableId: paymentableId,
+              }
+            })
+            } />
+          </View>);
+      } else {
+        return (
+          <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+            <AcceptButton onPressAction={() => acceptPaymentButton(id)} />
+            <RejectButton onPressAction={() => rejectPaymentButton(id)} />
+          </View>);
+      }
+    } else if (pendingDecision && !showDecision) {
+      if (admin) {
+        return (
+          <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+            <PendingButton onPressAction={() => setShowDecision(true)} />
+            <EditButton onPressAction={() => router.push({
+              pathname: "/formPayment", params:
+              {
+                payment_id: id,
+                recipient_name: creatorName,
+                amount: amount,
+                title: title,
+                type: paymentableType,
+                paymentableId: paymentableId,
+              }
+            })
+            } />
+          </View>);
+      } else {
+        return <PendingButton onPressAction={() => setShowDecision(true)} />
+      }
     } else if (editable) {
       return (<EditButton onPressAction={() => router.push({
         pathname: "/formPayment", params:
@@ -114,7 +153,7 @@ export default function Payment({
           type: paymentableType,
           paymentableId: paymentableId,
         }
-      })} />)
+      })} />);
     } else if (accepted) {
       return <AcceptButton onPressAction={null} />
     } else if (rejected) {

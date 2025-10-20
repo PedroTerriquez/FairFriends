@@ -48,7 +48,7 @@ export function EditButton({ onPressAction }) {
         <Pressable
             style={[baseStyles.circleButton, baseStyles.warningBG]}
             onPressIn={() => onPressAction()} >
-            <Text style={baseStyles.buttonText}>✎</Text>
+            <MaterialIcons name="edit" size={21} color="white" />
         </Pressable>
     )
 
