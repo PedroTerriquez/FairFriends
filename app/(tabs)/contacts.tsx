@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable, TouchableOpacity } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
@@ -8,15 +8,17 @@ import baseStyles from '../../presentational/BaseStyles'
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
-import Spinner from "@/presentational/Spinner";
 import { findFriends, createBalance } from "@/services/api";
 import ButtonWithIcon from "@/presentational/ButtonWithIcon";
+import SkeletonWrapper from "@/presentational/SkeletonWrapper";
+import { useServer } from "@/services/serverContext";
 
 export default function Contacts() {
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { serverReady } = useServer();
 
     const fetchFriends = async () => {
         setLoading(true);
@@ -24,12 +26,12 @@ export default function Contacts() {
         findFriends(text)
             .then((response) => {
                 setFriends(response.data);
+                setLoading(false);
             })
             .catch((error) => {
             })
             .finally(() => {
                 setRefreshing(false);
-                setLoading(false);
             });
     };
 
@@ -93,6 +95,17 @@ export default function Contacts() {
         });
         return fullList;
     }
+    const renderSkeletons = () => {
+        let skeletons = [];
+        for (let i = 0; i < 10; i++) {
+            skeletons.push(
+                <SkeletonWrapper key={i}>
+                    <View style={[baseStyles.card, { height: 60 }]} />
+                </SkeletonWrapper>
+            );
+        }
+        return <View style={{ gap: 5 }}>{skeletons}</View>;
+    }
 
     const startPromise = (id, name) => {
         router.push({
@@ -117,9 +130,13 @@ export default function Contacts() {
         useCallback(() => {
             fetchFriends();
         }, [router, text])
-    );
+    ); 
 
-    if (loading) return <Spinner />;
+    useEffect(() => {
+        if (serverReady) {
+            fetchFriends();
+        }
+    }, [serverReady]);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -143,7 +160,7 @@ export default function Contacts() {
                             <Ionicons name="person-add-outline" size={24} color="black" />
                         </TouchableOpacity>
                     </View>
-                    {renderContacts(friends)}
+                        { loading ? renderSkeletons() : renderContacts(friends)}
                 </ScrollView>
                 <FloatingButton icon="add" action={() => { router.push({ pathname: "/addContact", }) }} />
             </KeyboardAvoidingView>

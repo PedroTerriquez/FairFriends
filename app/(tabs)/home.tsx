@@ -10,19 +10,20 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import MiniBalanceCard from "@/presentational/MiniBalanceCard";
 import MiniPromiseCard from "@/presentational/MiniPromiseCard";
-import Spinner from '../../presentational/Spinner';
 import SubtitleLink from "@/presentational/SubtitleLink";
 import TopNavBar from "@/presentational/TopNavBar";
 import Avatar from "@/presentational/Avatar";
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import ServerReconnectBar from "@/presentational/ServerReconnectBar";
+
+import SkeletonWrapper from "@/presentational/SkeletonWrapper";
 
 export default function Home() {
   //const [balances, setBalances] = useState([]);
   const [promises, setPromises] = useState([]);
   const [balancePayments, setBalancePayments] = useState([]);
   const [promisePayments, setPromisePayments] = useState([]);
-  const [notificationsQuantity, setNotificationsQuantity] = useState(0);
+  const [notificationsQuantity, setNotificationsQuantity] = useState(null);
   const [activeTab, setActiveTab] = useState('Promises');
   const [loading, setLoading] = useState(false);
   const { user } = useSession();
@@ -45,9 +46,9 @@ export default function Home() {
         } else {
           setActiveTab("Promises");
         }
+        setLoading(false);
       }
     } finally {
-      setLoading(false);
     }
   };
 
@@ -69,7 +70,7 @@ export default function Home() {
   const renderPayments = (payments) => {
     if (payments.length === 0) return emptyPayments;
 
-    return payments.map(payment => (
+    return payments.map((payment) => (
       <Payment
         key={payment.id}
         id={payment.id}
@@ -85,10 +86,22 @@ export default function Home() {
     ));
   };
 
+  const renderSkeleton = () => {
+    let skeletons = [];
+    for (let i = 0; i < 4; i++) {
+      skeletons.push(
+        <SkeletonWrapper key={i}>
+          <View style={[baseStyles.card, { height: 80, marginBottom: 10 }]} />
+        </SkeletonWrapper>
+      );
+    }
+    return <View style={{ flex: 1, gap: 10 }}>{skeletons}</View>;
+  };
+
   const renderMiniBalanceCards = (balances) => {
     if (balances.length === 0) return;
 
-    return balances.map(balance => (
+    return balances.map((balance) => (
       <MiniBalanceCard
         key={balance.id}
         id={balance.id}
@@ -102,7 +115,7 @@ export default function Home() {
 
   const renderMiniPromiseCards = (promises) => {
     if (promises.length === 0) return;
-    return promises.map(promise => (
+    return promises.map((promise) => (
       <MiniPromiseCard
         key={promise.id}
         id={promise.id}
@@ -126,8 +139,6 @@ export default function Home() {
     fetchPayments();
   }, []);
 
-  if (loading) return <Spinner />;
-
   return (
     <View style={[baseStyles.viewContainerFull, { gap: 15 }]}>
       {!serverReady && (
@@ -137,16 +148,24 @@ export default function Home() {
         { /* Header Section */ }
         <View style={[baseStyles.card, baseStyles.rowSpaceBetween]}>
           <View style={[baseStyles.rowCenter, {  gap: 10 }]}>
-            <TouchableOpacity
-              onPressIn={() => router.push('/profile')}
-            >
-              <Avatar name={user?.first_name || "User"} size={50} />
-            </TouchableOpacity>
-            <View>
-              <Text style={baseStyles.textGray}>Welcome Back</Text>
+              <TouchableOpacity
+                onPressIn={() => router.push('/profile')}
+              >
+                 <SkeletonWrapper show={loading}>
+                  <Avatar name={user?.first_name || "User"} size={50} />
+                </SkeletonWrapper>
+              </TouchableOpacity>
+            <View style={{ gap: 5 }}>
+              <SkeletonWrapper show={loading}>
+              <Text style={[baseStyles.textGray]}>Welcome Back</Text>
+              </SkeletonWrapper>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
+              <SkeletonWrapper show={loading}>
                 <Text>Hello</Text>
+              </SkeletonWrapper>
+              <SkeletonWrapper show={loading}>
                 <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
+              </SkeletonWrapper>
               </View>
             </View>
           </View>
@@ -157,19 +176,19 @@ export default function Home() {
             >
               <View style={{  marginRight: 10 }}>
                 <Ionicons name="notifications" size={24} color="black" />
-                <Text
-                  style={[
-                    baseStyles.quantityBadge,
-                    baseStyles.warningBG,
-                    {
-                      position: 'fixed',
-                      top: -30,
-                      right: -18,
-                    },
-                  ]}
-                >
-                  {notificationsQuantity}
-                </Text>
+                      <Text
+                        style={[
+                          baseStyles.quantityBadge,
+                          baseStyles.warningBG,
+                          {
+                            position: 'fixed',
+                            top: -30,
+                            right: -18,
+                          },
+                        ]}
+                      >
+                        {notificationsQuantity || ''}
+                      </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -185,17 +204,17 @@ export default function Home() {
             </View>
           </View>
         )}
-        { /* Payments Section */ }
+        { /* Payments Section */}
         <View style={{ flex: 1 }}>
           <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
           <View style={{ flex: 1 }}>
             <View style={{ margin: 5 }}>
-              <TopNavBar menus={['Promises', 'Balances']} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <TopNavBar menus={["Promises", "Balances"]} activeTab={activeTab} setActiveTab={setActiveTab} />
             </View>
-            {activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+            { loading ? renderSkeleton() : activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
           </View>
         </View>
       </ScrollView >
     </View >
   );
-}
+};

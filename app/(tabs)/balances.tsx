@@ -1,5 +1,5 @@
 import { getBalances } from "@/services/api";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
 import BalanceCard from '../../presentational/BalanceCard';
@@ -7,12 +7,14 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
 import FloatingButton from "@/presentational/FloatingButton";
-import Spinner from "@/presentational/Spinner";
+import SkeletonWrapper from "@/presentational/SkeletonWrapper";
+import { useServer } from "@/services/serverContext";
 
 export default function Balances() {
   const [balances, setBalances] = useState([])
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { serverReady } = useServer();
 
   const fetchBalances = async () => {
     setLoading(true);
@@ -20,12 +22,12 @@ export default function Balances() {
     getBalances()
       .then((response) => {
         setBalances(response.data);
+        setLoading(false);
       })
       .catch((error) => {
       })
       .finally(() => {
         setRefreshing(false);
-        setLoading(false);
       });
   }
 
@@ -56,18 +58,34 @@ export default function Balances() {
     ))
   }
 
+  const renderSkeletons = () => {
+    let skeletons = [];
+    for (let i = 0; i < 10; i++) {
+      skeletons.push(
+        <SkeletonWrapper key={i}>
+          <View style={[baseStyles.card, { height: 200 }]} />
+        </SkeletonWrapper>
+      );
+    }
+    return <View style={{ gap: 5 }}>{skeletons}</View>;
+  }
+
   useFocusEffect(
     useCallback(() => {
       fetchBalances();
     }, [])
   );
 
-  if (loading) return <Spinner />;
+  useEffect(() => {
+    if (serverReady) {
+      fetchBalances();
+    }
+  }, [serverReady]);
 
   return (
     <View style={baseStyles.viewContainerFull} >
       <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
-        {renderBalances()}
+        { loading ? renderSkeletons() : renderBalances()}
       </ScrollView>
       <FloatingButton icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />
     </View>

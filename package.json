@@ -27,6 +27,7 @@
     "expo-constants": "~18.0.10",
     "expo-font": "~14.0.9",
     "expo-haptics": "~15.0.7",
+    "expo-linear-gradient": "~15.0.7",
     "expo-linking": "~8.0.8",
     "expo-router": "~6.0.13",
     "expo-secure-store": "~15.0.7",
@@ -36,6 +37,7 @@
     "expo-system-ui": "~6.0.8",
     "expo-updates": "~29.0.12",
     "expo-web-browser": "~15.0.8",
+    "moti": "^0.30.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
@@ -48,7 +50,8 @@
     "react-native-svg": "15.12.1",
     "react-native-web": "^0.21.0",
     "react-native-webview": "13.15.0",
-    "react-native-worklets": "0.5.1"
+    "react-native-worklets": "0.5.1",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -56,6 +59,9 @@
     "jest": "^29.2.1",
     "jest-expo": "~54.0.13",
     "typescript": "~5.9.2"
+  },
+  "resolutions": {
+    "tslib": "^2.8.1"
   },
   "private": true
 }

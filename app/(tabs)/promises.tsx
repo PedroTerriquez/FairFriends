@@ -1,13 +1,14 @@
 import { getPromises } from "@/services/api";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
 import PromiseCard from '../../presentational/PromiseCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
-import Spinner from "@/presentational/Spinner";
 import TopNavBar from "@/presentational/TopNavBar";
+import SkeletonWrapper from "@/presentational/SkeletonWrapper";
+import { useServer } from "@/services/serverContext";
 
 export default function Promises() {
   const [receiving , setReceiving] = useState([])
@@ -15,6 +16,7 @@ export default function Promises() {
   const [activeTab, setActiveTab] = useState("Receiving");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { serverReady } = useServer();
 
   const fetchPromises = async () => {
     setLoading(true);
@@ -23,12 +25,12 @@ export default function Promises() {
       .then((response) => {
         setReceiving(response.data.receivable_promises)
         setPaying(response.data.payable_promises)
+        setLoading(false);
       })
       .catch((error) => {
       })
       .finally(() => {
         setRefreshing(false);
-        setLoading(false);
       });
   }
 
@@ -59,19 +61,35 @@ export default function Promises() {
     ))
   }
 
+  const renderSkeletons = () => {
+    let skeletons = [];
+    for (let i = 0; i < 10; i++) {
+      skeletons.push(
+        <SkeletonWrapper key={i}>
+          <View style={[baseStyles.card, { height: 200 }]} />
+        </SkeletonWrapper>
+      );
+    }
+    return <View style={{ gap: 5 }}>{skeletons}</View>;
+  }
+
   useFocusEffect(
     useCallback(() => {
       fetchPromises();
     }, [])
   );
 
-  if (loading) return <Spinner />;
+  useEffect(() => {
+    if (serverReady) {
+      fetchPromises();
+    }
+  }, [serverReady]);
 
   return (
     <View style={baseStyles.viewContainerFull}>
       <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
       <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
-        {activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
+        {loading ? renderSkeletons() : activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
       </ScrollView>
     </View>
   );
