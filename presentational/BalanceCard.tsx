@@ -54,7 +54,7 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
               <Text style={[baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10, backgroundColor: difference >= 0 ? 'green' : '#dc3545'  }]}>You</Text>
               <Text style={[baseStyles.title24, { color: difference >= 0 ? 'green' : '#dc3545' }]}>{formatMoney(myTotal)}</Text>
               <AntDesign
-                name={difference >= 0 ? "caretup" : "caretdown"}
+                name={difference >= 0 ? "caret-up" : "caret-down"}
                 size={20}
                 color={difference >= 0 ? "green" : "#dc3545"}
                 style={{ marginLeft: 5 }}

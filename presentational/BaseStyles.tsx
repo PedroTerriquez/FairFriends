@@ -7,7 +7,6 @@ const baseStyles = StyleSheet.create({
     },
     viewContainerFull: {
         flex: 1,
-        //backgroundColor: '#f6f6f6',
         backgroundColor: '#EFEEF3',
         paddingHorizontal: 15,
         paddingVertical: 5,
@@ -422,7 +421,6 @@ const baseStyles = StyleSheet.create({
         color: '#5f5f5fff',
     }, 
     modalContainer: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -431,7 +429,7 @@ const baseStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
         padding: 10,
-        backgroundColor: 'white',
+        backgroundColor: '#EFEEF3',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
@@ -461,6 +459,20 @@ const baseStyles = StyleSheet.create({
     keypadText: {
         fontSize: 32,
         color: '#000000',
+    },
+    // Table
+    table: {
+        borderWidth: 1,
+        borderColor: '#0000002e',
+        borderRadius: 10,
+        overflow: 'hidden',
+        padding: 15,
+    },
+    tableRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 4,
+        alignItems: "center",
     },
 
     // Header

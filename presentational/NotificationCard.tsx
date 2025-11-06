@@ -59,7 +59,7 @@ export default function NotificationCard({
       onPress={() => handleShow()}
       style={[baseStyles.card, ['accepted', 'rejected'].includes(status) ? baseStyles.cardRead : baseStyles.cardUnread]}>
       <View style={baseStyles.cardContent}>
-        <View style={baseStyles.rowCenter}>
+        <View style={[baseStyles.rowCenter, { flex: 2 }]}>
           <Avatar name={creatorName[0]} />
           <View style={baseStyles.marginLeft10}>
             <Text style={baseStyles.cardTitle}>{creatorName}</Text>
@@ -67,7 +67,7 @@ export default function NotificationCard({
             <Text style={baseStyles.cardDate}>{formattedDate}</Text>
           </View>
         </View>
-        <View style={{ gap: 10, flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        <View style={{ flex: 1, gap: 10, flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
           {amount && <Text style={baseStyles.boldText}>{amount}</Text>}
           {!pendingDecision && status == 'pending' && <Pressable
             style={[baseStyles.circleButton, baseStyles.warningBG]}

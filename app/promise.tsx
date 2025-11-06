@@ -116,6 +116,7 @@ export default function Promise() {
                     percentage={promise.percentage}
                     status={promise.status}
                     user={promise.admin_name}
+                    interest={promise.interest || 0}
                 />
                 { promise.status === "pending" && (
                     <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10, gap: 10}}>

@@ -81,13 +81,14 @@ export default function Contacts() {
                                 onPress={() => startPromise(friend.id, friend.first_name)}
                                 icon={<MaterialIcons name="attach-money" size={18} color="white" />}
                             />
-                            <ButtonWithIcon
+                            { /*<ButtonWithIcon
                                 style={[baseStyles.blueBG]}
                                 textStyle={{ fontSize: 10, color: 'white' }}
                                 text='Split'
                                 onPress={() => startBalance(friend.id)}
                                 icon={<FontAwesome name="balance-scale" size={18} color="white" />}
                             />
+                            */}
                         </View>
                     )}
                 </Person>

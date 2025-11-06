@@ -169,29 +169,26 @@ export default function Home() {
               </View>
             </View>
           </View>
-            <View style={[baseStyles.rowCenter, { gap: 10, paddingVertical: 10 }]}>
-            <TouchableOpacity
-              onPressIn={() => router.push('/notifications')}
-              style={{}}
-            >
-              <View style={{  marginRight: 10 }}>
-                <Ionicons name="notifications" size={24} color="black" />
-                      <Text
-                        style={[
-                          baseStyles.quantityBadge,
-                          baseStyles.warningBG,
-                          {
-                            position: 'fixed',
-                            top: -30,
-                            right: -18,
-                          },
-                        ]}
-                      >
-                        {notificationsQuantity || ''}
-                      </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPressIn={() => router.push('/notifications')}
+          >
+            <View style={{ marginRight: 10, paddingTop: 20 }}>
+              <Ionicons name="notifications" size={24} color="black" />
+              <Text
+                style={[
+                  baseStyles.quantityBadge,
+                  baseStyles.warningBG,
+                  {
+                    position: 'fixed',
+                    top: -32,
+                    right: -18,
+                  },
+                ]}
+              >
+                {notificationsQuantity || ''}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
         { /* Promises Section */ }
         {promises.length > 0 && (
