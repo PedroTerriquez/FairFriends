@@ -444,7 +444,6 @@ const baseStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 5, 
         gap: 10
     },
     keypadButton: {
@@ -454,7 +453,7 @@ const baseStyles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#c8c8c8ff',
         borderRadius: 40,
-        margin: 5,
+        margin: 2,
     },
     keypadText: {
         fontSize: 32,

@@ -85,14 +85,17 @@ export function SessionProvider({ children }) {
   }, [getJWT]);
 
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
         const { token, user, headers } = await getSession();
 
-        if (headers.Authorization) {
+        if (user && token) {
           setUser(user);
           setSession({ token, headers });
+        } else {
+          router.replace("/login");
         }
       } finally {
         setLoading(false);

@@ -9,14 +9,21 @@ export default function PaymentKeyPad({ amount, amountSuggestion, onKeyPress, ha
         <TextInput
           placeholder="0"
           placeholderTextColor="#666"
-          style={[baseStyles.money, { width: '100%', marginBottom: 0, textAlign: "center", fontSize: amount.length < 4 ? 100 : 400 / amount.length, marginVertical: 10 }]}
+          style={[baseStyles.money,
+            {
+              width: '100%',
+              textAlign: "center",
+              marginTop: 20,
+              fontSize: amount.length < 4 ? 100 : 400 / amount.length 
+            }
+          ]}
           value={`$ ${amount}`}
           editable={false}
           keyboardType="numeric"
         />
       </View>
 
-      <View style={{ flex: 4 }}>
+      <View style={{ flex: 3 }}>
         {[
           [1, 2, 3],
           [4, 5, 6],
