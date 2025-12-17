@@ -352,7 +352,6 @@ const baseStyles = StyleSheet.create({
     floatingBadgeForCard: {
         position: "absolute",
         top: 10, 
-        right: 20,
         width: 'auto',
         height: 30,
         alignItems: "center",
