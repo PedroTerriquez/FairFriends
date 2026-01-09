@@ -12,7 +12,7 @@ export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('Payment');
+    const [activeTab, setActiveTab] = useState('payment');
 
     const fetchNotifications = async () => {
         setLoading(true);
@@ -101,8 +101,12 @@ export default function Notifications() {
         <View style={[baseStyles.viewContainerFull]} >
             <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                 <TopNavBar
-                    menus={['Payment', 'Balance', 'Promise']}
-                    quantityPerMenu={{ 'Payment': countNotificationsByType('Payment'), 'Balance': countNotificationsByType('Balance'), 'Promise': countNotificationsByType('Promise') }} activeTab={activeTab} setActiveTab={setActiveTab}
+                    menus={['payment', 'balance', 'promise']}
+                    quantityPerMenu={{
+                        'payment': countNotificationsByType('payment'),
+                        'balance': countNotificationsByType('balance'),
+                        'promise': countNotificationsByType('promise')
+                    }} activeTab={activeTab} setActiveTab={setActiveTab}
                 />
                 {renderNotifications(activeTab)}
             </ScrollView>

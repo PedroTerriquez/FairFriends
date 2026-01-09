@@ -9,11 +9,13 @@ import { router, useFocusEffect } from "expo-router";
 import TopNavBar from "@/presentational/TopNavBar";
 import SkeletonWrapper from "@/presentational/SkeletonWrapper";
 import { useServer } from "@/services/serverContext";
+import { useTranslation } from 'react-i18next';
 
 export default function Promises() {
+  const { t } = useTranslation();
   const [receiving , setReceiving] = useState([])
   const [paying, setPaying] = useState([])
-  const [activeTab, setActiveTab] = useState("Receiving");
+  const [activeTab, setActiveTab] = useState("receiving");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const { serverReady } = useServer();
@@ -34,11 +36,11 @@ export default function Promises() {
       });
   }
 
-  const emptyPromises = <EmptyList text="No promises">
+  const emptyPromises = <EmptyList text={t("promisesIndex.no_promises")}>
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-      <Text style={baseStyles.label17}>Start a promises with your </Text>
+      <Text style={baseStyles.label17}>{t('promisesIndex.start_promise')}</Text>
       <Pressable onPress={() => { router.push("/contacts") }}>
-        <Text style={[baseStyles.label17, baseStyles.boldText, baseStyles.link]}>contacts</Text>
+        <Text style={[baseStyles.label17, baseStyles.boldText, baseStyles.link]}>{t('contacts')}</Text>
       </Pressable>
     </View>
   </EmptyList>
@@ -87,9 +89,9 @@ export default function Promises() {
 
   return (
     <View style={baseStyles.viewContainerFull}>
-      <TopNavBar menus={["Receiving", "Paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
+      <TopNavBar menus={["receiving", "paying"]} setActiveTab={setActiveTab} activeTab={activeTab} />
       <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchPromises} />}>
-        {loading ? renderSkeletons() : activeTab === "Receiving" ? renderPromises(receiving) : renderPromises(paying)}
+        {loading ? renderSkeletons() : activeTab === "receiving" ? renderPromises(receiving) : renderPromises(paying)}
       </ScrollView>
     </View>
   );

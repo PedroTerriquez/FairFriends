@@ -1,11 +1,13 @@
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import baseStyles from "@/presentational/BaseStyles";
+import { useTranslation } from "react-i18next";
 
 export default function PaymentKeyPad({ amount, amountSuggestion, onKeyPress, handleSubmit }) {
+  const { t } = useTranslation();
   return (
     <View style={[baseStyles.containerCard, { flex: 1 }]}>
       <View style={{ flex: 1 }}>
-        {amountSuggestion && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>Suggested amount ${amountSuggestion}</Text>)}
+        {amountSuggestion && (<Text style={[baseStyles.textCenter, baseStyles.label14, baseStyles.textGray]}>{t('paymentKeypad.suggestedAmount') + amountSuggestion}</Text>)}
         <TextInput
           placeholder="0"
           placeholderTextColor="#666"
@@ -47,7 +49,7 @@ export default function PaymentKeyPad({ amount, amountSuggestion, onKeyPress, ha
             style={[baseStyles.button, baseStyles.saveButton, { paddingHorizontal: '30%' }]}
             onPress={handleSubmit}
           >
-            <Text style={baseStyles.buttonText}>Fair Pay</Text>
+            <Text style={baseStyles.buttonText}> {t('formPayment.fair_pay')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -5,8 +5,10 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useToast } from "@/services/ToastContext";
 import baseStyles from "@/presentational/BaseStyles";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
+  const { t } = useTranslation();
   const { signIn } = useSession();
   const router = useRouter();
   const { showToast } = useToast();
@@ -15,7 +17,7 @@ export default function Login() {
 
   const handleLogin = () => {
     if (!email || !password) {
-      showToast('Please fill in all fields');
+      showToast(t('login.please_fill_in'));
       return;
     }
     signIn(email, password);
@@ -31,7 +33,7 @@ export default function Login() {
           <View style={[baseStyles.center, { marginTop: 100 }]}>
             <Ionicons name="people" size={80} color="#2F66FF" />
             <Text style={[baseStyles.title32, baseStyles.blueLogo]}>FairFriends</Text>
-            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>Split expenses with friends</Text>
+            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>{ t('login.split_expenses_with_friends') }</Text>
             {process.env.NODE_ENV === 'development' && (
               <Button
                 title="Change user"
@@ -46,7 +48,7 @@ export default function Login() {
             <View style={baseStyles.fullWidth}>
               <TextInput
                 style={baseStyles.input}
-                placeholder="Email"
+                placeholder={t('login.email')}
                 placeholderTextColor="#666"
                 value={email}
                 onChangeText={setEmail}
@@ -58,7 +60,7 @@ export default function Login() {
               />
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="Password"
+                placeholder={t('login.password')}
                 placeholderTextColor="#666"
                 value={password}
                 onChangeText={setPassword}
@@ -72,14 +74,14 @@ export default function Login() {
               onPress={handleLogin}
             >
               <Ionicons name="log-in" size={24} color="white" />
-              <Text style={[baseStyles.textWhite, baseStyles.title17]}>Login</Text>
+              <Text style={[baseStyles.textWhite, baseStyles.title17]}>{t('login.login_button')}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
-            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>Don't have an account?</Text>
+            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>{t('login.no_account')}</Text>
             <TouchableOpacity onPress={() => router.push('/signup')}>
-              <Text style={[baseStyles.link, baseStyles.boldText]}>Sign Up</Text>
+              <Text style={[baseStyles.link, baseStyles.boldText]}>{t('login.sign_up')}</Text>
             </TouchableOpacity>
           </View>
         </View>

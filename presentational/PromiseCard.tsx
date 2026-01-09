@@ -1,14 +1,15 @@
 import { View, Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import baseStyles from './BaseStyles' 
-import PromiseGraph from "./PromiseGraph";
 import Avatar from "./Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getColorHex } from "../services/getColorHex";
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { useTranslation } from 'react-i18next';
 
 export default function PromiseCard({ id, title, percentage, user, status, total, paid_amount, interest }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <TouchableOpacity 
@@ -45,22 +46,22 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           {status == 'pending' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightOrangeBG]}>
             <MaterialIcons name="edit" size={20} color="orange" />
-            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'orange', marginLeft: 5 }]}>Editable</Text>
+            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'orange', marginLeft: 5 }]}>{t('promiseCard.editable')}</Text>
           </Pressable>
           }
           {status == 'accepted' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightBlueBG]}>
             <MaterialIcons name="moving" size={20} color="blue" />
-            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'blue', marginLeft: 5 }]}>Open</Text>
+            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'blue', marginLeft: 5 }]}>{t('promiseCard.open')}</Text>
           </Pressable>
           }
           {status == 'close' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightGreenBG]}>
             <MaterialIcons name="check" size={20} color="green" />
-            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'green', marginLeft: 5 }]}>Finished</Text>
+            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'green', marginLeft: 5 }]}>{t('promiseCard.finished')}</Text>
           </Pressable>
           }
           {status == 'rejected' && <Pressable style={[baseStyles.floatingBadgeForCard, baseStyles.lightRedBG]}>
             <MaterialIcons name="cancel" size={20} color="red" />
-            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'red', marginLeft: 5 }]}>Rejected</Text>
+            <Text style={[baseStyles.label14, baseStyles.textGray, { color: 'red', marginLeft: 5 }]}>{t('promiseCard.rejected')}</Text>
           </Pressable>
           }
         </View>
@@ -72,7 +73,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <View style={{ flex: 1, alignItems: 'center' }}>
           <MaterialIcons name="attach-money" size={18} color="#333" />
           <Text style={baseStyles.title20}>{total}</Text>
-          <Text style={[baseStyles.label14, baseStyles.textGray]}>Total</Text>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>{t('promiseCard.total')}</Text>
         </View>
 
         <View style={{ width: 1, height: 56, backgroundColor: 'rgba(0,0,0,0.06)' }} />
@@ -80,7 +81,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <View style={{ flex: 1, alignItems: 'center' }}>
           <MaterialIcons name="payment" size={18} color="#333" />
           <Text style={baseStyles.title20}>{paid_amount}</Text>
-          <Text style={[baseStyles.label14, baseStyles.textGray]}>Paid</Text>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>{t('promiseCard.paid')}</Text>
         </View>
 
         <View style={{ width: 1, height: 56, backgroundColor: 'rgba(0,0,0,0.06)' }} />
@@ -88,7 +89,7 @@ export default function PromiseCard({ id, title, percentage, user, status, total
         <View style={{ flex: 1, alignItems: 'center' }}>
           <MaterialIcons name="percent" size={18} color="#333" />
           <Text style={baseStyles.title20}>{interest}</Text>
-          <Text style={[baseStyles.label14, baseStyles.textGray]}>Interest</Text>
+          <Text style={[baseStyles.label14, baseStyles.textGray]}>{ t('promiseCard.interest')}</Text>
         </View>
       </View>
     </TouchableOpacity>

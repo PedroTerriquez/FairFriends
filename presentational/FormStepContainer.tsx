@@ -2,8 +2,10 @@ import { View, Text, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import baseStyles from './BaseStyles';
 import ButtonWithIcon from './ButtonWithIcon';
+import { useTranslation } from "react-i18next";
 
 export default function FormStepContainer({ children, step, setStep, stepPosition, icon, title, onNext = null }) {
+    const { t } = useTranslation();
     return (
         <View style={[baseStyles.containerCard]}>
             {/* Header with title and toggle button */}
@@ -25,7 +27,7 @@ export default function FormStepContainer({ children, step, setStep, stepPositio
             {children}
             <ButtonWithIcon
                 icon={icon}
-                text='Next'
+                text={t('formStepContainer.next')}
                 onPress={() => { onNext ? onNext() : setStep(stepPosition + 1); }}
                 style={[baseStyles.greenBG, { marginVertical: 10, alignSelf: 'flex-end' }]} />
             </View>)}

@@ -9,8 +9,10 @@ import { router, useFocusEffect } from "expo-router";
 import FloatingButton from "@/presentational/FloatingButton";
 import SkeletonWrapper from "@/presentational/SkeletonWrapper";
 import { useServer } from "@/services/serverContext";
+import { useTranslation } from "react-i18next";
 
 export default function Balances() {
+  const { t } = useTranslation();
   const [balances, setBalances] = useState([])
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,19 +33,19 @@ export default function Balances() {
       });
   }
 
-  const emptyList = (
-    <EmptyList text="No balances">
+  const renderEmptyBalances = () => (
+    <EmptyList text={t("balancesIndex.no_balances")}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-        <Text style={baseStyles.label17}>Try adding some </Text>
+        <Text style={baseStyles.label17}>{t("balancesIndex.start_balance")}</Text>
         <Pressable onPress={() => { router.push("/formBalance") }}>
-          <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>balances</Text>
+          <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>{t("balancesIndex.balances")}</Text>
         </Pressable>
       </View>
     </EmptyList>
   )
   
   const renderBalances = () => {
-    if (balances.length == 0) return emptyList
+    if (balances.length == 0) return renderEmptyBalances()
 
     return balances.map(balance => (
       <BalanceCard

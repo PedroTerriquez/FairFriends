@@ -18,7 +18,10 @@ import ServerReconnectBar from "@/presentational/ServerReconnectBar";
 
 import SkeletonWrapper from "@/presentational/SkeletonWrapper";
 
+import { useTranslation } from 'react-i18next'
+
 export default function Home() {
+  const { t } = useTranslation();
   //const [balances, setBalances] = useState([]);
   const [promises, setPromises] = useState([]);
   const [balancePayments, setBalancePayments] = useState([]);
@@ -42,9 +45,9 @@ export default function Home() {
         setPromisePayments(response.data.promise_payments);
         setNotificationsQuantity(response.data.notifications.quantity);
         if (response.data.promises.length === 0) {
-          setActiveTab("Balances");
+          setActiveTab("balances");
         } else {
-          setActiveTab("Promises");
+          setActiveTab("promises");
         }
         setLoading(false);
       }
@@ -157,11 +160,11 @@ export default function Home() {
               </TouchableOpacity>
             <View style={{ gap: 5 }}>
               <SkeletonWrapper show={loading}>
-              <Text style={[baseStyles.textGray]}>Welcome Back</Text>
+              <Text style={[baseStyles.textGray]}>{t('home.welcome')}</Text>
               </SkeletonWrapper>
               <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
               <SkeletonWrapper show={loading}>
-                <Text>Hello</Text>
+                <Text>{t('home.hello')}</Text>
               </SkeletonWrapper>
               <SkeletonWrapper show={loading}>
                 <Text style={baseStyles.title15}>{user?.first_name || "User"}</Text>
@@ -193,7 +196,7 @@ export default function Home() {
         { /* Promises Section */ }
         {promises.length > 0 && (
           <View>
-            <SubtitleLink text="Payables Promises" onPress={() => { router.push("/promises"); }} />
+            <SubtitleLink text={t('home.payable_promises')} onPress={() => { router.push("/promises"); }} />
             <View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
                 {renderMiniPromiseCards(promises)}
@@ -203,12 +206,12 @@ export default function Home() {
         )}
         { /* Payments Section */}
         <View style={{ flex: 1 }}>
-          <SubtitleLink text="Recent Payments" onPress={() => { router.push("/promises"); }} />
+          <SubtitleLink text={t("home.recent_payments")} onPress={() => { router.push("/promises"); }} />
           <View style={{ flex: 1 }}>
             <View style={{ margin: 5 }}>
-              <TopNavBar menus={["Promises", "Balances"]} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <TopNavBar menus={["promises", "balances"]} activeTab={activeTab} setActiveTab={setActiveTab} />
             </View>
-            { loading ? renderSkeleton() : activeTab === "Promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
+            { loading ? renderSkeleton() : activeTab === "promises" ? renderPayments(promisePayments) : renderPayments(balancePayments)}
           </View>
         </View>
       </ScrollView >

@@ -11,8 +11,10 @@ import InputWithLabel from '@/presentational/InputWithLabel';
 import PaymentKeyPad from '@/presentational/PaymentKeypad';
 import SuccessPaymentModal from '@/presentational/SuccessPaymentModal';
 import FormStepContainer from '@/presentational/FormStepContainer';
+import { useTranslation } from 'react-i18next';
 
 export default function addPayment() {
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   
@@ -72,20 +74,20 @@ export default function addPayment() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[baseStyles.viewContainerFull]}>
           <View style={{ flex: 0}}>
-            <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
+            <AvatarInfoHeader user={params.recipient_name} text={t('formPayment.payingFor')} />
           </View>
           {/* Payment Information Section */}
           <View style={[ step === 2 ? { flex: 0 } : { flex: 6 } ]}>
             <FormStepContainer step={step} setStep={setStep} stepPosition={1}
               icon={<MaterialIcons name="navigate-next" size={32} color="white" />}
-              title={'Payment Information'} >
+              title={ t('formPayment.paymentInformation')} >
               <View>
-                <InputWithLabel label='Concept' name='concept' value={concept}
+                <InputWithLabel label={t('formPayment.concept')} name='concept' value={concept}
                   onChangeText={(_name, value) => setConcept(value)}
-                  placeholder="Add a concept" error={null} editable={true} />
+                  placeholder={t('formPayment.enter_concept')} error={null} editable={true} />
                 {params.members && params.admin == true && (
                   <View>
-                    <Text style={baseStyles.label17}>Done by</Text>
+                    <Text style={baseStyles.label17}>{t('formPayment.doneBy')}</Text>
                     <Picker
                       selectedValue={creatorId}
                       onValueChange={(member_id) => setCreatorId(member_id)}

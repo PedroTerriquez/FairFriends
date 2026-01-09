@@ -2,9 +2,11 @@ import { Text } from 'react-native';
 import { Redirect, Tabs } from 'expo-router';
 import { useSession } from '../../services/authContext';
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
 
 export default function AppLayout() {
   const { session } = useSession();
+  const { t } = useTranslation();
 
   if (session == null) {
     return <Text>Loading...</Text>;
@@ -19,7 +21,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: t("layout.home"),
           tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
           headerShown: false
         }}
@@ -27,7 +29,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="contacts"
         options={{
-          title: "Contacts",
+          title: t("layout.contacts"),
           tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
           headerShown: false
         }}
@@ -35,7 +37,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="balances"
         options={{
-          title: "Fair Split",
+          title: t("layout.fair_split"),
           tabBarIcon: ({ color, size }) => <FontAwesome name="balance-scale" color={color} size={size} />,
           headerShown: false
         }}
@@ -43,7 +45,7 @@ export default function AppLayout() {
       <Tabs.Screen
         name="promises"
         options={{
-          title: "Promises",
+          title: t("layout.promises"),
           tabBarIcon: ({ color, size }) => <MaterialIcons name="attach-money" color={color} size={size} />,
           headerShown: false
         }}

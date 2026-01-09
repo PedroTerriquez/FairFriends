@@ -5,8 +5,11 @@ import { router } from "expo-router";
 import { AntDesign } from "@expo/vector-icons"; // Import MaterialIcons
 import baseStyles from "./BaseStyles";
 import formatMoney from "../services/formatMoney";
+import { useTranslation } from 'react-i18next';
 
 export default function BalanceCard({ id, total, name, members, myTotal }) {
+  const { t } = useTranslation();
+
   const getColorByIndex = (index) => {
     const professionalColors = [
       "#4F81BD", // Blue
@@ -46,12 +49,12 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
 
   return (
     <TouchableOpacity key={id}  style={[baseStyles.card]} onPress={() => router.push({pathname: 'balance', params: { id }})}>
-      <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `Balance with ${name}`}</Text>
+      <Text style={[baseStyles.cardTitle]}>{members.length > 2 ? name : `${t('balanceCard.balance_with')} ${name}`}</Text>
       <View style={[baseStyles.rowCenter]}>
         <View style={{ flex: 2.5, justifyContent: "space-between" }}>
           <View style={{ flexDirection: "column" }}>
             <View style={{flexDirection: "row", alignItems: "center"}}>
-              <Text style={[baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10, backgroundColor: difference >= 0 ? 'green' : '#dc3545'  }]}>You</Text>
+              <Text style={[baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10, backgroundColor: difference >= 0 ? 'green' : '#dc3545'  }]}>{t('balanceCard.you')}</Text>
               <Text style={[baseStyles.title24, { color: difference >= 0 ? 'green' : '#dc3545' }]}>{formatMoney(myTotal)}</Text>
               <AntDesign
                 name={difference >= 0 ? "caret-up" : "caret-down"}
@@ -61,12 +64,12 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
               />
             </View>
             <View style={{flexDirection: "row", alignItems: "center"}}>
-              <Text style={[baseStyles.blackBG, baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10 }]}>Avg</Text>
+              <Text style={[baseStyles.blackBG, baseStyles.textWhite, { borderRadius: 10, padding: 5, marginRight: 5, fontSize: 10 }]}>{t('balanceCard.avg')}</Text>
               <Text style={[baseStyles.title24, baseStyles.boldText]}>{formatMoney(avg)}</Text>
             </View>
           </View>
           <View style={[{ flexDirection: 'column', marginTop: 10, alignItems: 'center', padding: 5, borderRadius: 10, paddingHorizontal: 5 }, baseStyles.lightRedBG]}>
-            <Text style={[baseStyles.smallLabel]}>Next payment on: </Text>
+            <Text style={[baseStyles.smallLabel]}>{t('balanceCard.next_payment_on')} </Text>
             <Text style={[baseStyles.boldText]}>{lessPaid}</Text>
           </View>
         </View>
@@ -98,7 +101,7 @@ export default function BalanceCard({ id, total, name, members, myTotal }) {
               gap: 5,
               justifyContent: "flex-end"
             }}>
-              <Text style={[baseStyles.textBlack, { textAlign: "right" }]}>Total:</Text>
+              <Text style={[baseStyles.textBlack, { textAlign: "right" }]}>{t('balanceCard.total')}:</Text>
               <Text style={[baseStyles.title15, baseStyles.boldText, { textAlign: "right" }]}>{formatMoney(total)}</Text>
             </View>
           </View>

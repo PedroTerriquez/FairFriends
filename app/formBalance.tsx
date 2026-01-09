@@ -10,8 +10,10 @@ import PlaceholderPerson from "@/presentational/PlaceholderPerson";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import InputWithLabel from "@/presentational/InputWithLabel";
 import FormStepContainer from "@/presentational/FormStepContainer";
+import { useTranslation } from "react-i18next";
 
 export default function Contacts() {
+    const { t } = useTranslation();
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [selectedFriends, setSelectedFriends] = useState([]);
@@ -112,6 +114,10 @@ export default function Contacts() {
             );
         });
 
+        fullList.push(
+            <View key="separator" style={{ height: 1, backgroundColor: '#e0e0e0', marginVertical: 2, width: '100%' }} />
+        );
+
         Object.keys(friends).map((key) => {
             const friend = friends[key];
             fullList.push(
@@ -141,7 +147,7 @@ export default function Contacts() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView keyboardDismissMode="on-drag" >
                 <View>
-                    <FormStepContainer step={step} setStep={setStep} stepPosition={1} title="Select Members" icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
+                    <FormStepContainer step={step} setStep={setStep} stepPosition={1} title={ t('balanceForm.select_members')} icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
                         <View>
                             <View >
                                 <SearchBarInput text={text} setText={setText} />
@@ -151,14 +157,14 @@ export default function Contacts() {
                     </FormStepContainer>
                 </View>
                 <View>
-                    <FormStepContainer step={step} setStep={setStep} stepPosition={2} title="Placeholder Names" icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
+                    <FormStepContainer step={step} setStep={setStep} stepPosition={2} title={t('balanceForm.placeholder_names')} icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
                         <View>
                             {selectedPlaceholders.map((_, idx) => (
                                 <React.Fragment key={`placeholder-fragment-${idx}`}>
                                   <InputWithLabel
-                                    key={`placeholder-name-${idx}`}
-                                    label={`Placeholder ${idx + 1}`}
-                                    placeholder={`e.g., Friend ${idx + 1}`}
+                                    key={t('balanceForm.placeholder_name') + `-${idx}`}
+                                    label={t('balanceForm.placeholder_name') + ` ${idx + 1}`}
+                                    placeholder={t('balanceForm.example_placeholder_name') + ` ${idx + 1}`}
                                     value={placeholderNames[idx] || ""}
                                     onChangeText={(_name, value) => handleNameChange(idx, value)} 
                                     error={null}
@@ -170,11 +176,10 @@ export default function Contacts() {
                     </FormStepContainer>
                 </View>
                 <View>
-                    <FormStepContainer step={step} setStep={setStep} stepPosition={3} title="Name Split" onNext={createGroupHandler} icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
+                    <FormStepContainer step={step} setStep={setStep} stepPosition={3} title={t('balanceForm.split_name')} onNext={createGroupHandler} icon={<MaterialIcons name="navigate-next" size={32} color="white" />}>
                         <InputWithLabel
                             name='name'
-                            label="Group Name"
-                            placeholder="e.g., Weekend Trip"
+                            placeholder={t('balanceForm.group_name_placeholder')}
                             value={groupName}
                             onChangeText={(_name, value) => setGroupName(value)}
                             error={null}

@@ -1,10 +1,11 @@
 import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
 import baseStyles from "./BaseStyles";
 import { Ionicons } from "@expo/vector-icons";
-import ButtonWithIcon from "./ButtonWithIcon";
 import Avatar from "./Avatar";
+import { useTranslation } from "react-i18next";
 
 export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }) {
+    const { t } = useTranslation();
     return (
         <Modal
             visible={visible}
@@ -15,9 +16,9 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
             <View style={{ flex: 1 }}>
                 <ScrollView contentContainerStyle={baseStyles.modalContainer}>
                     <View style={[baseStyles.modalContent, { alignItems: "flex-start", justifyContent: "space-between" } ]}>
-                        <Text style={[baseStyles.title32, { marginBottom: 20, marginTop: 60 }]}>Split</Text>
-                        <Text style={[baseStyles.label17]}>We've split the payment and will show how much each member owes.</Text>
-                        <Text style={[baseStyles.title24, { marginTop: 30 }]}>Settlements</Text>
+                        <Text style={[baseStyles.title32, { marginBottom: 20, marginTop: 60 }]}>{t('modalSplitInfo.split')}</Text>
+                        <Text style={[baseStyles.label17]}>{t('modalSplitInfo.splitDescription')}</Text>
+                        <Text style={[baseStyles.title24, { marginTop: 30 }]}>{t('modalSplitInfo.settlements')}</Text>
                         <View style={{marginTop: 10, width: '100%'}}>
                             {balanceSplittedInfo.payments.map((payment: { from: string; to: string; amount: number }, index: number) => (
                                 <View
@@ -31,7 +32,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                     <Avatar name={payment.from} />
                                     <Avatar name={payment.to} />
                                     <Text style={{ flex: 3, alignItems: 'center' }}>
-                                        {payment.from} owes {payment.to}
+                                        {payment.from} {t('modalSplitInfo.owes')} {payment.to}
                                     </Text>
                                     <Text style={{ flex: 2, textAlign: "right", fontWeight: "bold" }}>
                                         ${payment.amount}
@@ -39,13 +40,13 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                 </View>
                             ))}
                         </View>
-                        <Text style={[baseStyles.title24, { marginTop: 40 }]}>Detail</Text>
-                        <Text style={[baseStyles.title17, { marginTop: 15 }]}>Balance debt</Text>
+                        <Text style={[baseStyles.title24, { marginTop: 40 }]}>{t('modalSplitInfo.detail')}</Text>
+                        <Text style={[baseStyles.title17, { marginTop: 15 }]}>{t('modalSplitInfo.balanceDebt')}</Text>
                         <View style={[baseStyles.card, { marginTop: 10, width: '100%' }]}>
                             <View style={[baseStyles.tableRow, { borderBottomWidth: 1, borderBottomColor: 'black' }]}>
-                                <Text style={{ flex: 1 }}>Name</Text>
-                                <Text style={{ flex: 1.5 }}>Paid</Text>
-                                <Text style={{ flex: 1.5 }}>Getting Back/Owes</Text>
+                                <Text style={{ flex: 1 }}>{t('modalSplitInfo.name')}</Text>
+                                <Text style={{ flex: 1.5 }}>{t('modalSplitInfo.paid')}</Text>
+                                <Text style={{ flex: 1.5 }}>{t('modalSplitInfo.gettingBackOrOwes')}</Text>
                             </View>
                             {balanceSplittedInfo.paid_per_member.map((payment: [string, number], index: number) => {
                                 const owesOrGetsBack = payment[1] - balanceSplittedInfo.debt_per_member;
@@ -70,7 +71,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                             })}
                             <View style={baseStyles.tableRow}>
                                 <Text style={{ flex: 1, fontWeight: 'bold' }}>
-                                    {"Total"}
+                                    {t('modalSplitInfo.total')}
                                 </Text>
                                 <Text style={{ flex: 1.5, fontWeight: 'bold' }}>${balanceSplittedInfo.total}</Text>
                                 <Text
@@ -84,7 +85,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                 </Text>
                             </View>
                         </View>
-                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>Balance payments</Text>
+                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>{t('modalSplitInfo.balancePayments')}</Text>
                         <View style={[baseStyles.card, { marginTop: 10, width: '100%' }]}>
                             {balanceSplittedInfo.balance_payments.map((payment: { from: string; to: string; amount: number }, index: number) => (
                                 <View
@@ -96,7 +97,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                     }}
                                 >
                                     <Text style={{ flex: 5 }}>
-                                        {payment.from} owes {payment.to}
+                                        {payment.from} {t('modalSplitInfo.owes')} {payment.to}
                                     </Text>
                                     <Text style={{ flex: 2, textAlign: "right" }}>
                                         ${payment.amount}
@@ -104,7 +105,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                 </View>
                             ))}
                         </View>
-                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>Uneven payments</Text>
+                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>{t('modalSplitInfo.unevenPayments')}</Text>
                         <View style={[baseStyles.card, { marginTop: 10, width: '100%' }]}>
                             {balanceSplittedInfo.uneven_payments.map((payment: { from: string; to: string; amount: number }, index: number) => (
                                 <View
@@ -116,7 +117,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                     }}
                                 >
                                     <Text style={{ flex: 5 }}>
-                                        {payment.from} owes {payment.to}
+                                        {payment.from} {t('modalSplitInfo.owes')} {payment.to}
                                     </Text>
                                     <Text style={{ flex: 2, textAlign: "right" }}>
                                         ${payment.amount}
@@ -124,7 +125,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                 </View>
                             ))}
                         </View>
-                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>All payments ordered</Text>
+                        <Text style={[baseStyles.title15, { marginTop: 15 }]}>{t('modalSplitInfo.allPaymentsOrdered')}</Text>
                         <View style={[baseStyles.card, { marginTop: 10, width: '100%' }]}>
                             {balanceSplittedInfo.ordered_payments.map((payment: { from: string; to: string; amount: number }, index: number) => (
                                 <View
@@ -136,7 +137,7 @@ export default function ModalInfoSplit({ balanceSplittedInfo, visible, onClose }
                                     }}
                                 >
                                     <Text style={{ flex: 5 }}>
-                                        {payment.from} owes {payment.to}
+                                        {payment.from} {t('modalSplitInfo.owes')} {payment.to}
                                     </Text>
                                     <Text style={{ flex: 2, textAlign: "right" }}>
                                         ${payment.amount}

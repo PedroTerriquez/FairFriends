@@ -4,8 +4,10 @@ import { getSplitPromises } from "@/services/api"
 import { View, Text, ScrollView } from "react-native";
 import PromiseCard from "@/presentational/PromiseCard";
 import baseStyles from "@/presentational/BaseStyles";
+import { useTranslation } from "react-i18next";
 
 export default function SplitPromise() {
+    const { t } = useTranslation();
     const [promises, setPromises] = useState([]);
     const { payment_id } = useLocalSearchParams();
 
@@ -30,6 +32,7 @@ export default function SplitPromise() {
                 total={promise.total}
                 paid_amount={promise.paid_amount}
                 percentage={promise.percentage}
+                interest={promise.interest}
                 status={promise.status}
                 user={promise.debtor_name}
             />
@@ -45,8 +48,8 @@ export default function SplitPromise() {
     return (<View style={baseStyles.viewContainerFull}>
         <View style={baseStyles.card}>
             <Text style={[baseStyles.titleBold40, {textAlign: 'center' }]}>⚠️</Text>
-            <Text style={[baseStyles.title20, { marginVertical: 20 }]}> This payment was split unequally </Text>
-            <Text style={baseStyles.label17}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
+            <Text style={[baseStyles.title20, { marginVertical: 20 }]}> {t('splitPromise.this_payment_was_split')}</Text>
+            <Text style={baseStyles.label17}>{t('splitPromise.some_members_paid_more')}</Text>
         </View>
         <ScrollView >
             {renderPromises()}

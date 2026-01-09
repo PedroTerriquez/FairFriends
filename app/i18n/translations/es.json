@@ -1,0 +1,206 @@
+{
+  "balance": {
+    "add_payment": "Agregar pago",
+    "close_balance": "Cerrar balanza",
+    "no_balance_found": "No se encontró la balanza",
+    "no_payments_yet": "Aún no hay pagos",
+    "recent_payments": "Pagos recientes",
+    "start_adding_payment": "Comienza a agregar un nuevo pago",
+    "uneven_pay": "Pago desigual"
+  },
+  "balanceCard": {
+    "avg": "Avg",
+    "balance_with": "Balanza con",
+    "next_payment_on": "Próximo en pagar",
+    "total": "Total",
+    "you": "Tú"
+  },
+  "balanceForm": {
+    "example_placeholder_name": "e.g., Amigo",
+    "group_name_placeholder": "e.g., Viaje a la playa",
+    "placeholder_name": "Nombre del miembro sin cuenta",
+    "placeholder_names": "Miembros sin cuenta",
+    "select_members": "Seleccionar miembros",
+    "split_name": "Nombre de la balanza"
+  },
+  "balancesIndex": {
+    "balances": "Balanzas",
+    "no_balances": "No hay balances",
+    "start_balance": "Comienza un balance con tus contactos"
+  },
+  "contactForm": {
+    "name": "nombre",
+    "no_contacts_found": "No se encontraron contactos",
+    "try_looking_different": "Intenta buscar un nombre diferente"
+  },
+  "contactsIndex": {
+    "contacts": "Contactos",
+    "hello": "Hola",
+    "no_friends": "No tienes amigos aún",
+    "no_people_found": "No se encontraron personas",
+    "promise": "Promesa",
+    "try_adding_some": "Intenta agregar algunos contactos",
+    "try_searching_for": "Intenta buscar un nombre diferente"
+  },
+  "error": {
+    "generic": "Algo salió mal",
+    "network": "Error de red"
+  },
+  "formPayment": {
+    "concept": "Concepto",
+    "doneBy": "Hecho por",
+    "enter_concept": "Ingresa el concepto",
+    "fair_pay": "Pago Justo",
+    "payingFor": "Pagando a",
+    "paymentInformation": "Información de pago"
+  },
+  "formPromise": {
+    "amount": "Monto",
+    "amount_is_required": "El monto es obligatorio",
+    "amount_valid_number": "El monto debe ser un número válido",
+    "bi_week": "Quincenal",
+    "concept": "Concepto",
+    "concept_is_required": "El concepto es obligatorio",
+    "day": "Diario",
+    "editing_promise": "Editando promesa hecha a",
+    "enter_concept": "Ingresa el concepto",
+    "enter_interest": "Ingresa el interés",
+    "enter_payment_amount": "Ingresa el monto del pago",
+    "enter_total_amount": "Ingresa el monto total",
+    "financial_details": "Detalles financieros",
+    "general_information": "Información general",
+    "interest": "Interés",
+    "interval": "Intervalo",
+    "month": "Mensual",
+    "new_promise": "Nueva promesa hecha a",
+    "payment_amount": "Monto del pago",
+    "payment_amount_is_required": "El monto del pago es obligatorio",
+    "payment_amount_valid_number": "El monto del pago debe ser un número válido",
+    "payment_interval": "Intervalo de pago",
+    "payment_interval_required": "El intervalo de pago es obligatorio",
+    "save": "Guardar",
+    "total_payments": "Pagos totales",
+    "total_with_interest": "Total con interés",
+    "week": "Semanal"
+  },
+  "formStepContainer": {
+    "next": "Siguiente"
+  },
+  "formUnevenPayment": {
+    "addAConcept": "Agregar un concepto",
+    "amounts": "Montos",
+    "concept": "Concepto",
+    "enter_amount": "Ingresa el monto",
+    "paymentInformation": "Información de pago",
+    "sendingTo": "Enviando a",
+    "someMembersPaidMore": "Algunos miembros pagaron más. El total se registrará como una 'Promesa' separada, no como parte del saldo grupal.",
+    "splitPaymentAmounts": "Dividir montos de pago",
+    "thisPaymentWillBeSplitUnequally": "Este pago se dividirá de manera desigual",
+    "unevenPaymentInformation": "Información de pago desigual",
+    "whoIsPaying": "¿Quién está pagando?",
+    "whoIsReceiving": "¿Quién está recibiendo?"
+  },
+  "home": {
+    "hello": "Hola",
+    "payable_promises": "Promesas a pagar",
+    "recent_payments": "Pagos recientes",
+    "welcome": "Bienvenido de nuevo!"
+  },
+  "layout": {
+    "contacts": "Contactos",
+    "fair_split": "División justa",
+    "home": "Inicio",
+    "promises": "Promesas"
+  },
+  "login": {
+    "email": "Correo electrónico",
+    "login_button": "Iniciar sesión",
+    "no_account": "¿No tienes una cuenta?",
+    "password": "Contraseña",
+    "please_fill_in": "Por favor completa los campos para iniciar sesión",
+    "sign_up": "Regístrate",
+    "split_expenses_with_friends": "Divide gastos con amigos"
+  },
+  "modalSplitInfo": {
+    "allPaymentsOrdered": "Todos los pagos ordenados",
+    "balanceDebt": "Deuda de balance",
+    "balancePayments": "Pagos de balance",
+    "detail": "Detalle",
+    "gettingBackOrOwes": "Recibiendo/Debe",
+    "name": "Nombre",
+    "owes": "debe a ",
+    "paid": "Pagado",
+    "settlements": "Liquidaciones",
+    "split": "Dividir",
+    "splitDescription": "Hemos dividido el pago y mostraremos cuánto debe cada miembro.",
+    "total": "Total",
+    "unevenPayments": "Pagos desiguales"
+  },
+  "paymentKeypad": {
+    "suggestedAmount": "Monto sugerido $"
+  },
+  "placeholderPerson": {
+    "placeholder": "Miembro",
+    "placeholder_member": "Miembro sin cuenta"
+  },
+  "profile": {
+    "logout": "Cerrar sesión",
+    "member_since": "Miembro desde "
+  },
+  "promiseCard": {
+    "editable": "Editable",
+    "finished": "Terminada",
+    "interest": "Interés",
+    "open": "Abierta",
+    "paid": "Pagado",
+    "rejected": "Rechazada",
+    "total": "Total"
+  },
+  "promiseShow": {
+    "accept": "Aceptar",
+    "edit": "Editar",
+    "no_payments_yet": "Aún no hay pagos",
+    "no_promise_found": "No se encontró la promesa",
+    "recent_transactions": "Transacciones recientes",
+    "start_adding_payment": "Comienza a agregar un nuevo pago"
+  },
+  "promisesIndex": {
+    "no_promises": "No hay promesas",
+    "start_promise": "Comienza una promesa con tus contactos"
+  },
+  "searchBarInput": {
+    "search": "Buscar"
+  },
+  "signup": {
+    "confirm_password": "Confirmar contraseña",
+    "email": "Correo electrónico",
+    "first_name": "Nombre",
+    "have_account": "¿Ya tienes una cuenta?",
+    "last_name": "Apellido",
+    "login": "Inicia sesión",
+    "password": "Contraseña",
+    "passwords_must_match": "Las contraseñas deben coincidir",
+    "signup_button": "Regístrate",
+    "split_expenses_with_friends": "Divide gastos con amigos"
+  },
+  "splitPromise": {
+    "some_members_paid_more": "Algunos miembros pagaron más. El total se registrará como una 'Promesa' separada, no como parte del saldo grupal.",
+    "this_payment_was_split": "Este pago se dividió desigualmente"
+  },
+  "successPaymentModal": {
+    "payment_successful": "¡Pago exitoso!"
+  },
+  "topNavBar": {
+    "balance": "Balanza",
+    "balances": "Balanzas",
+    "payment": "Pago",
+    "payments": "Pagos",
+    "paying": "Pagando",
+    "pending": "Pendientes",
+    "promise": "Promesa",
+    "promises": "Promesas",
+    "receiving": "Recibiendo",
+    "sent": "Enviados",
+    "uneven": "Desiguales"
+  }
+}

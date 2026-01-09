@@ -3,6 +3,7 @@ import { ScrollView, View, Text, RefreshControl } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { getBalanceDetail, getBalanceInfo } from "@/services/api";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
 
 import baseStyles from '@/presentational/BaseStyles'
 import Payment from '../presentational/Payment';
@@ -14,6 +15,7 @@ import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 import TopNavBar from "@/presentational/TopNavBar";
 
 export default function Balance() {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [uneven, setUneven] = useState([]);
   const [balance, setBalance] = useState(null);
@@ -21,7 +23,7 @@ export default function Balance() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSplit, setShowSplit] = useState(false);
-  const [activeTab, setActiveTab] = useState( "Payments");
+  const [activeTab, setActiveTab] = useState( "payments");
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const payable = balance && balance.status === 'active';
@@ -101,7 +103,7 @@ export default function Balance() {
           style={{ flex: 1 }}
           textStyle={baseStyles.textLightBlack}
           onPress={() => setShowSplit(true)}
-          text='Close Balance'
+          text={t('balance.close_balance')}
           icon={<Ionicons name="close-sharp" size={20} color="#4b4b4bff" />}
         />
         {
@@ -116,7 +118,7 @@ export default function Balance() {
                 });
               }
             }}
-            text='Uneven Pay'
+            text={t('balance.uneven_pay')}
             icon={<MaterialIcons name="call-split" size={20} color="#4b4b4bff" />}
           />
         }
@@ -132,7 +134,7 @@ export default function Balance() {
               }
             }}
             textStyle={baseStyles.textLightBlack}
-            text='Add Payment'
+            text={t('balance.add_payment')}
             icon={<Ionicons name="add" size={20} color="#4b4b4bff" />}
           />
         }
@@ -140,7 +142,7 @@ export default function Balance() {
   }
 
   const renderPayments = (payments) => {
-    if (payments.length === 0) return <EmptyList text="No payments yet" ><Text>Start adding a new payment</Text></EmptyList>;
+    if (payments.length === 0) return <EmptyList text={t('balance.no_payments_yet')} ><Text>{t('balance.start_adding_payment')}</Text></EmptyList>;
 
     return payments.map(payment => (
       <Payment
@@ -170,7 +172,7 @@ export default function Balance() {
   );
 
   if (loading) return <Spinner />;
-  if (!loading && !balance) return (<EmptyList text="No balance found">{null}</EmptyList>)
+  if (!loading && !balance) return (<EmptyList text={t('balance.no_balance_found')}>{null}</EmptyList>)
 
   return (
     <>
@@ -187,9 +189,9 @@ export default function Balance() {
           myTotal={balance.my_total}
         />
         {renderBalanceCardFooter()}
-        <Text style={[baseStyles.label17, { fontWeight: 600, paddingVertical: 10 }]}>Recent Payments</Text>
-        <TopNavBar menus={['Payments', 'Uneven']} activeTab={activeTab} setActiveTab={setActiveTab} />
-          {activeTab === "Payments" ? renderPayments(payments) : renderPayments(uneven)}
+        <Text style={[baseStyles.label17, { fontWeight: 600, paddingVertical: 10 }]}>{t('balance.recent_payments')}</Text>
+        <TopNavBar menus={['payments', 'uneven']} activeTab={activeTab} setActiveTab={setActiveTab} />
+          {activeTab === "payments" ? renderPayments(payments) : renderPayments(uneven)}
       </ScrollView>
     </>
   )

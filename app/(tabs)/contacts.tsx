@@ -2,9 +2,10 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable, TouchableOpacity } from "react-native";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
 
 import Person from '../../presentational/Person';
-import baseStyles from '../../presentational/BaseStyles'
+import baseStyles from '../../presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
@@ -14,12 +15,15 @@ import SkeletonWrapper from "@/presentational/SkeletonWrapper";
 import { useServer } from "@/services/serverContext";
 
 export default function Contacts() {
+    // Hooks
+    const { t } = useTranslation();
     const [friends, setFriends] = useState([]);
     const [text, setText] = useState("");
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const { serverReady } = useServer();
 
+    // Fetch functions
     const fetchFriends = async () => {
         setLoading(true);
         setRefreshing(true);
@@ -35,32 +39,56 @@ export default function Contacts() {
             });
     };
 
+    // Navigation functions
     const navigateProfile = (id) => {
         router.push({
             pathname: '/profile',
             params: { id }
         });
-    }
+    };
 
-    const emptyFriend = <EmptyList text={"No friends"}>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Text style={baseStyles.label17}>Try adding some </Text>
-            <Pressable onPress={() => { router.push("/addContact") }}>
-                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>friends</Text>
-            </Pressable>
-        </View>
-    </EmptyList>
+    const startPromise = (id, name) => {
+        router.push({
+            pathname: '/formPromise',
+            params: { administrator_id: id, administrator_name: name }
+        });
+    };
 
-    const noPeopleFound = <EmptyList text={"No people found"}>
-        <Text style={baseStyles.label17}>Try searching for a different {''}
-            <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]} onPress={() => { setText("") }}>name</Text>
-        </Text>
-    </EmptyList>;
+    const startBalance = (id) => {
+        createBalance([id], undefined)
+            .then((response) => {
+                router.push({
+                    pathname: '/balance',
+                    params: { id: response.data.id }
+                });
+            })
+            .catch((error) => {
+            });
+    };
 
+    // Render functions
+    const renderEmptyFriend = () => (
+        <EmptyList text={t('contactsIndex.no_friends')}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+                <Text style={baseStyles.label17}>{t('contactsIndex.try_adding_some')} </Text>
+                <Pressable onPress={() => { router.push("/addContact") }}>
+                    <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>{t('contactsIndex.contacts')}</Text>
+                </Pressable>
+            </View>
+        </EmptyList>
+    );
+
+    const renderNoPeopleFound = () => (
+        <EmptyList text={t('contactsIndex.no_people_found')}>
+            <Text style={baseStyles.label17}>{t('contactsIndex.try_searching_for')} {''}
+                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]} onPress={() => { setText('') }}>{t('contactsIndex.hello')}</Text>
+            </Text>
+        </EmptyList>
+    );
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return emptyFriend;
-        if (friends.length == 0 && text !== "") return noPeopleFound;
+        if (friends.length == 0 && text === "") return renderEmptyFriend();
+        if (friends.length == 0 && text !== "") return renderNoPeopleFound();
 
         let fullList = [];
 
@@ -73,29 +101,22 @@ export default function Contacts() {
                     onClick={navigateProfile}
                 >
                     {friend.id && (
-                        <View style={[baseStyles.rowCenter, { gap: 5 }]}>
+                        <View style={[baseStyles.rowCenter, { gap: 5 }]}>                            
                             <ButtonWithIcon
                                 style={[baseStyles.successBG]}
                                 textStyle={{ fontSize: 10, color: 'white' }}
-                                text='Promise'
+                                text={t('contactsIndex.promise')}
                                 onPress={() => startPromise(friend.id, friend.first_name)}
                                 icon={<MaterialIcons name="attach-money" size={18} color="white" />}
                             />
-                            { /*<ButtonWithIcon
-                                style={[baseStyles.blueBG]}
-                                textStyle={{ fontSize: 10, color: 'white' }}
-                                text='Split'
-                                onPress={() => startBalance(friend.id)}
-                                icon={<FontAwesome name="balance-scale" size={18} color="white" />}
-                            />
-                            */}
                         </View>
                     )}
                 </Person>
             );
         });
         return fullList;
-    }
+    };
+
     const renderSkeletons = () => {
         let skeletons = [];
         for (let i = 0; i < 10; i++) {
@@ -106,27 +127,9 @@ export default function Contacts() {
             );
         }
         return <View style={{ gap: 5 }}>{skeletons}</View>;
-    }
+    };
 
-    const startPromise = (id, name) => {
-        router.push({
-            pathname: '/formPromise',
-            params: { administrator_id: id, administrator_name: name }
-        })
-    }
-
-    const startBalance = (id) => {
-        createBalance([id], undefined)
-            .then((response) => {
-                router.push({
-                    pathname: '/balance',
-                    params: { id: response.data.id }
-                })
-            })
-            .catch((error) => {
-            })
-    }
-
+    // Hooks for lifecycle
     useFocusEffect(
         useCallback(() => {
             fetchFriends();
@@ -139,6 +142,7 @@ export default function Contacts() {
         }
     }, [serverReady]);
 
+    // Main return
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">

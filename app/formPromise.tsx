@@ -6,8 +6,10 @@ import baseStyles from "@/presentational/BaseStyles";
 import { router, useLocalSearchParams } from "expo-router";
 import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
 import InputWithLabel from "@/presentational/InputWithLabel";
+import { useTranslation } from 'react-i18next';
 
 export default function formPromise() {
+    const { t } = useTranslation();
     const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
     const [promise, setPromise] = useState({
         title: '',
@@ -61,12 +63,13 @@ export default function formPromise() {
 
     const validateForm = () => {
         const newErrors = {};
-        if (!promise.title) newErrors.title = "Concept is required.";
-        if (!promise.total) newErrors.total = "Amount Requested is required.";
-        if (isNaN(promise.total)) newErrors.total = "Amount Required must be a valid number.";
-        if (!promise.payment_period) newErrors.payment_period = "Payment Interval is required.";
-        if (!promise.amount_payments) newErrors.amount_payments = "Payment Amount is required.";
-        if (isNaN(promise.amount_payments)) newErrors.amount_payments = "Payment Amount must be a valid number.";
+
+        if (!promise.title) newErrors.title = t("formPromise.concept_is_required")
+        if (!promise.total) newErrors.total = t("formPromise.amount_is_required");
+        if (isNaN(promise.total)) newErrors.total = t("formPromise.amount_valid_number");
+        if (!promise.payment_period) newErrors.payment_period = t("formPromise.payment_interval_required");
+        if (!promise.amount_payments) newErrors.amount_payments = t("formPromise.payment_amount_is_required");
+        if (isNaN(promise.amount_payments)) newErrors.amount_payments = t("formPromise.payment_amount_valid_number");
         setErrors(newErrors);
         //TODO: Scroll to the specific input
         if (Object.keys(newErrors).length > 0) {
@@ -92,21 +95,21 @@ export default function formPromise() {
                 <ScrollView  ref={scrollRef} contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={[baseStyles.viewContainerFull, { paddingHorizontal: 10, paddingVertical: 5}]}>
                         {paymentable_id ? (
-                            <AvatarInfoHeader user={promise.admin_name} text={`Editing Promise made to`} />
+                            <AvatarInfoHeader user={promise.admin_name} text={t('formPromise.editing_promise')} />
                         ) : (
-                            <AvatarInfoHeader user={promise.administrator_name} text={`New Promise made to`} />
+                            <AvatarInfoHeader user={promise.administrator_name} text={t('formPromise.new_promise')} />
                         )}
 
                         <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> General Information </Text>
-                            <InputWithLabel label='Concept' name='title' value={promise.title} onChangeText={handleChange} placeholder="Enter the concept" error={errors.title} editable={ownerEditable} />
-                            <InputWithLabel label='Amount' name='total' value={promise.total} onChangeText={handleChange} numeric={true} placeholder="Enter the total amount" error={errors.total} editable={ownerEditable} />
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> {t('formPromise.general_information')} </Text>
+                            <InputWithLabel label={t('formPromise.concept')} name='title' value={promise.title} onChangeText={handleChange} placeholder={t('formPromise.enter_concept')} error={errors.title} editable={ownerEditable} />
+                            <InputWithLabel label={t('formPromise.amount')} name='total' value={promise.total} onChangeText={handleChange} numeric={true} placeholder={t('formPromise.enter_total_amount')} error={errors.total} editable={ownerEditable} />
                         </View>
 
                         <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> Interval </Text>
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> {t('formPromise.interval')} </Text>
                             <View>
-                                <Text style={baseStyles.label17}>Payment Interval</Text>
+                                <Text style={baseStyles.label17}>{t('formPromise.payment_interval')}</Text>
                                 {promise.admin ? (
                                     <TextInput
                                         style={[baseStyles.input, baseStyles.disabledInput]}
@@ -118,22 +121,22 @@ export default function formPromise() {
                                         onValueChange={(payment_period) => handleChange('payment_period', payment_period)}
                                         style={[baseStyles.picker, { height: 150, width: '100%' }]}
                                         itemStyle={{ color: 'black' }} >
-                                        <Picker.Item label="Day" value="day" />
-                                        <Picker.Item label="Week" value="week" />
-                                        <Picker.Item label="Bi-week" value="biweek" />
-                                        <Picker.Item label="Month" value="month" />
+                                        <Picker.Item label={t('formPromise.day')} value="day" />
+                                        <Picker.Item label={t('formPromise.week')} value="week" />
+                                        <Picker.Item label={t('formPromise.bi_week')} value="biweek" />
+                                        <Picker.Item label={t('formPromise.month')} value="month" />
                                     </Picker>)}
                                 {errors.payment_period && <Text style={baseStyles.errorText}>{errors.payment_period}</Text>}
                             </View>
-                            <InputWithLabel label='Payment Amount' name='amount_payments' value={promise.amount_payments} numeric={true} onChangeText={handleChange} placeholder="Enter the payment amount" error={errors.amount_payments} editable={ownerEditable} />
+                            <InputWithLabel label={t('formPromise.payment_amount')} name='amount_payments' value={promise.amount_payments} numeric={true} onChangeText={handleChange} placeholder={t('formPromise.enter_payment_amount')} error={errors.amount_payments} editable={ownerEditable} />
                         </View>
 
                         <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}> Financial Details </Text>
-                            <InputWithLabel label='Interest (%)' name='interest' value={promise.interest} numeric={true} onChangeText={handleChange} placeholder="Enter the interest rate" editable={adminEditable} />
-                            <InputWithLabel label='Total with Interest' name='' value={totalWithInterest} onChangeText={() => { }} placeholder="" error={null} editable={false} />
+                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}> {t('formPromise.financial_details')} </Text>
+                            <InputWithLabel label={t('formPromise.interest')} name='interest' value={promise.interest} numeric={true} onChangeText={handleChange} placeholder={t('formPromise.enter_interest')} editable={adminEditable} />
+                            <InputWithLabel label={t('formPromise.total_with_interest')} name='' value={totalWithInterest} onChangeText={() => { }} placeholder="" error={null} editable={false} />
                             {promise.total && percentInterest && promise.amount_payments && (
-                                <InputWithLabel label='Total Payments' name='' value={totalPayments} onChangeText={() => { }} placeholder="" error={null} editable={true} />
+                                <InputWithLabel label={t('formPromise.total_payments')} name='' value={totalPayments} onChangeText={() => { }} placeholder="" error={null} editable={true} />
                             )}
                         </View>
 
@@ -142,7 +145,7 @@ export default function formPromise() {
                                 style={[baseStyles.button, baseStyles.saveButton, { flex: 1, marginLeft: 10 }]}
                                 onPress={handleSave}
                             >
-                                <Text style={baseStyles.buttonText}>Save</Text>
+                                <Text style={baseStyles.buttonText}>{t('formPromise.save')}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

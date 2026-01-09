@@ -1,0 +1,206 @@
+{
+  "balance": {
+    "add_payment": "Add payment",
+    "close_balance": "Close balance",
+    "no_balance_found": "Balance not found",
+    "no_payments_yet": "No payments yet",
+    "recent_payments": "Recent payments",
+    "start_adding_payment": "Start adding a new payment",
+    "uneven_pay": "Uneven payment"
+  },
+  "balanceCard": {
+    "avg": "Avg",
+    "balance_with": "Balance with",
+    "next_payment_on": "Next payment on",
+    "total": "Total",
+    "you": "You"
+  },
+  "balanceForm": {
+    "example_placeholder_name": "e.g., Friend",
+    "group_name_placeholder": "e.g., Beach trip",
+    "placeholder_name": "Member without account name",
+    "placeholder_names": "Members without account",
+    "select_members": "Select members",
+    "split_name": "Balance name"
+  },
+  "balancesIndex": {
+    "balances": "Balances",
+    "no_balances": "No balances",
+    "start_balance": "Start a balance with your contacts"
+  },
+  "contactForm": {
+    "name": "Name",
+    "no_contacts_found": "No contacts found",
+    "try_looking_different": "Try searching for a different name"
+  },
+  "contactsIndex": {
+    "contacts": "Contacts",
+    "hello": "Hello",
+    "no_friends": "You don’t have any friends yet",
+    "no_people_found": "No people found",
+    "promise": "Promise",
+    "try_adding_some": "Try adding some contacts",
+    "try_searching_for": "Try searching for a different name"
+  },
+  "error": {
+    "generic": "Something went wrong",
+    "network": "Network error"
+  },
+  "formPayment": {
+    "concept": "Concept",
+    "doneBy": "Done by",
+    "enter_concept": "Enter the concept",
+    "fair_pay": "Fair pay",
+    "payingFor": "Paying for",
+    "paymentInformation": "Payment information"
+  },
+  "formPromise": {
+    "amount": "Amount",
+    "amount_is_required": "Amount is required",
+    "amount_valid_number": "Amount must be a valid number",
+    "bi_week": "Bi-weekly",
+    "concept": "Concept",
+    "concept_is_required": "Concept is required",
+    "day": "Daily",
+    "editing_promise": "Editing promise made to",
+    "enter_concept": "Enter the concept",
+    "enter_interest": "Enter interest",
+    "enter_payment_amount": "Enter the payment amount",
+    "enter_total_amount": "Enter the total amount",
+    "financial_details": "Financial details",
+    "general_information": "General information",
+    "interest": "Interest",
+    "interval": "Interval",
+    "month": "Monthly",
+    "new_promise": "New promise made to",
+    "payment_amount": "Payment amount",
+    "payment_amount_is_required": "Payment amount is required",
+    "payment_amount_valid_number": "Payment amount must be a valid number",
+    "payment_interval": "Payment interval",
+    "payment_interval_required": "Payment interval is required",
+    "save": "Save",
+    "total_payments": "Total payments",
+    "total_with_interest": "Total with interest",
+    "week": "Weekly"
+  },
+  "formStepContainer": {
+    "next": "Next"
+  },
+  "formUnevenPayment": {
+    "addAConcept": "Add a concept",
+    "amounts": "Amounts",
+    "concept": "Concept",
+    "enter_amount": "Enter amount",
+    "paymentInformation": "Payment information",
+    "sendingTo": "Sending to",
+    "someMembersPaidMore": "Some members paid more. The total will be recorded as a separate 'Promise', not as part of the group balance.",
+    "splitPaymentAmounts": "Split payment amounts",
+    "thisPaymentWillBeSplitUnequally": "This payment will be split unevenly",
+    "unevenPaymentInformation": "Uneven payment information",
+    "whoIsPaying": "Who is paying?",
+    "whoIsReceiving": "Who is receiving?"
+  },
+  "home": {
+    "hello": "Hello",
+    "payable_promises": "Payable promises",
+    "recent_payments": "Recent payments",
+    "welcome": "Welcome back!"
+  },
+  "layout": {
+    "contacts": "Contacts",
+    "fair_split": "Fair split",
+    "home": "Home",
+    "promises": "Promises"
+  },
+  "login": {
+    "email": "Email",
+    "login_button": "Log in",
+    "no_account": "Don’t have an account?",
+    "password": "Password",
+    "please_fill_in": "Please fill in the fields to log in",
+    "sign_up": "Sign up",
+    "split_expenses_with_friends": "Split expenses with friends"
+  },
+  "modalSplitInfo": {
+    "allPaymentsOrdered": "All payments ordered",
+    "balanceDebt": "Balance debt",
+    "balancePayments": "Balance payments",
+    "detail": "Detail",
+    "gettingBackOrOwes": "Getting back / Owes",
+    "name": "Name",
+    "owes": "owes ",
+    "paid": "Paid",
+    "settlements": "Settlements",
+    "split": "Split",
+    "splitDescription": "We split the payment and will show how much each member owes.",
+    "total": "Total",
+    "unevenPayments": "Uneven payments"
+  },
+  "paymentKeypad": {
+    "suggestedAmount": "Suggested amount $"
+  },
+  "placeholderPerson": {
+    "placeholder": "Member",
+    "placeholder_member": "Member without account"
+  },
+  "profile": {
+    "logout": "Log out",
+    "member_since": "Member since "
+  },
+  "promiseCard": {
+    "editable": "Editable",
+    "finished": "Finished",
+    "interest": "Interest",
+    "open": "Open",
+    "paid": "Paid",
+    "rejected": "Rejected",
+    "total": "Total"
+  },
+  "promiseShow": {
+    "accept": "Accept",
+    "edit": "Edit",
+    "no_payments_yet": "No payments yet",
+    "no_promise_found": "Promise not found",
+    "recent_transactions": "Recent transactions",
+    "start_adding_payment": "Start adding a new payment"
+  },
+  "promisesIndex": {
+    "no_promises": "No promises",
+    "start_promise": "Start a promise with your contacts"
+  },
+  "searchBarInput": {
+    "search": "Search"
+  },
+  "signup": {
+    "confirm_password": "Confirm password",
+    "email": "Email",
+    "first_name": "First name",
+    "have_account": "Already have an account?",
+    "last_name": "Last name",
+    "login": "Log in",
+    "password": "Password",
+    "passwords_must_match": "Passwords must match",
+    "signup_button": "Sign up",
+    "split_expenses_with_friends": "Split expenses with friends"
+  },
+  "splitPromise": {
+    "some_members_paid_more": "Some members paid more. The total will be recorded as a separate 'Promise', not as part of the group balance.",
+    "this_payment_was_split": "This payment was split unevenly"
+  },
+  "successPaymentModal": {
+    "payment_successful": "Payment successful!"
+  },
+  "topNavBar": {
+    "balance": "Balance",
+    "balances": "Balances",
+    "payment": "Payment",
+    "payments": "Payments",
+    "paying": "Paying",
+    "pending": "Pending",
+    "promise": "Promise",
+    "promises": "Promises",
+    "receiving": "Receiving",
+    "sent": "Sent",
+    "uneven": "Uneven"
+  }
+}

@@ -14,11 +14,12 @@ import {
   acceptFriendshipRequest
 } from "@/services/api";
 import AcceptButton, { RejectButton } from "@/presentational/acceptButton";
+import TopNavBar from "@/presentational/TopNavBar";
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
   const [sent, setSent] = useState([]);
-  const [activeTab, setActiveTab] = useState("Pending");
+  const [activeTab, setActiveTab] = useState("pending");
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -138,20 +139,15 @@ export default function contactRequests() {
 
   return (
     <View style={baseStyles.viewContainerFull} >
-      <View style={baseStyles.viewRowWithSpace}>
-        <Pressable onPress={() => setActiveTab("Pending")} style={activeTab === "Pending" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Pending" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Pending</Text>
-        </Pressable>
-        <Pressable onPress={() => setActiveTab("Sent")} style={activeTab === "Sent" ? baseStyles.tabBarActive : baseStyles.tabBarInactive}>
-          <Text style={activeTab === "Sent" ? baseStyles.tabBarTextActive : baseStyles.tabBarTextInactive}>Sent</Text>
-        </Pressable>
+      <View>
+        <TopNavBar menus={["pending", "sent"]} activeTab={activeTab} setActiveTab={setActiveTab} />
       </View>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {activeTab === "Pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
+        {activeTab === "pending" ? renderRequests(pending, 'pending') : renderRequests(sent, 'sent')}
       </ScrollView>
     </View>
   );

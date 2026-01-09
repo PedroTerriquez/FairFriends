@@ -8,8 +8,10 @@ import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import Spinner from "@/presentational/Spinner";
 import { findPeople, addFriend } from "@/services/api";
+import { useTranslation } from "react-i18next";
 
 export default function addContact() {
+    const { t } = useTranslation();
     const [people, setPeople] = useState([])
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
@@ -41,17 +43,20 @@ export default function addContact() {
         setPeople(newPeople)
     }
 
-    const noContacts = <EmptyList text={"No contacts found"}>
-        <Text style={baseStyles.label17}>Try looking different {''}
-            <Pressable onPress={() => { setText(""); }}>
-                <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>name</Text>
-            </Pressable>
-        </Text>
-    </EmptyList>
+
+    const renderEmptyContacts = () => (
+        <EmptyList text={t("contactForm.no_contacts_found")}>
+            <Text style={baseStyles.label17}>{t('contactForm.try_looking_different')} {''}
+                <Pressable onPress={() => { setText(""); }}>
+                    <Text style={[baseStyles.title17, baseStyles.boldText, baseStyles.link]}>{t('contactForm.name')}</Text>
+                </Pressable>
+            </Text>
+        </EmptyList>
+    )
 
 
     const renderPeople = () => {
-        if (people.length == 0) return noContacts;
+        if (people.length == 0) return renderEmptyContacts();
         return people.map(friend => (
             <Person key={friend.id} person={friend}>
                 { friend.id && (

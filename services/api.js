@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 const API = Constants.expoConfig.extra.EXPO_PUBLIC_API;
 import { toast } from "./toastService";
 import { getSession } from "./sessionGlobalSingleton";
+import i18n from '../app/i18n';
 
 const instance = axios.create({
     baseURL: API,
@@ -19,6 +20,7 @@ instance.interceptors.request.use(
         ...session.headers,
       };
     }
+    config.headers['Accept-Language'] = i18n.language;
     return config;
   },
   error => Promise.reject(error)

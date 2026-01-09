@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useTranslation } from 'react-i18next';
 
 import baseStyles from '@/presentational/BaseStyles';
 import Payment from '@/presentational/Payment';
@@ -12,6 +13,7 @@ import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 export default function Promise() {
+    const { t } = useTranslation();
     const [payments, setPayments] = useState([]);
     const [promise, setPromise] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
@@ -37,7 +39,7 @@ export default function Promise() {
         return (
             <>
                 <View style={[baseStyles.rowCenter, baseStyles.containerCard, { justifyContent: "space-between", height: 70 }]}>
-                    <Text style={[baseStyles.title17]}>Recent Transactions </Text>
+                    <Text style={[baseStyles.title17]}>{t('promiseShow.recent_transactions')} </Text>
                     {promise && promise.status === 'accepted' && !promise.admin && <TouchableOpacity onPress={() => {
                         if (promise) {
                             router.push({
@@ -60,7 +62,7 @@ export default function Promise() {
     }
 
     const renderPayments = () => {
-        if (payments.length === 0) return <EmptyList text="No payments yet" ><Text>Start adding a new payment</Text></EmptyList>;
+        if (payments.length === 0) return <EmptyList text={t('promiseShow.no_payments_yet')} ><Text>{t('promiseShow.start_adding_payment')}</Text></EmptyList>;
 
         return payments.map(payment => (
             <Payment
@@ -101,7 +103,7 @@ export default function Promise() {
     );
 
     if (loading) return <Spinner />;
-    if (!loading && !promise) return (<EmptyList text="No promise found">{null}</EmptyList>)
+    if (!loading && !promise) return (<EmptyList text={t('promiseShow.no_promise_found')}>{null}</EmptyList>)
 
     return (
         <ScrollView
@@ -122,7 +124,7 @@ export default function Promise() {
                     <View style={{ flexDirection: 'row', justifyContent: 'center', padding: 10, gap: 10}}>
                         <ButtonWithIcon
                             style={[baseStyles.buttonWithIcon, baseStyles.warningBG, { width: 100 }]}
-                            text="Edit"
+                            text={t('promiseShow.edit')}
                             icon={<MaterialIcons name="edit" size={18} color="white" />}
                             onPress={() => router.push({
                                 pathname: "/formPromise", params: {
@@ -135,7 +137,7 @@ export default function Promise() {
                         { promise.admin && (
                             <ButtonWithIcon
                                 style={[baseStyles.buttonWithIcon, baseStyles.successBG]}
-                                text="Accept"
+                                text={t('promiseShow.accept')}
                                 icon={<MaterialIcons name="check" size={18} color="white" />}
                                 onPress={() => acceptPromise(promise.notification_id)}
                             />

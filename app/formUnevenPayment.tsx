@@ -11,6 +11,7 @@ import PaymentKeyPad from '@/presentational/PaymentKeypad';
 import SuccessPaymentModal from '@/presentational/SuccessPaymentModal';
 import FormStepContainer from '@/presentational/FormStepContainer';
 import Avatar from '@/presentational/Avatar';
+import { useTranslation } from 'react-i18next';
 
 export default function addPayment() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function addPayment() {
   const [amounts, setAmounts] = useState(() => {
     return users.map(user => ({ user_id: user.id, amount: "" }));
   });
+
+  const { t } = useTranslation(); 
 
   const handleAmountChange = (id, text) => {
     setAmounts(prev =>
@@ -93,18 +96,18 @@ export default function addPayment() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={[baseStyles.viewContainerFull]}>
           <View style={{ flex: 0}}>
-            <AvatarInfoHeader user={params.recipient_name} text={`Sending to`} />
+            <AvatarInfoHeader user={params.recipient_name} text={t('formUnevenPayment.sendingTo')} />
           </View>
           {/* Payment Information Section */}
           <View style={[ step !== 1 ? { flex: 0 } : { flex: 6 } ]}>
-            <FormStepContainer step={step} setStep={setStep} stepPosition={1} icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={'Payment Information'} >
+            <FormStepContainer step={step} setStep={setStep} stepPosition={1} icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={t('formUnevenPayment.paymentInformation')} >
               <View>
-                              <Text style={[baseStyles.title24, { marginTop: 40, textAlign: 'center' }]}> ⚠️ This payment will be split unequally.</Text>
-                              <Text style={[baseStyles.label17, { marginTop: 10, marginBottom: 10, textAlign: 'justify' }]}>Some members paid more. The total will be recorded as a separate 'Promise', not part of the balance.</Text>
-                              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
-                                  <MaterialIcons style={{ alignItems: 'center' }} name="currency-exchange" size={50} color="black" />
-                              </View>
-                              <InputWithLabel label='Concept' name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder="Add a concept" error={null} editable={true} />
+                <Text style={[baseStyles.title24, { marginTop: 40, textAlign: 'center' }]}> ⚠️ {t('formUnevenPayment.thisPaymentWillBeSplitUnequally')}</Text>
+                <Text style={[baseStyles.label17, { marginTop: 10, marginBottom: 10, textAlign: 'justify' }]}>{t('formUnevenPayment.someMembersPaidMore')}</Text>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
+                  <MaterialIcons style={{ alignItems: 'center' }} name="currency-exchange" size={50} color="black" />
+                </View>
+                <InputWithLabel label={t('formUnevenPayment.concept')} name='concept' value={concept} onChangeText={(_name, value) => setConcept(value)} placeholder={t('formUnevenPayment.addAConcept')} error={null} editable={true} />
               </View>
             </FormStepContainer>
           </View>
@@ -114,7 +117,7 @@ export default function addPayment() {
           }
           {/* Split Section */}
           <View style={[ step !== 3 ? { display: 'none' } : { flex: 0 } ]}>
-            <FormStepContainer step={step} setStep={setStep} stepPosition={3} icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={'Split Payment amounts'} onNext={handleSubmit} >
+            <FormStepContainer step={step} setStep={setStep} stepPosition={3} icon={<MaterialIcons name="navigate-next" size={32} color="white" />} title={t('formUnevenPayment.splitPaymentAmounts')} onNext={handleSubmit} >
               <ScrollView>
                 {amount && (<Text style={[baseStyles.textCenter, baseStyles.titleBold40, { marginTop: 20 }, amountsSum() < 0 ? { color: 'red' } : { color: 'black' }]}>${amountsSum()}</Text>)}
                 {users.map(user => {

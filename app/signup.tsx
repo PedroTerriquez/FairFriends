@@ -5,8 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '../services/authContext';
 import { useToast } from '@/services/ToastContext';
 import baseStyles from "@/presentational/BaseStyles";
+import { useTranslation } from "react-i18next";
 
 export default function SignUp() {
+  const { t } = useTranslation();
   const { signUp } = useSession();
   const router = useRouter();
   const { showToast } = useToast();
@@ -19,7 +21,7 @@ export default function SignUp() {
 
   const handleSignUp = () => {
     if (password !== confirmPassword) {
-      showToast('Passwords do not match');
+      showToast(t('signup.passwords_must_match'));
       return;
     }
     signUp(firstName, lastName, email, password, confirmPassword);
@@ -42,7 +44,7 @@ export default function SignUp() {
             <View style={baseStyles.fullWidth}>
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="First Name"
+                placeholder={t('signup.first_name')}
                 placeholderTextColor="#666"
                 value={firstName}
                 onChangeText={setFirstName}
@@ -50,7 +52,7 @@ export default function SignUp() {
               />
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="Last Name"
+                placeholder={t('signup.last_name')}
                 placeholderTextColor="#666"
                 value={lastName}
                 onChangeText={setLastName}
@@ -58,7 +60,7 @@ export default function SignUp() {
               />
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="Email"
+                placeholder={t('signup.email')}
                 placeholderTextColor="#666"
                 value={email}
                 onChangeText={setEmail}
@@ -68,7 +70,7 @@ export default function SignUp() {
               />
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="Password"
+                placeholder={t('signup.password')}
                 placeholderTextColor="#666"
                 value={password}
                 onChangeText={setPassword}
@@ -77,7 +79,7 @@ export default function SignUp() {
               />
               <TextInput
                 style={baseStyles.grayInput}
-                placeholder="Confirm Password"
+                placeholder={t('signup.confirm_password')}
                 placeholderTextColor="#666"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
@@ -91,14 +93,14 @@ export default function SignUp() {
               onPress={handleSignUp}
             >
               <Ionicons name="person-add" size={24} color="white" />
-              <Text style={[baseStyles.textWhite, baseStyles.title17]}>Sign Up</Text>
+              <Text style={[baseStyles.textWhite, baseStyles.title17]}>{t('signup.signup_button')}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
-            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>Already have an account?</Text>
+            <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>{t('signup.have_account')}</Text>
             <TouchableOpacity onPress={() => router.push('/login')}>
-              <Text style={[baseStyles.link, baseStyles.boldText]}>Login</Text>
+              <Text style={[baseStyles.link, baseStyles.boldText]}>{t('signup.login')}</Text>
             </TouchableOpacity>
           </View>
         </View>
