@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, Modal } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { router } from "expo-router";
 import baseStyles from './BaseStyles' 
 import Avatar from "./Avatar";
 import { acceptPayment, rejectPayment } from "@/services/api";
 import AcceptButton, { EditButton, InSplitButton, PendingButton, RejectButton } from "./acceptButton";
+import formatDate from "@/services/formatDate";
 
 export default function Payment({
   id,
@@ -19,6 +20,9 @@ export default function Payment({
   status,
   title,
   handleAccept,
+  location,
+  image,
+  category
 }) {
   const [mutableStatus, setMutableStatus] = useState(status)
   const [showDecision, setShowDecision] = useState(false)
@@ -39,29 +43,6 @@ export default function Payment({
   } else if (in_split) {
     moneyColor = baseStyles.textGray;
   }
-
-  const formattedDate = (() => {
-    const now = new Date();
-    const paymentDate = new Date(date);
-    const diffInMillis = now - paymentDate;
-    const diffInMinutes = Math.floor(diffInMillis / (1000 * 60));
-    const diffInHours = Math.floor(diffInMillis / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
-
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
-    } else if (diffInHours < 24) {
-      return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
-    } else if (diffInDays < 7) {
-      return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
-    } else {
-      return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-      }).format(paymentDate);
-    }
-  })();
 
   const handleShow = () => {
     router.push({ pathname: paymentableType.toLowerCase(), params: { id: paymentableId } });
@@ -104,12 +85,15 @@ export default function Payment({
             <EditButton onPressAction={() => router.push({
               pathname: "/formPayment", params:
               {
-                payment_id: id,
-                recipient_name: creatorName,
                 amount: amount,
+                category: category,
+                image: image,
+                location: location,
+                payment_id: id,
+                paymentableId: paymentableId,
+                recipient_name: creatorName,
                 title: title,
                 type: paymentableType,
-                paymentableId: paymentableId,
               }
             })
             } />
@@ -129,12 +113,15 @@ export default function Payment({
             <EditButton onPressAction={() => router.push({
               pathname: "/formPayment", params:
               {
-                payment_id: id,
-                recipient_name: creatorName,
                 amount: amount,
+                category: category,
+                image: image,
+                location: location,
+                payment_id: id,
+                paymentableId: paymentableId,
+                recipient_name: creatorName,
                 title: title,
                 type: paymentableType,
-                paymentableId: paymentableId,
               }
             })
             } />
@@ -146,12 +133,15 @@ export default function Payment({
       return (<EditButton onPressAction={() => router.push({
         pathname: "/formPayment", params:
         {
-          payment_id: id,
-          recipient_name: creatorName,
           amount: amount,
+          category: category,
+          image: image,
+          location: location,
+          payment_id: id,
+          paymentableId: paymentableId,
+          recipient_name: creatorName,
           title: title,
           type: paymentableType,
-          paymentableId: paymentableId,
         }
       })} />);
     } else if (accepted) {
@@ -178,7 +168,7 @@ export default function Payment({
           <View style={{ flex: 7 }}>
             { parentTitle && <Text style={baseStyles.cardSubtitle}>{parentTitle}</Text> }
             { title && <Text style={baseStyles.cardSubtitle}>{title}</Text> }
-            <Text style={[baseStyles.cardDate, {paddingTop: 10}]}>{formattedDate}</Text>
+            <Text style={[baseStyles.cardDate, {paddingTop: 10}]}>{formatDate(date)}</Text>
           </View>
           {/* Action buttons section */}
           <View style={{ alignItems: 'flex-end' }}>

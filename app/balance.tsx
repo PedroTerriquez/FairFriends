@@ -159,6 +159,9 @@ export default function Balance() {
         promises={payment?.promises}
         status={payment.status}
         title={payment.title}
+        location={payment.location}
+        image={payment.image}
+        category={payment.category}
         handleAccept={handleAcceptPayment}
       />
     ))
