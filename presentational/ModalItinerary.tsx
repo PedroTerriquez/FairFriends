@@ -260,7 +260,6 @@ const styles = StyleSheet.create({
         color: colors.accent,
     },
     scrollView: {
-        flex: 1,
     },
     scrollContent: {
         paddingHorizontal: spacing.md,

@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { router } from "expo-router";
 
 import { colors, spacing, typography } from "@/theme";
 import Avatar from "./Avatar";
@@ -35,17 +36,27 @@ function UnevenPaymentCard({
   const categoryConfig = CATEGORY_CONFIG[category] || CATEGORY_CONFIG[0];
 
   const totalNumeric = parseFloat(String(amount).replace(/[^0-9.]/g, "")) || 0;
-  const promisesTotal = (promises || []).reduce((sum, p) => sum + p.total, 0);
+  const promisesList = promises || [];
+  const promisesTotal = promisesList.reduce((sum, p) => sum + p.total, 0);
   const creatorAmount = totalNumeric - promisesTotal;
 
-  const members = [
-    { name: creatorName, amount: creatorAmount, isYou: mine },
-    ...(promises || []).map((p) => ({
-      name: p.name,
-      amount: p.total,
-      isYou: false,
-    })),
-  ];
+  const members = promisesList.map((p) => ({
+    id: p.id,
+    name: p.name,
+    total: p.total,
+    paid: p.paid || 0,
+    isYou: mine && p.name === creatorName,
+  }));
+
+  if (creatorAmount > 0 && !promisesList.some((p) => p.name === creatorName)) {
+    members.unshift({
+      id: undefined,
+      name: creatorName,
+      total: creatorAmount,
+      paid: creatorAmount,
+      isYou: mine,
+    });
+  }
 
   return (
     <View style={styles.card}>
@@ -78,12 +89,25 @@ function UnevenPaymentCard({
 
       {members.map((member, index) => {
         const percentage =
-          totalNumeric > 0
-            ? Math.round((member.amount / totalNumeric) * 100)
+          member.total > 0
+            ? Math.round((member.paid / member.total) * 100)
             : 0;
+        const canNavigate = member.id != null;
+        const handlePress = () => {
+          if (canNavigate) {
+            router.push({ pathname: "/promiseShow", params: { id: member.id } });
+          }
+        };
 
         return (
-          <View key={index} style={styles.memberRow}>
+          <TouchableOpacity
+            key={member.id ?? `creator-${index}`}
+            style={styles.memberRow}
+            onPress={handlePress}
+            disabled={!canNavigate}
+            activeOpacity={canNavigate ? 0.7 : 1}
+            hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+          >
             <Avatar name={member.name} size={40} />
             <View style={styles.memberInfo}>
               <Text style={styles.memberName} numberOfLines={1}>
@@ -97,16 +121,18 @@ function UnevenPaymentCard({
             </View>
             <View style={styles.memberAmountCol}>
               <Text style={styles.memberAmount}>
-                {formatMoney(member.amount)}
+                {formatMoney(member.total)}
               </Text>
               <Text style={styles.memberPercent}>{percentage}%</Text>
             </View>
-            <Ionicons
-              name="chevron-forward"
-              size={16}
-              color={colors.text.tertiary}
-            />
-          </View>
+            {canNavigate && (
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color={colors.text.tertiary}
+              />
+            )}
+          </TouchableOpacity>
         );
       })}
 

@@ -165,7 +165,7 @@ function BalanceCard({ id, total, name, members, myTotal, status, budget }) {
       {/* Footer with totals and budget */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>Total: {formatMoney(total)}</Text>
-        {budget && (
+        {Number(budget) > 0 && (
           <Text style={styles.budgetText}>Budget: {formatMoney(budget)}</Text>
         )}
       </View>

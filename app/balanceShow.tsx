@@ -210,7 +210,7 @@ export default function Balance() {
           )}
 
           {/* Budget Tracking - Comprehensive display if budget exists */}
-          {balance.budget && balance.start_date && balance.end_date && (
+          {Number(balance.budget) > 0 && balance.start_date && balance.end_date && (
             <BudgetTracking
               spent={balance.total}
               budget={balance.budget}
