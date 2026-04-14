@@ -6,7 +6,8 @@ import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router, useFocusEffect } from "expo-router";
 import Spinner from "@/presentational/Spinner";
-import TopNavBar from "@/presentational/TopNavBar";
+import SegmentedControl from "@/presentational/SegmentedControl";
+import { spacing } from '@/theme';
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -97,17 +98,24 @@ export default function Notifications() {
 
     if (loading) return <Spinner />;
 
+    const paymentCount = countNotificationsByType('payment');
+    const balanceCount = countNotificationsByType('balance');
+    const promiseCount = countNotificationsByType('promise');
+
     return (
         <View style={[baseStyles.viewContainerFull]} >
             <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
-                <TopNavBar
-                    menus={['payment', 'balance', 'promise']}
-                    quantityPerMenu={{
-                        'payment': countNotificationsByType('payment'),
-                        'balance': countNotificationsByType('balance'),
-                        'promise': countNotificationsByType('promise')
-                    }} activeTab={activeTab} setActiveTab={setActiveTab}
-                />
+                <View style={{ paddingVertical: spacing.md }}>
+                    <SegmentedControl
+                        segments={[
+                            { key: 'payment', label: 'Payments', count: paymentCount },
+                            { key: 'balance', label: 'Balances', count: balanceCount },
+                            { key: 'promise', label: 'Promises', count: promiseCount },
+                        ]}
+                        selectedKey={activeTab}
+                        onSelect={setActiveTab}
+                    />
+                </View>
                 {renderNotifications(activeTab)}
             </ScrollView>
         </View>

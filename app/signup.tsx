@@ -15,6 +15,7 @@ export default function SignUp() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,7 +25,7 @@ export default function SignUp() {
       showToast(t('signup.passwords_must_match'));
       return;
     }
-    signUp(firstName, lastName, email, password, confirmPassword);
+    signUp(firstName, lastName, email, password, confirmPassword, phoneNumber);
   };
 
   return (
@@ -43,6 +44,7 @@ export default function SignUp() {
           <View style={baseStyles.center}>
             <View style={baseStyles.fullWidth}>
               <TextInput
+                testID="signup-first-name"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.first_name')}
                 placeholderTextColor="#666"
@@ -51,6 +53,7 @@ export default function SignUp() {
                 autoCapitalize="words"
               />
               <TextInput
+                testID="signup-last-name"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.last_name')}
                 placeholderTextColor="#666"
@@ -59,6 +62,7 @@ export default function SignUp() {
                 autoCapitalize="words"
               />
               <TextInput
+                testID="signup-email"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.email')}
                 placeholderTextColor="#666"
@@ -69,6 +73,20 @@ export default function SignUp() {
                 autoComplete="email"
               />
               <TextInput
+                testID="signup-phone-number"
+                style={baseStyles.grayInput}
+                placeholder={t('signup.phone_number')}
+                placeholderTextColor="#666"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
+                autoComplete="tel"
+              />
+              <Text style={[baseStyles.label14, baseStyles.graySubtitle, { marginBottom: 8, marginLeft: 4 }]}>
+                {t('signup.phone_number_format')}
+              </Text>
+              <TextInput
+                testID="signup-password"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.password')}
                 placeholderTextColor="#666"
@@ -78,6 +96,7 @@ export default function SignUp() {
                 autoComplete="password-new"
               />
               <TextInput
+                testID="signup-confirm-password"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.confirm_password')}
                 placeholderTextColor="#666"
@@ -88,7 +107,8 @@ export default function SignUp() {
               />
               {error && <Text style={baseStyles.errorText}>{error}</Text>}
             </View>
-            <TouchableOpacity 
+            <TouchableOpacity
+              testID="signup-submit"
               style={baseStyles.loginButton}
               onPress={handleSignUp}
             >
@@ -99,7 +119,7 @@ export default function SignUp() {
 
           <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>{t('signup.have_account')}</Text>
-            <TouchableOpacity onPress={() => router.push('/login')}>
+            <TouchableOpacity testID="signup-go-to-login" onPress={() => router.push('/login')}>
               <Text style={[baseStyles.link, baseStyles.boldText]}>{t('signup.login')}</Text>
             </TouchableOpacity>
           </View>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
 
-import Person from '@/presentational/Person';
+import ContactCard from '@/presentational/ContactCard';
+import { AddContactButton } from '@/presentational/Buttons';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
@@ -28,7 +28,7 @@ export default function addContact() {
                 setLoading(false);
             })
     }
-    
+
     const onAdd = (id) => {
         addFriend(id)
             .then(() => {
@@ -58,13 +58,14 @@ export default function addContact() {
     const renderPeople = () => {
         if (people.length == 0) return renderEmptyContacts();
         return people.map(friend => (
-            <Person key={friend.id} person={friend}>
+            <ContactCard key={friend.id} person={friend}>
                 { friend.id && (
-                    <TouchableOpacity style={[baseStyles.circleButton, baseStyles.blueBG]} onPress={() => onAdd(friend.id)}>
-                        <MaterialIcons name="person-add" size={24} color="white" />
-                    </TouchableOpacity>
+                    <AddContactButton
+                        testID={`add-contact-row-${friend.id}`}
+                        onPressAction={() => onAdd(friend.id)}
+                    />
                 )}
-            </Person>
+            </ContactCard>
         ))
     }
     useEffect(() => {
@@ -77,7 +78,7 @@ export default function addContact() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
                 <View style={baseStyles.viewContainerFull} >
-                    <SearchBarInput text={text} setText={setText} />
+                    <SearchBarInput testID="add-contact-search" text={text} setText={setText} />
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
                         keyboardDismissMode="on-drag"

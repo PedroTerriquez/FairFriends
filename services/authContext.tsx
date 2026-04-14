@@ -1,17 +1,30 @@
 import { router } from 'expo-router';
-import { useState, useContext, createContext, useEffect } from 'react';
-import { getSession, saveSession, deleteSession } from './useStorage';
-import { login, signup } from "@/services/api";
-import { registerSessionHandler } from './sessionGlobalSingleton';
+import { useState, useContext, createContext, useEffect, ReactNode } from 'react';
+import { getSession, saveSession, deleteSession, clearCache } from './useStorage';
+import { login, signup, registerLogoutHandler } from "@/services/api";
+import { setSession as setGlobalSession } from './sessionGlobalSingleton';
 import { toast } from "./toastService";
 
-const AuthContext = createContext({
-  signIn: () => null,
-  signUp: () => null,
-  signOut: () => null,
-  session: null,
-  user: null,
-});
+interface Session {
+  token: string;
+  headers: { Authorization: string };
+}
+
+interface User {
+  id: string;
+  [key: string]: any;
+}
+
+interface AuthContextType {
+  signIn: (email: string, password: string) => void;
+  signUp: (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone_number: string) => void;
+  signOut: () => Promise<void>;
+  session: Session | null;
+  user: User | null;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useSession() {
   const value = useContext(AuthContext);
@@ -24,67 +37,72 @@ export function useSession() {
   return value;
 }
 
-export function SessionProvider({ children }) {
-  const [session, setSession] = useState(null);
-  const [user, setUser] = useState(null);
+export function SessionProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const signIn = (email, password) => {
-    login(email, password)
-      .then((response) => {
-        const token = response.data.auth_token;
-        const user = response.data.user;
-        saveSession(token, user).then(() => {
-          setSession({
-            token,
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setUser(user);
-          toast('Login successful', 'success');
-          router.replace("/(tabs)/home");
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        toast(error.response?.data?.message || 'Login failed. Please check your credentials.');
+  const signIn = (email: string, password: string) => {
+    login(email, password).then((response) => {
+      if (!response) return;
+      const token = response.data.auth_token;
+      const user = response.data.user;
+      saveSession(token, user).then(() => {
+        const nextSession = {
+          token,
+          headers: { Authorization: `Bearer ${token}` }
+        };
+        setGlobalSession(nextSession);
+        setSession(nextSession);
+        setUser(user);
+        toast('Login successful', 'success');
+        router.replace("/(tabs)/home");
       });
+    });
   };
 
-  const signUp = (first_name, last_name, email, password, password_confirmation) => {
-    signup(first_name, last_name, email, password, password_confirmation)
-      .then((response) => {
-        const token = response.data.auth_token;
-        const user = response.data.user;
-        saveSession(token, user).then(() => {
-          setUser(user);
-          setSession({
-            token,
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          toast('Account created successfully', 'success');
-          router.replace("/(tabs)/home");
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        toast(error.response?.data?.message || 'Signup failed. Please try again.');
+  const signUp = (first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone_number: string) => {
+    signup(first_name, last_name, email, password, password_confirmation, phone_number).then((response) => {
+      if (!response) return;
+      const token = response.data.auth_token;
+      const user = response.data.user;
+      saveSession(token, user).then(() => {
+        const nextSession = {
+          token,
+          headers: { Authorization: `Bearer ${token}` }
+        };
+        setGlobalSession(nextSession);
+        setUser(user);
+        setSession(nextSession);
+        toast('Account created successfully', 'success');
+        router.replace("/(tabs)/home");
       });
+    });
   };
 
-  const getJWT = () => {
-    return session;
-  }
-
-  const signOut = () => {
-    deleteSession();
-    setSession(null);
+  const signOut = async () => {
+    setGlobalSession(null);
     setUser(null);
+    setSession(null);
+
+    try {
+      await deleteSession();
+    } catch (e) {
+      console.warn('signOut: failed to delete persisted session', e);
+    }
+    clearCache();
+
+    try {
+      if ((router as any).canDismiss?.()) {
+        (router as any).dismissAll();
+      }
+    } catch {}
+    router.replace("/login");
   };
 
   useEffect(() => {
-    registerSessionHandler(getJWT);
-  }, [getJWT]);
-
-  const [loading, setLoading] = useState(true);
+    registerLogoutHandler(signOut);
+  }, []);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -92,6 +110,7 @@ export function SessionProvider({ children }) {
         const { token, user, headers } = await getSession();
 
         if (user && token) {
+          setGlobalSession({ token, headers });
           setUser(user);
           setSession({ token, headers });
         } else {

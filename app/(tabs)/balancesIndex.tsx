@@ -1,6 +1,6 @@
 import { getBalances } from "@/services/api";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import BalanceCard from '../../presentational/BalanceCard';
 import baseStyles from "@/presentational/BaseStyles";
@@ -33,6 +33,29 @@ export default function Balances() {
       });
   }
 
+  // FlatList render callbacks - memoized for performance
+  const renderBalanceItem = useCallback(({ item }) => (
+    <BalanceCard
+      id={item.id}
+      total={item.total}
+      name={item.name}
+      status={item.status}
+      members={item.balance_members}
+      myTotal={item.my_total}
+      budget={item.budget}
+    />
+  ), []);
+
+  const keyExtractor = useCallback((item) => item.id.toString(), []);
+
+  // Optimize rendering for fixed-height items
+  // BalanceCard height is approximately 200px + 10px margin = 210px
+  const getItemLayout = useCallback((data, index) => ({
+    length: 210,
+    offset: 210 * index,
+    index,
+  }), []);
+
   const renderEmptyBalances = () => (
     <EmptyList text={t("balancesIndex.no_balances")}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -43,22 +66,6 @@ export default function Balances() {
       </View>
     </EmptyList>
   )
-  
-  const renderBalances = () => {
-    if (balances.length == 0) return renderEmptyBalances()
-
-    return balances.map(balance => (
-      <BalanceCard
-            key={balance.id}
-            id={balance.id}
-            total={balance.total}
-            name={balance.name}
-            status={balance.status}
-            members={balance.balance_members}
-            myTotal={balance.my_total}
-      />
-    ))
-  }
 
   const renderSkeletons = () => {
     let skeletons = [];
@@ -86,10 +93,21 @@ export default function Balances() {
 
   return (
     <View style={baseStyles.viewContainerFull} >
-      <ScrollView contentContainerStyle={{flexGrow: 1}} refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={fetchBalances} /> }>
-        { loading ? renderSkeletons() : renderBalances()}
-      </ScrollView>
-      <FloatingButton icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />
+      <FlatList
+        data={loading ? [] : balances}
+        renderItem={renderBalanceItem}
+        keyExtractor={keyExtractor}
+        getItemLayout={getItemLayout}
+        ListEmptyComponent={loading ? renderSkeletons() : renderEmptyBalances()}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchBalances} />}
+        contentContainerStyle={{ flexGrow: 1 }}
+        // Performance optimizations
+        maxToRenderPerBatch={6}
+        windowSize={5}
+        removeClippedSubviews={true}
+        initialNumToRender={10}
+      />
+      <FloatingButton testID="balances-fab-new" icon="add" action={() => { router.push({ pathname: "/formBalance" }) }} />
     </View>
   );
 }

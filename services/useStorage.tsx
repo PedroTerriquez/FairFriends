@@ -83,4 +83,9 @@ const deleteSession = async () => {
   }
 }
 
-export { saveSession, getSession, deleteSession }
+const clearCache = () => {
+  cachedToken = null;
+  cachedUser = null;
+};
+
+export { saveSession, getSession, deleteSession, clearCache }

@@ -47,6 +47,7 @@ export default function Login() {
           <View style={baseStyles.center}>
             <View style={baseStyles.fullWidth}>
               <TextInput
+                testID="login-email"
                 style={baseStyles.input}
                 placeholder={t('login.email')}
                 placeholderTextColor="#666"
@@ -59,6 +60,7 @@ export default function Login() {
                 secureTextEntry={false}
               />
               <TextInput
+                testID="login-password"
                 style={baseStyles.grayInput}
                 placeholder={t('login.password')}
                 placeholderTextColor="#666"
@@ -70,6 +72,7 @@ export default function Login() {
               />
             </View>
             <TouchableOpacity
+              testID="login-submit"
               style={baseStyles.loginButton}
               onPress={handleLogin}
             >
@@ -80,7 +83,7 @@ export default function Login() {
 
           <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>{t('login.no_account')}</Text>
-            <TouchableOpacity onPress={() => router.push('/signup')}>
+            <TouchableOpacity testID="login-go-to-signup" onPress={() => router.push('/signup')}>
               <Text style={[baseStyles.link, baseStyles.boldText]}>{t('login.sign_up')}</Text>
             </TouchableOpacity>
           </View>

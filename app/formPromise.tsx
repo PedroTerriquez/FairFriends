@@ -1,156 +1,321 @@
-import { updatePromise, createPromise, getPromiseDetail } from "@/services/api";
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { updatePromise, createPromise, getPromiseDetail, findFriends } from "@/services/api";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+  StyleSheet,
+  Platform
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import baseStyles from "@/presentational/BaseStyles";
 import { router, useLocalSearchParams } from "expo-router";
-import AvatarInfoHeader from "@/presentational/AvatarInfoHeader";
-import InputWithLabel from "@/presentational/InputWithLabel";
+import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 
-export default function formPromise() {
-    const { t } = useTranslation();
-    const { administrator_id, administrator_name, paymentable_id } = useLocalSearchParams();
-    const [promise, setPromise] = useState({
-        title: '',
-        total: '',
-        amount_payments: '',
-        payment_period: 'week',
-        interest: '',
-        admin: false,
-        administrator_id: administrator_id || '',
-        administrator_name: administrator_name || '',
-    });
-    const [errors, setErrors] = useState({});
-    const adminEditable = paymentable_id && promise.admin;
-    const ownerEditable = paymentable_id == undefined || (paymentable_id && !promise.admin);
-    const scrollRef = useRef(null);
+import LabeledInput from "@/presentational/LabeledInput";
+import MoneyInput from "@/presentational/MoneyInput";
+import PercentageInput from "@/presentational/PercentageInput";
+import DateInput from "@/presentational/DateInput";
+import ContactSelector from "@/presentational/ContactSelector";
+import { colors, spacing, typography, shadows } from '@/theme';
 
-    const handleChange = (field, value) => {
-        setPromise((prevPromise) => ({
-            ...prevPromise,
-            [field]: value,
-        }));
-    };
+export default function FormPromise() {
+  const { t } = useTranslation();
+  const { administrator_id, paymentable_id } = useLocalSearchParams();
+  const [friends, setFriends] = useState([]);
+  const [selectedContactId, setSelectedContactId] = useState(administrator_id || null);
+  const [promise, setPromise] = useState({
+    title: '',
+    total: '',
+    amount_payments: '',
+    payment_period: 'month',
+    interest: '',
+    start_date: new Date(),
+  });
+  const [errors, setErrors] = useState({});
 
-    const fetchPromiseData = () => {
-        if (paymentable_id == undefined) return;
-        getPromiseDetail(paymentable_id)
-            .then((response) => {
-                setPromise(response.data.promise)
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+  useEffect(() => {
+    fetchFriends();
+    if (paymentable_id) {
+      fetchPromiseData();
+    }
+  }, [paymentable_id]);
+
+  const fetchFriends = async () => {
+    try {
+      const response = await findFriends("");
+      setFriends(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchPromiseData = async () => {
+    try {
+      const response = await getPromiseDetail(paymentable_id);
+      setPromise({
+        ...response.data.promise,
+        start_date: new Date(response.data.promise.start_date || Date.now())
+      });
+      setSelectedContactId(response.data.promise.administrator_id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChange = (field, value) => {
+    setPromise((prevPromise) => ({
+      ...prevPromise,
+      [field]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!selectedContactId) newErrors.contact = "Please select a contact";
+    if (!promise.title) newErrors.title = "Title is required";
+    if (!promise.total) newErrors.total = "Total amount is required";
+    if (isNaN(promise.total)) newErrors.total = "Amount must be a valid number";
+    if (!promise.amount_payments) newErrors.amount_payments = "Payment amount is required";
+    if (isNaN(promise.amount_payments)) newErrors.amount_payments = "Payment amount must be a valid number";
+    if (!promise.payment_period) newErrors.payment_period = "Payment interval is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (!validateForm()) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      return;
     }
 
-    const handleSave = () => {
-        if (!validateForm()) return;
-        if (paymentable_id) {
-            updatePromise(paymentable_id, promise)
-                .then((response) => {
-                    router.replace({ pathname: '/promise', params: { id: paymentable_id } });
-                })
-                .catch((error) => {});
-        } else {
-            createPromise(promise)
-                .then((response) => {
-                    router.replace({pathname:'/promise', params: { id: response.data.id } })
-                })
-                .catch((error) => {});
-        }
-    }
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!promise.title) newErrors.title = t("formPromise.concept_is_required")
-        if (!promise.total) newErrors.total = t("formPromise.amount_is_required");
-        if (isNaN(promise.total)) newErrors.total = t("formPromise.amount_valid_number");
-        if (!promise.payment_period) newErrors.payment_period = t("formPromise.payment_interval_required");
-        if (!promise.amount_payments) newErrors.amount_payments = t("formPromise.payment_amount_is_required");
-        if (isNaN(promise.amount_payments)) newErrors.amount_payments = t("formPromise.payment_amount_valid_number");
-        setErrors(newErrors);
-        //TODO: Scroll to the specific input
-        if (Object.keys(newErrors).length > 0) {
-            scrollRef.current?.scrollTo({ y: 0, animated: true });
-        }
-        return Object.keys(newErrors).length === 0;
+    const promiseData = {
+      ...promise,
+      administrator_id: selectedContactId,
     };
 
-    useEffect(() => {
-        fetchPromiseData();
-    }, [paymentable_id]);
+    if (paymentable_id) {
+      updatePromise(paymentable_id, promiseData)
+        .then((response) => {
+          router.replace({ pathname: '/promiseShow', params: { id: paymentable_id } });
+        })
+        .catch((error) => {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        });
+    } else {
+      createPromise(promiseData)
+        .then((response) => {
+          router.replace({ pathname: '/promiseShow', params: { id: response.data.id } });
+        })
+        .catch((error) => {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        });
+    }
+  };
 
-    let percentInterest = (100 + parseInt(promise.interest || 0)) / 100
-    let totalWithInterest = (promise.total * percentInterest).toFixed(1)
-    let totalPayments = Math.ceil((promise.total * percentInterest)/promise.amount_payments)
-    
-    return (
-        <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+  const canCreate = selectedContactId && promise.title && promise.total && promise.amount_payments;
+
+  return (
+    <>
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ScrollView  ref={scrollRef} contentContainerStyle={{ flexGrow: 1 }}>
-                    <View style={[baseStyles.viewContainerFull, { paddingHorizontal: 10, paddingVertical: 5}]}>
-                        {paymentable_id ? (
-                            <AvatarInfoHeader user={promise.admin_name} text={t('formPromise.editing_promise')} />
-                        ) : (
-                            <AvatarInfoHeader user={promise.administrator_name} text={t('formPromise.new_promise')} />
-                        )}
+          {/* Contact Selector */}
+          <ContactSelector
+            label="Select Contact"
+            contacts={friends}
+            selectedContactId={selectedContactId}
+            onSelectContact={setSelectedContactId}
+          />
 
-                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> {t('formPromise.general_information')} </Text>
-                            <InputWithLabel label={t('formPromise.concept')} name='title' value={promise.title} onChangeText={handleChange} placeholder={t('formPromise.enter_concept')} error={errors.title} editable={ownerEditable} />
-                            <InputWithLabel label={t('formPromise.amount')} name='total' value={promise.total} onChangeText={handleChange} numeric={true} placeholder={t('formPromise.enter_total_amount')} error={errors.total} editable={ownerEditable} />
-                        </View>
+          {/* Title */}
+          <LabeledInput
+            testID="promise-title-input"
+            label="Title"
+            value={promise.title}
+            onChangeText={(text) => handleChange('title', text)}
+            placeholder="e.g., Laptop loan, Concert tickets"
+            error={errors.title}
+          />
 
-                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold' }]}> {t('formPromise.interval')} </Text>
-                            <View>
-                                <Text style={baseStyles.label17}>{t('formPromise.payment_interval')}</Text>
-                                {promise.admin ? (
-                                    <TextInput
-                                        style={[baseStyles.input, baseStyles.disabledInput]}
-                                        value={promise.payment_period}
-                                    />
-                                ) : (
-                                    <Picker
-                                        selectedValue={promise.payment_period || 'month'}
-                                        onValueChange={(payment_period) => handleChange('payment_period', payment_period)}
-                                        style={[baseStyles.picker, { height: 150, width: '100%' }]}
-                                        itemStyle={{ color: 'black' }} >
-                                        <Picker.Item label={t('formPromise.day')} value="day" />
-                                        <Picker.Item label={t('formPromise.week')} value="week" />
-                                        <Picker.Item label={t('formPromise.bi_week')} value="biweek" />
-                                        <Picker.Item label={t('formPromise.month')} value="month" />
-                                    </Picker>)}
-                                {errors.payment_period && <Text style={baseStyles.errorText}>{errors.payment_period}</Text>}
-                            </View>
-                            <InputWithLabel label={t('formPromise.payment_amount')} name='amount_payments' value={promise.amount_payments} numeric={true} onChangeText={handleChange} placeholder={t('formPromise.enter_payment_amount')} error={errors.amount_payments} editable={ownerEditable} />
-                        </View>
+          {/* Total Amount */}
+          <MoneyInput
+            testID="promise-total-input"
+            label="Total Amount"
+            value={promise.total}
+            onChangeText={(text) => handleChange('total', text)}
+            error={errors.total}
+          />
 
-                        <View style={[baseStyles.containerCard, { gap: 15, marginVertical: 10, padding: 20 }]}>
-                            <Text style={[baseStyles.title15, { fontSize: 22, fontWeight: 'bold', marginBottom: 10 }]}> {t('formPromise.financial_details')} </Text>
-                            <InputWithLabel label={t('formPromise.interest')} name='interest' value={promise.interest} numeric={true} onChangeText={handleChange} placeholder={t('formPromise.enter_interest')} editable={adminEditable} />
-                            <InputWithLabel label={t('formPromise.total_with_interest')} name='' value={totalWithInterest} onChangeText={() => { }} placeholder="" error={null} editable={false} />
-                            {promise.total && percentInterest && promise.amount_payments && (
-                                <InputWithLabel label={t('formPromise.total_payments')} name='' value={totalPayments} onChangeText={() => { }} placeholder="" error={null} editable={true} />
-                            )}
-                        </View>
+          {/* Interest (Optional) */}
+          <PercentageInput
+            label="Interest (Optional)"
+            value={promise.interest}
+            onChangeText={(text) => handleChange('interest', text)}
+            subtitle="Interest rate as a percentage"
+          />
 
-                        <View style={[baseStyles.buttonContainer, { flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }]}>
-                            <TouchableOpacity
-                                style={[baseStyles.button, baseStyles.saveButton, { flex: 1, marginLeft: 10 }]}
-                                onPress={handleSave}
-                            >
-                                <Text style={baseStyles.buttonText}>{t('formPromise.save')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </ScrollView>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-    );
+          {/* Payment Schedule Section */}
+          <View style={styles.scheduleSection}>
+            <Text style={styles.scheduleTitle}>Payment Schedule</Text>
+
+            {/* Payment Amount */}
+            <MoneyInput
+              testID="promise-payment-amount-input"
+              label="Payment Amount"
+              value={promise.amount_payments}
+              onChangeText={(text) => handleChange('amount_payments', text)}
+              error={errors.amount_payments}
+            />
+
+            {/* Payment Interval */}
+            <View style={styles.pickerContainer}>
+              <Text style={styles.pickerLabel}>Payment Interval</Text>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={promise.payment_period}
+                  onValueChange={(value) => handleChange('payment_period', value)}
+                  style={styles.picker}
+                >
+                  <Picker.Item label="Daily" value="day" />
+                  <Picker.Item label="Weekly" value="week" />
+                  <Picker.Item label="Bi-weekly" value="biweek" />
+                  <Picker.Item label="Monthly" value="month" />
+                </Picker>
+              </View>
+              {errors.payment_period && (
+                <Text style={styles.errorText}>{errors.payment_period}</Text>
+              )}
+            </View>
+
+            {/* Start Date */}
+            <DateInput
+              label="Start Date"
+              value={promise.start_date}
+              onChange={(date) => handleChange('start_date', date)}
+            />
+          </View>
+
+          {/* Bottom Spacing */}
+          <View style={{ height: spacing.xl }} />
+        </ScrollView>
+
+        {/* Create Promise Button - Bottom Fixed */}
+        <View style={styles.bottomButtonContainer}>
+          <TouchableOpacity
+            testID="promise-create-submit"
+            style={[
+              styles.createButton,
+              !canCreate && styles.createButtonDisabled
+            ]}
+            onPress={handleSave}
+            disabled={!canCreate}
+            activeOpacity={0.8}
+          >
+            <Text style={[
+              styles.createButtonText,
+              !canCreate && styles.createButtonTextDisabled
+            ]}>
+              {paymentable_id ? 'Update Promise' : 'Create Promise'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: spacing.lg,
+    paddingBottom: 100,
+  },
+  scheduleSection: {
+    backgroundColor: '#eef2ff',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#c6d2ff',
+    padding: spacing.lg,
+    marginBottom: spacing.lg,
+  },
+  scheduleTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.text.primary,
+    marginBottom: spacing.lg,
+  },
+  pickerContainer: {
+    marginBottom: spacing.lg,
+  },
+  pickerLabel: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
+  },
+  pickerWrapper: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: Platform.OS === 'ios' ? 150 : 50,
+    width: '100%',
+  },
+  errorText: {
+    fontSize: 13,
+    color: colors.financial.negative,
+    marginTop: spacing.xs,
+  },
+  bottomButtonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.background,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: colors.border.light,
+    ...shadows.md,
+  },
+  createButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    ...shadows.sm,
+  },
+  createButtonDisabled: {
+    backgroundColor: colors.surfaceVariant,
+  },
+  createButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.surface,
+  },
+  createButtonTextDisabled: {
+    color: colors.text.tertiary,
+  },
+});

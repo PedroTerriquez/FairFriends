@@ -5,10 +5,10 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from 'react-i18next';
 
 export default function AppLayout() {
-  const { session } = useSession();
+  const { session, loading } = useSession();
   const { t } = useTranslation();
 
-  if (session == null) {
+  if (loading) {
     return <Text>Loading...</Text>;
   }
 
@@ -27,7 +27,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="contacts"
+        name="contactsIndex"
         options={{
           title: t("layout.contacts"),
           tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
@@ -35,7 +35,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="balances"
+        name="balancesIndex"
         options={{
           title: t("layout.fair_split"),
           tabBarIcon: ({ color, size }) => <FontAwesome name="balance-scale" color={color} size={size} />,
@@ -43,7 +43,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="promises"
+        name="promisesIndex"
         options={{
           title: t("layout.promises"),
           tabBarIcon: ({ color, size }) => <MaterialIcons name="attach-money" color={color} size={size} />,

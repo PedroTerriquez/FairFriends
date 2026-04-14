@@ -1,25 +1,41 @@
 {
   "balance": {
     "add_payment": "Agregar pago",
+    "all_fair": "Todos los balances son justos 🎯",
+    "all_fair_subtitle": "Todos están dentro del 10% del promedio",
     "close_balance": "Cerrar balanza",
+    "close_with_transactions": "Cerrar con {{count}} transacciones",
+    "days_elapsed": "Día {{days}} de {{total}}",
+    "insights": "💡 Inteligencia de Balance",
     "no_balance_found": "No se encontró la balanza",
     "no_payments_yet": "Aún no hay pagos",
+    "projected_total": "Proyectado: {{amount}}",
     "recent_payments": "Pagos recientes",
+    "spending_progress": "{{percent}}% gastado",
     "start_adding_payment": "Comienza a agregar un nuevo pago",
-    "uneven_pay": "Pago desigual"
+    "trip_itinerary": "Itinerario del viaje",
+    "trip_itinerary_subtitle": "{{count}} eventos en orden",
+    "uneven_pay": "Pago desigual",
+    "view_all_settlements": "Toca para ver todas las liquidaciones"
   },
   "balanceCard": {
+    "active": "Activo",
     "avg": "Avg",
     "balance_with": "Balanza con",
+    "closed": "Cerrado",
     "next_payment_on": "Próximo en pagar",
+    "pending": "Pendiente",
     "total": "Total",
     "you": "Tú"
   },
   "balanceForm": {
+    "description_label": "Descripción (Opcional)",
+    "description_placeholder": "¿Para qué es este balance?",
     "example_placeholder_name": "e.g., Amigo",
     "group_name_placeholder": "e.g., Viaje a la playa",
     "placeholder_name": "Nombre del miembro sin cuenta",
     "placeholder_names": "Miembros sin cuenta",
+    "save_changes": "Guardar cambios",
     "select_members": "Seleccionar miembros",
     "split_name": "Nombre de la balanza"
   },
@@ -29,6 +45,7 @@
     "start_balance": "Comienza un balance con tus contactos"
   },
   "contactForm": {
+    "add": "Agregar",
     "name": "nombre",
     "no_contacts_found": "No se encontraron contactos",
     "try_looking_different": "Intenta buscar un nombre diferente"
@@ -116,8 +133,19 @@
     "whoIsPaying": "¿Quién está pagando?",
     "whoIsReceiving": "¿Quién está recibiendo?"
   },
+  "itinerary": {
+    "events_count": "{{count}} Eventos",
+    "total": "Total"
+  },
   "home": {
     "hello": "Hola",
+    "notifications": {
+      "label": "Notificaciones",
+      "pending": "{{count}} pendientes",
+      "caughtUp": "¡Todo al día!",
+      "subtitle": "Tienes elementos para revisar",
+      "noPending": "Sin pendientes"
+    },
     "payable_promises": "Promesas a pagar",
     "recent_payments": "Pagos recientes",
     "welcome": "Bienvenido de nuevo!"
@@ -151,6 +179,18 @@
     "splitDescription": "Hemos dividido el pago y mostraremos cuánto debe cada miembro.",
     "total": "Total",
     "unevenPayments": "Pagos desiguales"
+  },
+  "notifications": {
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "accepted": "Aceptado",
+    "rejected": "Rechazado",
+    "type": {
+      "balance": "Balance",
+      "promise": "Promesa",
+      "payment": "Pago",
+      "friendship": "Solicitud de amistad"
+    }
   },
   "paymentKeypad": {
     "suggestedAmount": "Monto sugerido $"
@@ -196,6 +236,8 @@
     "login": "Inicia sesión",
     "password": "Contraseña",
     "passwords_must_match": "Las contraseñas deben coincidir",
+    "phone_number": "Número de teléfono",
+    "phone_number_format": "Formato: +52 1 XXX XXX XXXX",
     "signup_button": "Regístrate",
     "split_expenses_with_friends": "Divide gastos con amigos"
   },
@@ -218,5 +260,33 @@
     "receiving": "Recibiendo",
     "sent": "Enviados",
     "uneven": "Desiguales"
+  },
+  "unevenPaymentCard": {
+    "title": "Pago Dividido Desigual",
+    "unevenSplit": "pago desigual",
+    "splitBreakdown": "Division Desigual",
+    "totalSplit": "Division Total",
+    "people": "{{count}} personas"
+  },
+  "trip_highlights": {
+    "top_contributor": "Mayor Contribuyente",
+    "you_paid_most": "¡Pagaste más!",
+    "paid_most": "{{name}} pagó más",
+    "contributed": "contribuido",
+    "most_spending": "Mayor Gasto",
+    "of_total": "% del total",
+    "under_budget": "¡Dentro del Presupuesto!",
+    "over_budget": "Fuera del Presupuesto",
+    "total_spent": "Total Gastado",
+    "budget": "Presupuesto",
+    "remaining": "Restante",
+    "over_by": "Excedido por",
+    "total_expenses": "gastos totales",
+    "people": "Personas",
+    "payments": "Pagos"
+  },
+  "common": {
+    "previous": "Anterior",
+    "next": "Siguiente"
   }
 }

@@ -10,6 +10,47 @@ const instance = axios.create({
     timeout: 10000,
 });
 
+// Store logout callback - set by authContext
+let onUnauthorizedLogout = null;
+
+export const registerLogoutHandler = (callback) => {
+  onUnauthorizedLogout = callback;
+};
+
+/**
+ * Detects if error is a "User not found" error from the server
+ * This happens when the user's session token is valid but the user record
+ * was deleted or no longer exists
+ */
+const isUserNotFoundError = (error) => {
+  const errorMessage = error?.response?.data?.message || 
+                       error?.response?.data?.error || 
+                       error?.response?.statusText || '';
+  
+  return (
+    error?.response?.status === 404 &&
+    (errorMessage.includes("Couldn't find User") || 
+     errorMessage.includes("RecordNotFound") ||
+     errorMessage.includes("User not found"))
+  );
+};
+
+/**
+ * Handles authentication errors and triggers logout if needed
+ */
+const handleAuthError = (error) => {
+  if (isUserNotFoundError(error)) {
+    // Trigger logout handler if registered
+    if (onUnauthorizedLogout && typeof onUnauthorizedLogout === 'function') {
+      onUnauthorizedLogout();
+    }
+    toast("Your account is no longer available. Please log in again.", "error");
+    return error;
+  }
+  
+  return error;
+};
+
 // Add interceptor to inject session headers
 instance.interceptors.request.use(
   config => {
@@ -24,6 +65,15 @@ instance.interceptors.request.use(
     return config;
   },
   error => Promise.reject(error)
+);
+
+// Add response interceptor to handle auth errors
+instance.interceptors.response.use(
+  response => response,
+  error => {
+    handleAuthError(error);
+    return Promise.reject(error);
+  }
 );
 
 export async function apiCall(promise) {
@@ -52,10 +102,19 @@ export const getBalanceDetail = (id) =>
 export const getBalanceInfo = (id) =>
   apiCall(instance.get(`/balances/${id}/info`));
 
-export const createBalance = (members, name) =>
-  apiCall(instance.post("/balances/", { members, name }));
+export const createBalance = (members, name, budget, startDate, endDate) =>
+  apiCall(instance.post("/balances/", {
+    members,
+    name,
+    budget,
+    start_date: startDate,
+    end_date: endDate,
+  }));
 
 export const createGroup = createBalance;
+
+export const updateBalance = (id, data) =>
+  apiCall(instance.patch(`/balances/${id}`, data));
 
 // Promises
 export const getPromises = () =>
@@ -90,8 +149,8 @@ export const getProfile = (id) =>
 export const login = (email, password) =>
   apiCall(instance.post("/login", { email, password }));
 
-export const signup = (first_name, last_name, email, password, password_confirmation) =>
-  apiCall(instance.post("/users", { first_name, last_name, email, password, password_confirmation }));
+export const signup = (first_name, last_name, email, password, password_confirmation, phone_number) =>
+  apiCall(instance.post("/users", { first_name, last_name, email, password, password_confirmation, phone_number }));
 
 // Friendships
 export const findFriends = (search) =>

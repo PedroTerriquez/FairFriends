@@ -1,17 +1,17 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable, TouchableOpacity } from "react-native";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from 'react-i18next';
 
-import Person from '../../presentational/Person';
-import baseStyles from '../../presentational/BaseStyles';
+import ContactCard from '@/presentational/ContactCard';
+import baseStyles from '@/presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
-import { findFriends, createBalance } from "@/services/api";
 import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 import SkeletonWrapper from "@/presentational/SkeletonWrapper";
+import { findFriends, createBalance } from "@/services/api";
 import { useServer } from "@/services/serverContext";
 
 export default function Contacts() {
@@ -42,29 +42,18 @@ export default function Contacts() {
     // Navigation functions
     const navigateProfile = (id) => {
         router.push({
-            pathname: '/profile',
+            pathname: '/profileShow',
             params: { id }
         });
     };
 
     const startPromise = (id, name) => {
         router.push({
-            pathname: '/formPromise',
+            pathname: '/promiseForm',
             params: { administrator_id: id, administrator_name: name }
         });
     };
 
-    const startBalance = (id) => {
-        createBalance([id], undefined)
-            .then((response) => {
-                router.push({
-                    pathname: '/balance',
-                    params: { id: response.data.id }
-                });
-            })
-            .catch((error) => {
-            });
-    };
 
     // Render functions
     const renderEmptyFriend = () => (
@@ -95,23 +84,7 @@ export default function Contacts() {
         Object.keys(friends).map((key) => {
             const friend = friends[key];
             fullList.push(
-                <Person
-                    key={friend.id}
-                    person={friend}
-                    onClick={navigateProfile}
-                >
-                    {friend.id && (
-                        <View style={[baseStyles.rowCenter, { gap: 5 }]}>                            
-                            <ButtonWithIcon
-                                style={[baseStyles.successBG]}
-                                textStyle={{ fontSize: 10, color: 'white' }}
-                                text={t('contactsIndex.promise')}
-                                onPress={() => startPromise(friend.id, friend.first_name)}
-                                icon={<MaterialIcons name="attach-money" size={18} color="white" />}
-                            />
-                        </View>
-                    )}
-                </Person>
+                <ContactCard key={friend.id} person={friend} onClick={navigateProfile} />
             );
         });
         return fullList;
@@ -159,6 +132,7 @@ export default function Contacts() {
                             <SearchBarInput text={text} setText={setText} />
                         </View>
                         <TouchableOpacity
+                            testID="contacts-open-requests"
                             onPressIn={() => router.push('/contactRequests')}
                             style={{ padding: 15 }}
                         >
@@ -167,7 +141,7 @@ export default function Contacts() {
                     </View>
                         { loading ? renderSkeletons() : renderContacts(friends)}
                 </ScrollView>
-                <FloatingButton icon="add" action={() => { router.push({ pathname: "/addContact", }) }} />
+                <FloatingButton testID="contacts-add-friend" icon="add" action={() => { router.push({ pathname: "/addContact", }) }} />
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
-import baseStyles from './BaseStyles' 
+import { useTranslation } from "react-i18next";
+import baseStyles from './BaseStyles';
 import Avatar from "./Avatar";
-import AcceptButton, { RejectButton } from "./acceptButton";
+import AcceptButton, { RejectButton } from "./Buttons";
+import formatDate from "@/services/formatDate";
+import { colors, spacing, typography } from '@/theme';
+
+const TYPE_META = {
+  Balance:    { icon: 'wallet',    color: colors.primary,            bg: colors.primaryLight,          labelKey: 'notifications.type.balance' },
+  Promise:    { icon: 'hand-left', color: colors.financial.warning,  bg: colors.financial.warningLight, labelKey: 'notifications.type.promise' },
+  Payment:    { icon: 'cash',      color: colors.financial.positive, bg: colors.financial.positiveLight, labelKey: 'notifications.type.payment' },
+  Friendship: { icon: 'people',    color: colors.info,               bg: colors.infoLight,             labelKey: 'notifications.type.friendship' },
+};
 
 export default function NotificationCard({
   id,
@@ -19,19 +29,13 @@ export default function NotificationCard({
   updateStatus,
   message,
 }) {
-  const [pendingDecision, setPendingDecision] = useState(false)
-  const [decisionDone, setDecisionDone] = useState(false)
-  
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit", 
-    minute: "2-digit",
-  }).format(new Date(date));
+  const { t } = useTranslation();
+  const isPending = status === 'pending';
+  const typeMeta = TYPE_META[notifiableType] || TYPE_META.Balance;
 
   const handleShow = () => {
     let route;
+    let targetId = notifiableId;
     switch (notifiableType) {
       case 'Promise':
         route = 'promise';
@@ -40,8 +44,8 @@ export default function NotificationCard({
         route = 'balance';
         break;
       case 'Payment':
-        route = paymentableType.toLowerCase();
-        notifiableId = paymentableId;
+        route = paymentableType?.toLowerCase();
+        targetId = paymentableId;
         break;
       case 'Friendship':
         route = 'profile';
@@ -50,44 +54,138 @@ export default function NotificationCard({
         route = 'default';
         break;
     }
-    
-    router.push({ pathname: route, params: { id: notifiableId } });
-  }
+    router.push({ pathname: route, params: { id: targetId } });
+  };
 
   return (
     <Pressable
-      onPress={() => handleShow()}
-      style={[baseStyles.card, ['accepted', 'rejected'].includes(status) ? baseStyles.cardRead : baseStyles.cardUnread]}>
-      <View style={baseStyles.cardContent}>
-        <View style={[baseStyles.rowCenter, { flex: 2 }]}>
-          <Avatar name={creatorName[0]} />
-          <View style={baseStyles.marginLeft10}>
-            <Text style={baseStyles.cardTitle}>{creatorName}</Text>
-            <Text style={baseStyles.smallLabel}>{message}</Text>
-            <Text style={baseStyles.cardDate}>{formattedDate}</Text>
+      onPress={handleShow}
+      style={[baseStyles.card, isPending && styles.cardPending]}>
+      <View style={styles.header}>
+        <Avatar name={creatorName} size={44} />
+        <View style={styles.body}>
+          <View style={styles.titleRow}>
+            <View style={styles.titleText}>
+              <Text style={styles.title} numberOfLines={2}>
+                {creatorName}
+                <Text style={styles.titleMessage}> {message}</Text>
+              </Text>
+            </View>
+            {amount ? <Text style={styles.amount}>{amount}</Text> : null}
+          </View>
+          <View style={styles.metaRow}>
+            {isPending ? (
+              <View style={[styles.pill, { backgroundColor: typeMeta.bg }]}>
+                <Ionicons name={typeMeta.icon} size={12} color={typeMeta.color} />
+                <Text style={[styles.pillText, { color: typeMeta.color }]}>
+                  {t(typeMeta.labelKey)}
+                </Text>
+              </View>
+            ) : (
+              <View style={[styles.pill, { backgroundColor: status === 'accepted' ? colors.financial.positiveLight : colors.financial.negativeLight }]}>
+                <Ionicons
+                  name={status === 'accepted' ? 'checkmark' : 'close'}
+                  size={12}
+                  color={status === 'accepted' ? colors.financial.positive : colors.financial.negative}
+                />
+                <Text style={[styles.pillText, { color: status === 'accepted' ? colors.financial.positive : colors.financial.negative }]}>
+                  {t(status === 'accepted' ? 'notifications.accepted' : 'notifications.rejected')}
+                </Text>
+              </View>
+            )}
+            <Text style={styles.metaDot}>·</Text>
+            <Text style={styles.metaDate}>{formatDate(date)}</Text>
           </View>
         </View>
-        <View style={{ flex: 1, gap: 10, flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-          {amount && <Text style={baseStyles.boldText}>{amount}</Text>}
-          {!pendingDecision && status == 'pending' && <Pressable
-            style={[baseStyles.circleButton, baseStyles.warningBG]}
-            onPress={() => setPendingDecision(true)}>
-            <Ionicons name="notifications" size={20} color="white" />
-          </Pressable>}
-          {pendingDecision && !decisionDone && (
-            <View style={[baseStyles.rowCenter, { gap: 5, justifyContent: 'flex-end' }]}>
-              <AcceptButton onPressAction={() => {
-                updateStatus(id, 'accepted');
-                setDecisionDone(true);
-              }} />
-              <RejectButton onPressAction={() => {
-                updateStatus(id, 'rejected');
-                setDecisionDone(true);
-              }} />
-            </View>
-          )}
-        </View>
       </View>
+
+      {isPending && (
+        <>
+          <View style={styles.divider} />
+          <View style={styles.actions}>
+            <RejectButton
+              testID={`notification-reject-${id}`}
+              onPressAction={() => updateStatus(id, 'rejected')}
+            />
+            <AcceptButton
+              testID={`notification-accept-${id}`}
+              onPressAction={() => updateStatus(id, 'accepted')}
+            />
+          </View>
+        </>
+      )}
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  cardPending: {
+    borderWidth: 2,
+    borderColor: colors.financial.warning,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.sm,
+  },
+  body: {
+    flex: 1,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+  },
+  titleText: {
+    flex: 1,
+  },
+  title: {
+    fontSize: typography.body.fontSize,
+    fontWeight: '600',
+    color: colors.text.primary,
+  },
+  titleMessage: {
+    fontWeight: '400',
+  },
+  amount: {
+    fontSize: typography.body.fontSize,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  pillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  metaDot: {
+    color: colors.text.tertiary,
+    fontSize: 12,
+  },
+  metaDate: {
+    color: colors.text.tertiary,
+    fontSize: 12,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.border.light,
+    marginVertical: spacing.md,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+});

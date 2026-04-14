@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TouchableOpacity, View, RefreshControl } from "react-native";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Pressable, ScrollView, Text, View, RefreshControl } from "react-native";
 
-import Person from '@/presentational/Person';
+import ContactCard from '@/presentational/ContactCard';
 import baseStyles from "@/presentational/BaseStyles";
 import EmptyList from "@/presentational/EmptyList";
 import { router } from "expo-router";
@@ -13,8 +12,9 @@ import {
   rejectFriendshipRequest,
   acceptFriendshipRequest
 } from "@/services/api";
-import AcceptButton, { RejectButton } from "@/presentational/acceptButton";
-import TopNavBar from "@/presentational/TopNavBar";
+import AcceptButton, { RejectButton, CancelRequestButton } from "@/presentational/Buttons";
+import SegmentedControl from "@/presentational/SegmentedControl";
+import { spacing } from '@/theme';
 
 export default function contactRequests() {
   const [pending, setPending] = useState([]);
@@ -94,11 +94,11 @@ export default function contactRequests() {
     if (contacts.length == 0) return emptySentRequests;
 
     return contacts.map(contact => (
-      <Person key={contact.friendship_id} person={contact} >
+      <ContactCard key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
-          <RejectButton onPressAction={() => cancelRequest(contact.friendship_id)}></RejectButton>
+          <CancelRequestButton onPressAction={() => cancelRequest(contact.friendship_id)}></CancelRequestButton>
         )}
-      </Person>
+      </ContactCard>
     ))
   }
   
@@ -115,14 +115,17 @@ export default function contactRequests() {
     if (contacts.length == 0) return emptyPendingFriendships;
 
     return contacts.map(contact => (
-      <Person key={contact.friendship_id} person={contact} >
+      <ContactCard key={contact.friendship_id} person={contact} >
         {contact.friendship_id && (
           <View style={[baseStyles.rowCenter, { gap: 5 }]}>
               <RejectButton onPressAction={rejectRequest.bind(this, contact.friendship_id)}></RejectButton>
-              <AcceptButton onPressAction={acceptRequest.bind(this, contact.friendship_id)}></AcceptButton>
+              <AcceptButton
+                testID={`accept-request-${contact.friendship_id}`}
+                onPressAction={acceptRequest.bind(this, contact.friendship_id)}
+              ></AcceptButton>
             </View>
           )}
-          </Person>
+          </ContactCard>
       ))
   }
 
@@ -139,8 +142,15 @@ export default function contactRequests() {
 
   return (
     <View style={baseStyles.viewContainerFull} >
-      <View>
-        <TopNavBar menus={["pending", "sent"]} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <View style={{ paddingVertical: spacing.md }}>
+        <SegmentedControl
+          segments={[
+            { key: "pending", label: "Pending", count: pending.length },
+            { key: "sent", label: "Sent", count: sent.length },
+          ]}
+          selectedKey={activeTab}
+          onSelect={setActiveTab}
+        />
       </View>
       <ScrollView
         refreshControl={

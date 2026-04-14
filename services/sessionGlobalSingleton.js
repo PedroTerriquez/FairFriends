@@ -1,11 +1,9 @@
-let sessionHandler = null;
+let currentSession = null;
 
-export function registerSessionHandler(fn) {
-  sessionHandler = fn;
+export function setSession(session) {
+  currentSession = session;
 }
 
 export function getSession() {
-    if (typeof sessionHandler === "function") {
-        return sessionHandler();
-    }
+  return currentSession;
 }

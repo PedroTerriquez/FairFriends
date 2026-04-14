@@ -22,8 +22,8 @@ export default function Root() {
               <Stack.Screen name="notifications" />
               <Stack.Screen name="contactRequests" />
               <Stack.Screen name="addContact" />
-              <Stack.Screen name="balance" />
-              <Stack.Screen name="promise" />
+              <Stack.Screen name="balanceShow" />
+              <Stack.Screen name="promiseShow" />
               <Stack.Screen name="formPayment" />
               <Stack.Screen name="formPromise" />
             </Stack>

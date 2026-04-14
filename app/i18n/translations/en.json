@@ -1,25 +1,41 @@
 {
   "balance": {
     "add_payment": "Add payment",
+    "all_fair": "All balances are fair 🎯",
+    "all_fair_subtitle": "Everyone is within 10% of average",
     "close_balance": "Close balance",
+    "close_with_transactions": "Close with {{count}} transactions",
+    "days_elapsed": "Day {{days}} of {{total}}",
+    "insights": "💡 Balance Intelligence",
     "no_balance_found": "Balance not found",
     "no_payments_yet": "No payments yet",
+    "projected_total": "Projected: {{amount}}",
     "recent_payments": "Recent payments",
+    "spending_progress": "{{percent}}% spent",
     "start_adding_payment": "Start adding a new payment",
-    "uneven_pay": "Uneven payment"
+    "trip_itinerary": "Trip Itinerary",
+    "trip_itinerary_subtitle": "{{count}} events in order",
+    "uneven_pay": "Uneven payment",
+    "view_all_settlements": "Tap to view all settlements"
   },
   "balanceCard": {
+    "active": "Active",
     "avg": "Avg",
     "balance_with": "Balance with",
+    "closed": "Closed",
     "next_payment_on": "Next payment on",
+    "pending": "Pending",
     "total": "Total",
     "you": "You"
   },
   "balanceForm": {
+    "description_label": "Description (Optional)",
+    "description_placeholder": "What's this balance for?",
     "example_placeholder_name": "e.g., Friend",
     "group_name_placeholder": "e.g., Beach trip",
     "placeholder_name": "Member without account name",
     "placeholder_names": "Members without account",
+    "save_changes": "Save Changes",
     "select_members": "Select members",
     "split_name": "Balance name"
   },
@@ -29,6 +45,7 @@
     "start_balance": "Start a balance with your contacts"
   },
   "contactForm": {
+    "add": "Add",
     "name": "Name",
     "no_contacts_found": "No contacts found",
     "try_looking_different": "Try searching for a different name"
@@ -116,8 +133,19 @@
     "whoIsPaying": "Who is paying?",
     "whoIsReceiving": "Who is receiving?"
   },
+  "itinerary": {
+    "events_count": "{{count}} Events",
+    "total": "Total"
+  },
   "home": {
     "hello": "Hello",
+    "notifications": {
+      "label": "Notifications",
+      "pending": "{{count}} pending",
+      "caughtUp": "All caught up!",
+      "subtitle": "You have items to review",
+      "noPending": "No pending items"
+    },
     "payable_promises": "Payable promises",
     "recent_payments": "Recent payments",
     "welcome": "Welcome back!"
@@ -151,6 +179,18 @@
     "splitDescription": "We split the payment and will show how much each member owes.",
     "total": "Total",
     "unevenPayments": "Uneven payments"
+  },
+  "notifications": {
+    "accept": "Accept",
+    "reject": "Reject",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "type": {
+      "balance": "Balance",
+      "promise": "Promise",
+      "payment": "Payment",
+      "friendship": "Friend request"
+    }
   },
   "paymentKeypad": {
     "suggestedAmount": "Suggested amount $"
@@ -196,6 +236,8 @@
     "login": "Log in",
     "password": "Password",
     "passwords_must_match": "Passwords must match",
+    "phone_number": "Phone number",
+    "phone_number_format": "Format: +52 1 XXX XXX XXXX",
     "signup_button": "Sign up",
     "split_expenses_with_friends": "Split expenses with friends"
   },
@@ -218,5 +260,33 @@
     "receiving": "Receiving",
     "sent": "Sent",
     "uneven": "Uneven"
+  },
+  "unevenPaymentCard": {
+    "title": "Uneven Split Payment",
+    "unevenSplit": "uneven split",
+    "splitBreakdown": "Uneven Split",
+    "totalSplit": "Total Split",
+    "people": "{{count}} people"
+  },
+  "trip_highlights": {
+    "top_contributor": "Top Contributor",
+    "you_paid_most": "You paid the most!",
+    "paid_most": "{{name}} paid the most",
+    "contributed": "contributed",
+    "most_spending": "Most Spending",
+    "of_total": "% of total",
+    "under_budget": "Under Budget!",
+    "over_budget": "Over Budget",
+    "total_spent": "Total Spent",
+    "budget": "Budget",
+    "remaining": "Remaining",
+    "over_by": "Over by",
+    "total_expenses": "total expenses",
+    "people": "People",
+    "payments": "Payments"
+  },
+  "common": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }
