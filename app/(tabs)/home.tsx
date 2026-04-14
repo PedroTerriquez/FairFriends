@@ -1,6 +1,6 @@
 import { getHome } from "@/services/api";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, FlatList, Platform, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import { useRouter } from 'expo-router';
 import { useServer } from "@/services/serverContext";
@@ -159,73 +159,71 @@ export default function Home() {
     fetchPayments();
   }, []);
 
+  const listHeader = (
+    <>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
+        <Text style={{ ...typography.h3 }}>Home</Text>
+        <TouchableOpacity onPress={handleLogout} style={{ padding: spacing.sm }}>
+          <Ionicons name="log-out" size={24} color={colors.text.primary} />
+        </TouchableOpacity>
+      </View>
+      <NotificationBanner
+        quantity={notificationsQuantity}
+        loading={loading}
+        onPress={() => router.push("/notifications")}
+      />
+      {promises.length > 0 && (
+        <View>
+          <View style={[baseStyles.rowSpaceBetween, { marginBottom: spacing.sm, marginTop: spacing.lg }]}>
+            <Text style={{ ...typography.h4 }}>Active Promises</Text>
+            <TouchableOpacity onPress={() => router.push({ pathname: '/promisesIndex' })}>
+              <Text style={{ ...typography.body, color: colors.primary }}>View all</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ height: 140 }}>
+            <FlatList
+              horizontal
+              data={promises}
+              renderItem={renderMiniPromiseItem}
+              keyExtractor={miniCardKeyExtractor}
+              showsHorizontalScrollIndicator={false}
+              maxToRenderPerBatch={3}
+              windowSize={3}
+            />
+          </View>
+        </View>
+      )}
+      <View style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>
+        <SegmentedControl
+          segments={[
+            { key: "promises", label: "Promises" },
+            { key: "balances", label: "Balances" },
+          ]}
+          selectedKey={activeTab}
+          onSelect={setActiveTab}
+        />
+      </View>
+    </>
+  );
+
   return (
     <View style={[baseStyles.viewContainerFull, { gap: 15 }]}>
       {!serverReady && (
         <ServerReconnectBar serverReady={serverReady} serverLoading={serverLoading} />
       )}
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
-          <Text style={{ ...typography.h3 }}>Home</Text>
-          <TouchableOpacity onPress={handleLogout} style={{ padding: spacing.sm }}>
-            <Ionicons name="log-out" size={24} color={colors.text.primary} />
-          </TouchableOpacity>
-        </View>
-        <NotificationBanner
-          quantity={notificationsQuantity}
-          loading={loading}
-          onPress={() => router.push("/notifications")}
-        />
-        { /* Active Promises Section */ }
-        {promises.length > 0 && (
-          <View>
-            <View style={[baseStyles.rowSpaceBetween, { marginBottom: spacing.sm, marginTop: spacing.lg }]}>
-              <Text style={{ ...typography.h4 }}>Active Promises</Text>
-              <TouchableOpacity onPress={() => router.push({ pathname: '/promisesIndex' })}>
-                <Text style={{ ...typography.body, color: colors.primary }}>View all</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ height: 140 }}>
-              <FlatList
-                horizontal
-                data={promises}
-                renderItem={renderMiniPromiseItem}
-                keyExtractor={miniCardKeyExtractor}
-                showsHorizontalScrollIndicator={false}
-                maxToRenderPerBatch={3}
-                windowSize={3}
-              />
-            </View>
-          </View>
-        )}
-        { /* Activity Section */}
-        <View style={{ flex: 1 }}>
-          <View style={{ flex: 1, marginTop: spacing.xl }}>
-            <View style={{ marginBottom: spacing.md }}>
-              <SegmentedControl
-                segments={[
-                  { key: "promises", label: "Promises" },
-                  { key: "balances", label: "Balances" },
-                ]}
-                selectedKey={activeTab}
-                onSelect={setActiveTab}
-              />
-            </View>
-            <FlatList
-              data={loading ? skeletonData : currentPayments}
-              renderItem={loading ? renderPaymentSkeleton : renderPaymentItem}
-              keyExtractor={loading ? skeletonKeyExtractor : paymentKeyExtractor}
-              getItemLayout={loading ? undefined : getPaymentItemLayout}
-              ListEmptyComponent={renderEmptyPayments()}
-              contentContainerStyle={{ flexGrow: 1 }}
-              maxToRenderPerBatch={8}
-              windowSize={5}
-              removeClippedSubviews={true}
-              initialNumToRender={10}
-            />
-          </View>
-        </View>
-      </ScrollView >
-    </View >
+      <FlatList
+        data={loading ? skeletonData : currentPayments}
+        renderItem={loading ? renderPaymentSkeleton : renderPaymentItem}
+        keyExtractor={loading ? skeletonKeyExtractor : paymentKeyExtractor}
+        getItemLayout={loading ? undefined : getPaymentItemLayout}
+        ListHeaderComponent={listHeader}
+        ListEmptyComponent={renderEmptyPayments()}
+        contentContainerStyle={{ flexGrow: 1 }}
+        maxToRenderPerBatch={8}
+        windowSize={5}
+        removeClippedSubviews={true}
+        initialNumToRender={10}
+      />
+    </View>
   );
 };
