@@ -174,6 +174,17 @@ export default function Balance() {
       <>
         {showSplit && <ModalInfoSplit visible={showSplit} balanceSplittedInfo={balanceSplitted} onClose={() => setShowSplit(false)} />}
 
+        {balance.admin && (
+          <View style={{ alignItems: 'flex-end', paddingHorizontal: spacing.md, paddingTop: spacing.xs }}>
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: '/formBalance', params: { id: balance.id } })}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name="pencil" size={20} color={colors.text.secondary} />
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Balance Card */}
         <BalanceCard
           id={balance.id}
