@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native
 import { router } from "expo-router";
 import { colors, spacing, shadows } from '@/theme';
 import Avatar from "./Avatar";
+import AdaptiveText from "./AdaptiveText";
 import formatMoney from "@/services/formatMoney";
 
 /**
@@ -62,7 +63,7 @@ function MiniPromiseCard({ id, name, description, paidAmount, total })  {
       {/* Right: Amount */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%', marginBottom: spacing.sm }}>
         <Text style={styles.remainingLabel}>Remaining</Text>
-        <Text style={styles.amount}>{formatMoney(remaining)}</Text>
+        <AdaptiveText style={styles.amount}>{formatMoney(remaining)}</AdaptiveText>
       </View>
 
       {/* Thin progress bar */}
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: colors.financial.positive,
+    flexShrink: 1,
   },
   progressBar: {
     height: 3,

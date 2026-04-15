@@ -204,7 +204,19 @@
   },
   "profile": {
     "logout": "Log out",
-    "member_since": "Member since "
+    "member_since": "Member since ",
+    "account": "Account",
+    "preferences": "Preferences",
+    "support": "Support",
+    "email": "Email",
+    "phone": "Phone",
+    "payment_methods": "Payment Methods",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "privacy": "Privacy & Security",
+    "help": "Help & Support",
+    "sign_out": "Sign Out",
+    "version": "Version 2.1.0"
   },
   "promiseCard": {
     "editable": "Editable",

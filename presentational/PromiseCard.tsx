@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import baseStyles from './BaseStyles';
 import { colors, spacing, shadows } from '@/theme';
 import Avatar from "./Avatar";
+import AdaptiveText from "./AdaptiveText";
 import formatMoney from "@/services/formatMoney";
 import { useTranslation } from 'react-i18next';
 
@@ -66,19 +67,19 @@ function PromiseCard({ id, title, percentage, user, status, total, paid_amount, 
       <View style={styles.metricsRow}>
         <View style={[styles.metricBox, { backgroundColor: colors.financial.positiveLight }]}>
           <Text style={styles.metricLabel}>Paid</Text>
-          <Text style={styles.metricValue}>{formatMoney(paid_amount)}</Text>
+          <AdaptiveText style={styles.metricValue}>{formatMoney(paid_amount)}</AdaptiveText>
         </View>
 
         <View style={[styles.metricBox, { backgroundColor: colors.surfaceVariant }]}>
           <Text style={styles.metricLabel}>Total</Text>
-          <Text style={styles.metricValue}>{formatMoney(total)}</Text>
+          <AdaptiveText style={styles.metricValue}>{formatMoney(total)}</AdaptiveText>
         </View>
 
         <View style={[styles.metricBox, { backgroundColor: colors.surfaceVariant }]}>
           <Text style={styles.metricLabel}>Remaining</Text>
-          <Text style={[styles.metricValue, { color: remaining > 0 ? colors.text.primary : colors.financial.positive }]}>
+          <AdaptiveText style={[styles.metricValue, { color: remaining > 0 ? colors.text.primary : colors.financial.positive }]}>
             {formatMoney(remaining)}
-          </Text>
+          </AdaptiveText>
         </View>
       </View>
 

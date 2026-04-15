@@ -15,6 +15,7 @@ export default function CustomHeader() {
   }
 
   const canGoBack = pathname !== '/home' && router.canGoBack();
+  const showProfileButton = pathname !== '/profile';
 
   // TODO: Probably remove extra padding to the top of the header
   return (
@@ -35,6 +36,11 @@ export default function CustomHeader() {
           </TouchableOpacity>
         </View>
         <View style={[baseStyles.rightSection, {gap : 5}]}>
+          {showProfileButton && (
+            <TouchableOpacity onPress={() => router.push('/profile')}>
+              <Ionicons name="person-circle-outline" size={28} color="black" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
