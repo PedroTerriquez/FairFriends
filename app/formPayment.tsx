@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platfo
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
+import { useSession } from '@/services/authContext';
 import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -13,30 +14,33 @@ import Avatar from '@/presentational/Avatar';
 import SuccessPaymentModal from '@/presentational/SuccessPaymentModal';
 import PaymentKeyPad from '@/presentational/PaymentKeypad';
 import CustomTextInput from '@/presentational/CustomTextInput';
+import ContactSelector from "@/presentational/ContactSelector";
 
 /**
- * formPayment - Single-page form matching reference design
- * Toggle at top controls split type and shows/hides "Who paid what?" section
+ * formPayment - Single-page form
  */
 
 const CATEGORIES = [
-  { value: 'food', label: 'Food & Dining', emoji: '🍔' },
-  { value: 'transportation', label: 'Transportation', emoji: '🚗' },
-  { value: 'activities', label: 'Entertainment', emoji: '🎭' },
-  { value: 'utilities', label: 'Utilities', emoji: '💡' },
-  { value: 'accommodation', label: 'Rent & Housing', emoji: '🏠' },
-  { value: 'groceries', label: 'Shopping', emoji: '🛍️' },
-  { value: 'other', label: 'Other', emoji: '⚪' },
+  { value: 1, label: 'Transportation', emoji: '🚗' },
+  { value: 2, label: 'Entertainment', emoji: '🎭' },
+  { value: 3, label: 'Utilities', emoji: '💡' },
+  { value: 4, label: 'Rent & Housing', emoji: '🏠' },
+  { value: 5, label: 'Shopping', emoji: '🛍️' },
+  { value: 6, label: 'Social', emoji: '🎉' },
+  { value: 7, label: 'Food & Dining', emoji: '🍔' },
+  { value: 0, label: 'Other', emoji: '⚪' },
 ];
 
 export default function FormPayment() {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { user } = useSession();
 
   const isBalance = params.type === 'Balance';
   const isEditing = !!params.payment_id;
   const members = params.members ? JSON.parse(params.members) : [];
+  const admin = params.admin == 'true';
 
   // Form state
   const [splitType, setSplitType] = useState('equal');
@@ -44,6 +48,7 @@ export default function FormPayment() {
   const [total, setTotal] = useState(params.amount ? String(params.amount).replace(/[^0-9.]/g, '') : '0');
   const [category, setCategory] = useState(params.category || '');
   const [location, setLocation] = useState(params.location || '');
+  const [creator, setCreator] = useState(user?.id);
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState('');
   const [receipt, setReceipt] = useState(null);
@@ -51,9 +56,7 @@ export default function FormPayment() {
   const [showKeyPad, setShowKeyPad] = useState(false);
 
   // Who paid what - for unequal split
-  const [payers, setPayers] = useState([
-    { id: 1, userId: members[0]?.id || null, name: 'You', amount: '0.00' }
-  ]);
+  const [payers, setPayers] = useState([]);
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [showMemberSelector, setShowMemberSelector] = useState(false);
@@ -134,13 +137,13 @@ export default function FormPayment() {
       const paymentParams = {
         title,
         amount: parseFloat(total.replace(/[^0-9.]/g, '')),
-        category,
-        creator_id: payers[0].userId || members[0]?.id,
+        category: category,
+        creator_id: creator || user?.id,
         paymentable_id: params.paymentable_id,
         paymentable_type: params.type,
         location,
         recipient_id: params.recipient_id,
-        date: date.toISOString(),
+        agreement_date: date.toISOString(),
         notes,
         ...(isUnevenSplit && {
           uneven_amounts: payers
@@ -191,6 +194,16 @@ export default function FormPayment() {
               />
             </View>
           )}
+
+          {/* In name of other member */}
+          { admin && (
+          <ContactSelector
+            label="Another member paid for this?"
+            contacts={members}
+            selectedContactId={creator}
+            onSelectContact={setCreator}
+          />)
+          }
 
           {/* What was this for? */}
           <CustomTextInput
@@ -258,12 +271,6 @@ export default function FormPayment() {
                   <View style={styles.payerCard}>
                     {/* Person selector */}
                     <View style={styles.payerHeader}>
-                      {index === 0 ? (
-                        <View style={styles.payerInfoRow}>
-                          <Avatar name="You" size={32} />
-                          <Text style={styles.payerName}>You</Text>
-                        </View>
-                      ) : (
                         <TouchableOpacity
                           style={styles.payerSelector}
                           onPress={() => handleOpenMemberSelector(payer.id)}
@@ -279,7 +286,6 @@ export default function FormPayment() {
                           )}
                           <Ionicons name="chevron-down" size={20} color={colors.text.secondary} />
                         </TouchableOpacity>
-                      )}
 
                       {index > 0 && (
                         <TouchableOpacity

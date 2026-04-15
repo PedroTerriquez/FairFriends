@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
-import { FlatList, View, Text, RefreshControl, TouchableOpacity } from "react-native";
+import { FlatList, View, Text, RefreshControl, TouchableOpacity, Linking } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { getBalanceDetail, getBalanceInfo } from "@/services/api";
 import { useTranslation } from 'react-i18next';
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { useToast } from "@/services/ToastContext";
 
 import baseStyles from '@/presentational/BaseStyles'
 import Payment from '../presentational/PaymentCard';
@@ -26,8 +27,11 @@ import {
 } from '@/services/balanceIntelligence';
 import formatMoney from '@/services/formatMoney';
 
+const WHATSAPP_NUMBER = '15556284318';
+
 export default function Balance() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [payments, setPayments] = useState([]);
   const [uneven, setUneven] = useState([]);
   const [balance, setBalance] = useState(null);
@@ -40,6 +44,26 @@ export default function Balance() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const payable = balance && balance.status === 'active';
+
+  const openWhatsApp = async () => {
+    if (!balance) return;
+    const text = encodeURIComponent(String(balance.id));
+    const appUrl = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${text}`;
+    const webUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+    try {
+      if (await Linking.canOpenURL(appUrl)) {
+        await Linking.openURL(appUrl);
+        return;
+      }
+      if (await Linking.canOpenURL(webUrl)) {
+        await Linking.openURL(webUrl);
+        return;
+      }
+      showToast(t('balance.whatsapp_unavailable'), 'error');
+    } catch (e) {
+      showToast(t('balance.whatsapp_unavailable'), 'error');
+    }
+  };
 
   const fetchBalance = async () => {
     setLoading(true);
@@ -116,8 +140,10 @@ export default function Balance() {
       admin={balance?.admin}
       amount={item.amount}
       canEdit={balance?.admin || item.mine}
+      category={item.category}
       creatorName={item.creator_name}
       date={item.created_at}
+      members={membersAsString()}
       paymentableId={item.paymentable_id}
       paymentableType={item.paymentable_type}
       parentTitle={item.parent_title}
@@ -126,7 +152,6 @@ export default function Balance() {
       title={item.title}
       location={item.location}
       image={item.image}
-      category={item.category}
       handleAccept={handleAcceptPayment}
     />
   ), [balance, handleAcceptPayment]);
@@ -197,7 +222,7 @@ export default function Balance() {
         />
 
         {/* Balance Intelligence Section */}
-        <View style={{ paddingVertical: spacing.sm }}>
+        <View style={{ paddingTop: spacing.sm }}>
           {/* Positive reinforcement when fair */}
           {isFair && (
             <InsightCard
@@ -232,16 +257,9 @@ export default function Balance() {
             <InsightCard
               type="settlement"
               title={t('balance.close_with_transactions', { count: settlements.length })}
-              subtitle={settlements
-                .slice(0, 2)
-                .map(s => `${s.from} → ${s.to}: ${formatMoney(s.amount)}`)
-                .join('\n')}
               onPress={() => setShowSplit(true)}
               delay={100}
             >
-              <Text style={{ ...typography.caption, color: colors.primary, marginTop: spacing.xs, fontWeight: '600' }}>
-                Tap to see detailed breakdown with all payment types →
-              </Text>
             </InsightCard>
           )}
         </View>
@@ -324,6 +342,48 @@ export default function Balance() {
                 </Text>
                 <Text style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.9)' }}>
                   View shareable stats & insights
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+
+        {/* WhatsApp CTA - Prominent */}
+        {balance && (
+          <TouchableOpacity
+            onPress={openWhatsApp}
+            style={{
+              marginHorizontal: spacing.md,
+              marginBottom: spacing.md,
+              borderRadius: 24,
+              padding: spacing.lg,
+              backgroundColor: '#25D366',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+              elevation: 5,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+              <View
+                style={{
+                  width: 56,
+                  height: 56,
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: 16,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <FontAwesome name="whatsapp" size={30} color="#FFFFFF" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ ...typography.h4, fontWeight: '700', color: '#FFFFFF', marginBottom: 4 }}>
+                  {t('balance.whatsapp_title')}
+                </Text>
+                <Text style={{ fontSize: 14, color: 'rgba(255, 255, 255, 0.9)' }}>
+                  {t('balance.whatsapp_subtitle', { id: balance.id })}
                 </Text>
               </View>
             </View>

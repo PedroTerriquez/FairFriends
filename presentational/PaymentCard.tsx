@@ -16,6 +16,7 @@ function Payment({
   canEdit,
   creatorName,
   date,
+  members,
   paymentableId,
   paymentableType,
   parentTitle,
@@ -218,13 +219,15 @@ function Payment({
             router.push({
               pathname: 'formPayment',
               params: {
-                payment_id: id,
-                title,
+                admin: admin,
                 amount: String(amount).replace(/[^0-9.]/g, ''),
+                members: members,
                 category,
                 location,
-                type: paymentableType,
+                payment_id: id,
                 paymentable_id: paymentableId,
+                title,
+                type: paymentableType,
               },
             });
           }}

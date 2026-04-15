@@ -29,7 +29,7 @@ export default function ContactSelector({
   showToggle = true,
   maxHeight = 300,
 }: ContactSelectorProps) {
-  const [isExpanded, setIsExpanded] = React.useState(true);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   const handleSelectContact = (contactId: number | string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

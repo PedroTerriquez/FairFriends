@@ -125,13 +125,6 @@ function UnevenPaymentCard({
               </Text>
               <Text style={styles.memberPercent}>{percentage}%</Text>
             </View>
-            {canNavigate && (
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={colors.text.tertiary}
-              />
-            )}
           </TouchableOpacity>
         );
       })}

@@ -16,7 +16,10 @@
     "trip_itinerary": "Itinerario del viaje",
     "trip_itinerary_subtitle": "{{count}} eventos en orden",
     "uneven_pay": "Pago desigual",
-    "view_all_settlements": "Toca para ver todas las liquidaciones"
+    "view_all_settlements": "Toca para ver todas las liquidaciones",
+    "whatsapp_title": "Agrega pagos por WhatsApp",
+    "whatsapp_subtitle": "Toca para abrir un chat con el ID del balance {{id}}",
+    "whatsapp_unavailable": "WhatsApp no está disponible en este dispositivo"
   },
   "balanceCard": {
     "active": "Activo",

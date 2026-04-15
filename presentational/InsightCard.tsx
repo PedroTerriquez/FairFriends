@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, typography, shadows } from '../theme';
+import { spacing, typography } from '../theme';
 import { MotiView } from 'moti';
 
 /**
@@ -35,7 +35,7 @@ const InsightCard: React.FC<InsightCardProps> = ({
   delay = 0,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
-  // Default icons based on type
+
   const getDefaultIcon = (): keyof typeof Ionicons.glyphMap => {
     switch (type) {
       case 'fairness':
@@ -47,20 +47,21 @@ const InsightCard: React.FC<InsightCardProps> = ({
     }
   };
 
-  // Icon color based on type
-  const getIconColor = () => {
+  // Background color matches the prominent button language used
+  // elsewhere on the balance screen (Trip Itinerary / Trip Highlights / WhatsApp)
+  const getBackgroundColor = () => {
     switch (type) {
       case 'fairness':
-        return colors.financial.pending; // Orange
+        return '#F59E0B'; // amber
       case 'settlement':
-        return colors.info; // Blue
+        return '#3B82F6'; // blue
       case 'pace':
-        return colors.financial.positive; // Green
+        return '#10B981'; // emerald
     }
   };
 
   const displayIcon = icon || getDefaultIcon();
-  const iconColor = getIconColor();
+  const backgroundColor = getBackgroundColor();
 
   return (
     <MotiView
@@ -79,28 +80,23 @@ const InsightCard: React.FC<InsightCardProps> = ({
       }}
     >
       <TouchableOpacity
-        style={styles.container}
+        style={[styles.container, { backgroundColor }]}
         onPress={onPress}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
-        activeOpacity={1}
+        activeOpacity={0.9}
         disabled={!onPress}
       >
-        {/* Header with icon and title */}
-        <View style={styles.header}>
-          <View style={[styles.iconContainer, { backgroundColor: iconColor + '20' }]}>
-            <Ionicons name={displayIcon} size={20} color={iconColor} />
+        <View style={styles.row}>
+          <View style={styles.iconContainer}>
+            <Ionicons name={displayIcon} size={28} color="#FFFFFF" />
           </View>
           <View style={styles.headerText}>
             <Text style={styles.title}>{title}</Text>
             {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
           </View>
-          {onPress && (
-            <Ionicons name="chevron-forward" size={20} color={colors.text.secondary} />
-          )}
         </View>
 
-        {/* Content area */}
         {children && <View style={styles.content}>{children}</View>}
       </TouchableOpacity>
     </MotiView>
@@ -109,35 +105,42 @@ const InsightCard: React.FC<InsightCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: spacing.md,
-    marginVertical: spacing.sm,
-    ...shadows.sm,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.md,
+    borderRadius: 24,
+    padding: spacing.lg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  header: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.md,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 56,
+    height: 56,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerText: {
     flex: 1,
-    gap: spacing.xs / 2,
   },
   title: {
     ...typography.h4,
-    color: colors.text.primary,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
   subtitle: {
-    ...typography.bodySmall,
-    color: colors.text.secondary,
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    lineHeight: 20,
   },
   content: {
     marginTop: spacing.md,

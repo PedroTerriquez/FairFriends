@@ -16,7 +16,10 @@
     "trip_itinerary": "Trip Itinerary",
     "trip_itinerary_subtitle": "{{count}} events in order",
     "uneven_pay": "Uneven payment",
-    "view_all_settlements": "Tap to view all settlements"
+    "view_all_settlements": "Tap to view all settlements",
+    "whatsapp_title": "Payments via WhatsApp",
+    "whatsapp_subtitle": "Open a chat with balance ID {{id}}",
+    "whatsapp_unavailable": "WhatsApp isn't available on this device"
   },
   "balanceCard": {
     "active": "Active",
