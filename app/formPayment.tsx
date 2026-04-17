@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  Modal,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
@@ -14,11 +23,7 @@ import Avatar from '@/presentational/Avatar';
 import SuccessPaymentModal from '@/presentational/SuccessPaymentModal';
 import PaymentKeyPad from '@/presentational/PaymentKeypad';
 import CustomTextInput from '@/presentational/CustomTextInput';
-import ContactSelector from "@/presentational/ContactSelector";
-
-/**
- * formPayment - Single-page form
- */
+import ContactSelector from '@/presentational/ContactSelector';
 
 const CATEGORIES = [
   { value: 1, label: 'Transportation', emoji: '🚗' },
@@ -31,8 +36,8 @@ const CATEGORIES = [
   { value: 0, label: 'Other', emoji: '⚪' },
 ];
 
-// Which keypad target is active
-type KeyPadTarget = 'total' | string; // 'total' or a payer id (string/number)
+// 'total' or a payer id (number from Date.now())
+type KeyPadTarget = 'total' | number;
 
 export default function FormPayment() {
   const { t } = useTranslation();
@@ -42,60 +47,58 @@ export default function FormPayment() {
 
   const isBalance = params.type === 'Balance';
   const isEditing = !!params.payment_id;
-  const members = params.members ? JSON.parse(params.members) : [];
-  const admin = params.admin == 'true';
+  const members = params.members ? JSON.parse(params.members as string) : [];
+  const admin = params.admin === 'true';
 
-  // Form state
+  // ── Form state ──────────────────────────────────────────────────────
   const [splitType, setSplitType] = useState('equal');
-  const [title, setTitle] = useState(params.title || '');
-  const [total, setTotal] = useState(params.amount ? String(params.amount).replace(/[^0-9.]/g, '') : '0');
+  const [title, setTitle] = useState((params.title as string) || '');
+  const [total, setTotal] = useState(
+    params.amount ? String(params.amount).replace(/[^0-9.]/g, '') : '0'
+  );
   const [category, setCategory] = useState(params.category || '');
-  const [location, setLocation] = useState(params.location || '');
+  const [location, setLocation] = useState((params.location as string) || '');
   const [creator, setCreator] = useState(user?.id);
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState('');
   const [receipt, setReceipt] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Keypad state — tracks which field is being edited
+  // ── Date picker ─────────────────────────────────────────────────────
+  // tempDate holds the in-progress selection; only committed on "Confirm"
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [tempDate, setTempDate] = useState(new Date());
+
+  // ── Keypad ──────────────────────────────────────────────────────────
   const [showKeyPad, setShowKeyPad] = useState(false);
   const [keyPadTarget, setKeyPadTarget] = useState<KeyPadTarget>('total');
 
-  // Who paid what - for unequal split
+  // ── Payers (uneven split) ───────────────────────────────────────────
   const [payers, setPayers] = useState([]);
 
+  // ── Modals ──────────────────────────────────────────────────────────
   const [isModalVisible, setModalVisible] = useState(false);
   const [showMemberSelector, setShowMemberSelector] = useState(false);
   const [selectingForPayerId, setSelectingForPayerId] = useState(null);
 
-  // -----------------------------------------------------------------
-  // Helpers to open the keypad for a specific target
-  // -----------------------------------------------------------------
+  // ── Keypad helpers ──────────────────────────────────────────────────
   const openKeyPadForTotal = () => {
     setKeyPadTarget('total');
     setShowKeyPad(true);
   };
 
-  const openKeyPadForPayer = (payerId) => {
+  const openKeyPadForPayer = (payerId: number) => {
     setKeyPadTarget(payerId);
     setShowKeyPad(true);
   };
 
-  const closeKeyPad = () => {
-    setShowKeyPad(false);
-    // Keep keyPadTarget so the UI doesn't flash; reset lazily on next open
-  };
+  const closeKeyPad = () => setShowKeyPad(false);
 
-  // Returns the current value shown in the keypad
   const getKeyPadAmount = (): string => {
     if (keyPadTarget === 'total') return total;
     const payer = payers.find(p => p.id === keyPadTarget);
     return payer ? String(payer.amount) : '0';
   };
 
-  // -----------------------------------------------------------------
-  // Key press handler — routes to the right field
-  // -----------------------------------------------------------------
   const handleKeyPress = (key: string) => {
     if (keyPadTarget === 'total') {
       setTotal(prev => {
@@ -103,7 +106,6 @@ export default function FormPayment() {
         return prev === '0' ? key : prev + key;
       });
     } else {
-      // Update the specific payer's amount and recalculate total
       setPayers(prev => {
         const updated = prev.map(p => {
           if (p.id !== keyPadTarget) return p;
@@ -114,23 +116,18 @@ export default function FormPayment() {
               : current === '0' ? key : current + key;
           return { ...p, amount: next };
         });
-
-        // Auto-recalculate total for uneven split
         const sum = updated.reduce(
           (acc, p) => acc + (parseFloat(String(p.amount).replace(/[^0-9.]/g, '')) || 0),
           0
         );
         setTotal(sum.toFixed(2));
-
         return updated;
       });
     }
   };
 
-  // -----------------------------------------------------------------
-  // Other handlers
-  // -----------------------------------------------------------------
-  const handleSplitTypeChange = (key) => {
+  // ── Other handlers ──────────────────────────────────────────────────
+  const handleSplitTypeChange = (key: string) => {
     setSplitType(key);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -145,7 +142,7 @@ export default function FormPayment() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const handleRemovePayer = (id) => {
+  const handleRemovePayer = (id: number) => {
     if (payers.length > 1) {
       setPayers(prev => {
         const updated = prev.filter(p => p.id !== id);
@@ -161,7 +158,7 @@ export default function FormPayment() {
   };
 
   const updatePayerSelection = (id, userId, name) => {
-    setPayers(payers.map(p => p.id === id ? { ...p, userId, name } : p));
+    setPayers(payers.map(p => (p.id === id ? { ...p, userId, name } : p)));
   };
 
   const handleOpenMemberSelector = (payerId) => {
@@ -177,7 +174,6 @@ export default function FormPayment() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // Get available members (not already selected)
   const getAvailableMembers = () => {
     const selectedUserIds = payers.map(p => p.userId).filter(Boolean);
     return members.filter(m => !selectedUserIds.includes(m.id));
@@ -186,13 +182,11 @@ export default function FormPayment() {
   const handleSubmit = async () => {
     try {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
       const isUnevenSplit = isBalance && splitType === 'uneven';
-
       const paymentParams = {
         title,
         amount: parseFloat(total.replace(/[^0-9.]/g, '')),
-        category: category,
+        category,
         creator_id: creator || user?.id,
         paymentable_id: params.paymentable_id,
         paymentable_type: params.type,
@@ -209,13 +203,11 @@ export default function FormPayment() {
             })),
         }),
       };
-
       if (isEditing) {
         await updatePayment(params.payment_id, { ...paymentParams, id: params.payment_id });
       } else {
         await createPayment(paymentParams);
       }
-
       setModalVisible(true);
     } catch (error) {
       console.error('Error:', error);
@@ -223,17 +215,15 @@ export default function FormPayment() {
     }
   };
 
-  const formatDateDisplay = (date) => {
-    return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  };
+  const formatDateDisplay = (d: Date) =>
+    d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-  // Format display value — show placeholder style when zero
-  const formatAmountDisplay = (value: string) => {
-    return !value || value === '0' ? '0.00' : value;
-  };
+  const formatAmountDisplay = (value: string) =>
+    !value || value === '0' ? '0.00' : value;
 
   const isZeroAmount = (value: string) => !value || value === '0';
 
+  // ── Render ───────────────────────────────────────────────────────────
   return (
     <>
       <View style={styles.container}>
@@ -243,7 +233,7 @@ export default function FormPayment() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Split Type Toggle - Only for balances */}
+          {/* Split Type Toggle */}
           {isBalance && (
             <View style={styles.section}>
               <SegmentedControl
@@ -257,7 +247,7 @@ export default function FormPayment() {
             </View>
           )}
 
-          {/* In name of other member */}
+          {/* Paid on behalf of another member */}
           {admin && (
             <ContactSelector
               label="Another member paid for this?"
@@ -267,7 +257,7 @@ export default function FormPayment() {
             />
           )}
 
-          {/* What was this for? */}
+          {/* Title */}
           <CustomTextInput
             testID="payment-title-input"
             label="What was this for?"
@@ -276,11 +266,10 @@ export default function FormPayment() {
             placeholder="e.g., Dinner at Italian restaurant"
           />
 
-          {/* Total (only show if split equally, or not a balance) */}
+          {/* Total — TouchableOpacity prevents native keyboard on iOS */}
           {(splitType === 'equal' || !isBalance) && (
             <View style={styles.section}>
               <Text style={styles.label}>Total</Text>
-              {/* TouchableOpacity instead of TextInput — prevents native keyboard on iOS */}
               <TouchableOpacity
                 testID="payment-total-input"
                 style={styles.amountInputWrapper}
@@ -305,7 +294,7 @@ export default function FormPayment() {
           <View style={styles.section}>
             <Text style={styles.label}>Category</Text>
             <View style={styles.categoryGrid}>
-              {CATEGORIES.map((cat) => (
+              {CATEGORIES.map(cat => (
                 <TouchableOpacity
                   key={cat.value}
                   testID={`payment-category-${cat.value}`}
@@ -317,10 +306,12 @@ export default function FormPayment() {
                   activeOpacity={0.7}
                 >
                   <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
-                  <Text style={[
-                    styles.categoryText,
-                    category === cat.value && styles.categoryTextSelected
-                  ]}>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      category === cat.value && styles.categoryTextSelected,
+                    ]}
+                  >
                     {cat.label}
                   </Text>
                 </TouchableOpacity>
@@ -328,7 +319,7 @@ export default function FormPayment() {
             </View>
           </View>
 
-          {/* Who paid what? - Show if unequal split */}
+          {/* Who paid what? (uneven split) */}
           {isBalance && splitType === 'uneven' && (
             <View style={styles.section}>
               <Text style={styles.label}>Who paid what?</Text>
@@ -336,7 +327,6 @@ export default function FormPayment() {
               {payers.map((payer, index) => (
                 <View key={payer.id} style={styles.payerRow}>
                   <View style={styles.payerCard}>
-                    {/* Person selector */}
                     <View style={styles.payerHeader}>
                       <TouchableOpacity
                         style={styles.payerSelector}
@@ -364,7 +354,7 @@ export default function FormPayment() {
                       )}
                     </View>
 
-                    {/* Amount input — taps open keypad, no native keyboard */}
+                    {/* Payer amount — no native keyboard */}
                     <TouchableOpacity
                       style={styles.amountInputWrapper}
                       onPress={() => openKeyPadForPayer(payer.id)}
@@ -385,7 +375,6 @@ export default function FormPayment() {
                 </View>
               ))}
 
-              {/* Add Person Button */}
               {payers.length < members.length && (
                 <TouchableOpacity
                   style={styles.addPersonButton}
@@ -397,7 +386,7 @@ export default function FormPayment() {
                 </TouchableOpacity>
               )}
 
-              {/* Show calculated total */}
+              {/* Calculated total */}
               <View style={[styles.section, { marginTop: spacing.md }]}>
                 <Text style={styles.label}>Total (calculated)</Text>
                 <View style={[styles.amountInputWrapper, styles.amountInputReadOnly]}>
@@ -410,13 +399,13 @@ export default function FormPayment() {
             </View>
           )}
 
-          {/* Location (Optional) */}
+          {/* Location */}
           <View style={styles.section}>
             <Text style={styles.label}>Location (Optional)</Text>
             <View style={styles.inputWithIcon}>
               <Ionicons name="location-outline" size={20} color={colors.text.secondary} />
               <TextInput
-                style={[styles.textInput, { width: '100%' }]}
+                style={styles.inlineTextInput}
                 value={location}
                 onChangeText={setLocation}
                 placeholder="Where did this happen?"
@@ -425,46 +414,33 @@ export default function FormPayment() {
             </View>
           </View>
 
-          {/* Date */}
+          {/* Date — tapping opens a bottom-sheet modal with explicit white background */}
           <View style={styles.section}>
             <Text style={styles.label}>Date</Text>
             <TouchableOpacity
               style={styles.inputWithIcon}
-              onPress={() => setShowDatePicker(true)}
+              onPress={() => {
+                setTempDate(date); // seed picker with current committed date
+                setShowDatePicker(true);
+              }}
+              activeOpacity={0.7}
             >
               <Ionicons name="calendar-outline" size={20} color={colors.text.secondary} />
               <Text style={styles.dateText}>{formatDateDisplay(date)}</Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.text.tertiary} />
             </TouchableOpacity>
-
-            {showDatePicker && (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  setShowDatePicker(Platform.OS === 'ios');
-                  if (selectedDate) {
-                    setDate(selectedDate);
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }
-                }}
-              />
-            )}
           </View>
 
-          {/* Add Receipt (Optional) */}
+          {/* Receipt */}
           <View style={styles.section}>
             <Text style={styles.label}>Add Receipt (Optional)</Text>
-            <TouchableOpacity
-              style={styles.receiptUpload}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={styles.receiptUpload} activeOpacity={0.7}>
               <Ionicons name="image-outline" size={40} color={colors.text.tertiary} />
               <Text style={styles.receiptText}>Tap to upload image</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Notes (Optional) */}
+          {/* Notes */}
           <View style={styles.section}>
             <Text style={styles.label}>Notes (Optional)</Text>
             <TextInput
@@ -482,7 +458,7 @@ export default function FormPayment() {
           <View style={{ height: 100 }} />
         </ScrollView>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <View style={styles.footer}>
           <TouchableOpacity
             testID="payment-submit"
@@ -497,7 +473,7 @@ export default function FormPayment() {
         </View>
       </View>
 
-      {/* Custom KeyPad — rendered above everything, no native keyboard */}
+      {/* ── Custom KeyPad overlay ───────────────────────────────────────── */}
       {showKeyPad && (
         <View style={styles.keyPadOverlay}>
           <PaymentKeyPad
@@ -509,6 +485,7 @@ export default function FormPayment() {
         </View>
       )}
 
+      {/* ── Success modal ───────────────────────────────────────────────── */}
       <SuccessPaymentModal
         visible={isModalVisible}
         total={total}
@@ -516,24 +493,24 @@ export default function FormPayment() {
         onBack={() => router.back()}
       />
 
-      {/* Member Selector Modal */}
+      {/* ── Member selector modal ───────────────────────────────────────── */}
       <Modal
         visible={showMemberSelector}
-        transparent={true}
+        transparent
         animationType="slide"
         onRequestClose={() => setShowMemberSelector(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.memberSelectorModal}>
-            <View style={styles.memberSelectorHeader}>
-              <Text style={styles.memberSelectorTitle}>Select Member</Text>
+          <View style={styles.bottomSheet}>
+            <View style={styles.bottomSheetHandle} />
+            <View style={styles.bottomSheetHeader}>
+              <Text style={styles.bottomSheetTitle}>Select Member</Text>
               <TouchableOpacity onPress={() => setShowMemberSelector(false)}>
                 <Ionicons name="close" size={24} color={colors.text.secondary} />
               </TouchableOpacity>
             </View>
-
             <ScrollView style={styles.memberList}>
-              {getAvailableMembers().map((member) => (
+              {getAvailableMembers().map(member => (
                 <TouchableOpacity
                   key={member.id}
                   style={styles.memberOption}
@@ -554,6 +531,74 @@ export default function FormPayment() {
           </View>
         </View>
       </Modal>
+
+      {/* ── Date picker modal ───────────────────────────────────────────── */}
+      {/*
+        The iOS spinner inherits whatever background colour surrounds it, which
+        on this app is a very light grey → grey text on grey bg = unreadable.
+        Fix: wrap in an explicit #FFFFFF View, pass themeVariant="light" and
+        textColor="#111111" so the picker always renders dark text on white.
+        Changes are staged in tempDate and only committed when the user taps
+        "Confirm", matching standard iOS date-picker UX.
+      */}
+      <Modal
+        visible={showDatePicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowDatePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.bottomSheet}>
+            <View style={styles.bottomSheetHandle} />
+
+            {/* Cancel | Select Date | Confirm */}
+            <View style={styles.datePickerHeader}>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(false)}
+                style={styles.datePickerHeaderBtn}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.datePickerCancel}>Cancel</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.bottomSheetTitle}>Select Date</Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setDate(tempDate);
+                  setShowDatePicker(false);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
+                style={styles.datePickerHeaderBtn}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.datePickerConfirm}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Hard-white container fixes grey-on-grey contrast bug */}
+            <View style={styles.datePickerBg}>
+              <DateTimePicker
+                value={tempDate}
+                mode="date"
+                display="spinner"
+                themeVariant="light"
+                textColor="#111111"
+                style={styles.datePicker}
+                onChange={(_event, selectedDate) => {
+                  if (selectedDate) setTempDate(selectedDate);
+                }}
+              />
+            </View>
+
+            {/* Live preview of selected date */}
+            <View style={styles.datePreview}>
+              <Ionicons name="calendar-outline" size={15} color="#6B7280" />
+              <Text style={styles.datePreviewText}>{formatDateDisplay(tempDate)}</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -562,23 +607,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: spacing.lg,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border.light,
-  },
-  backButton: {
-    padding: spacing.xs,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text.primary,
   },
   content: {
     flex: 1,
@@ -603,6 +631,12 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     borderWidth: 1,
     borderColor: colors.border.light,
+  },
+  // Sits inside inputWithIcon — parent provides background & padding
+  inlineTextInput: {
+    flex: 1,
+    fontSize: 16,
+    color: colors.text.primary,
   },
   inputWithIcon: {
     flexDirection: 'row',
@@ -634,7 +668,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text.secondary,
   },
-  // Used for both TextInput (notes/location) and Text (amount display)
   amountInput: {
     flex: 1,
     fontSize: 20,
@@ -699,11 +732,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     flex: 1,
   },
-  payerName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
   payerSelector: {
     flex: 1,
     flexDirection: 'row',
@@ -726,6 +754,7 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     padding: spacing.xs,
+    marginLeft: spacing.sm,
   },
   addPersonButton: {
     flexDirection: 'row',
@@ -788,7 +817,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.surface,
   },
-  // KeyPad overlay — covers full screen, sits above everything
+  // ── KeyPad full-screen overlay ──────────────────────────────────────
   keyPadOverlay: {
     position: 'absolute',
     top: 0,
@@ -799,40 +828,51 @@ const styles = StyleSheet.create({
     elevation: 999,
     backgroundColor: colors.background,
   },
-  // Member Selector Modal
+  // ── Shared bottom-sheet chrome ──────────────────────────────────────
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'flex-end',
   },
-  memberSelectorModal: {
-    backgroundColor: colors.surface,
+  bottomSheet: {
+    backgroundColor: '#FFFFFF', // hard white — never inherits app background
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '70%',
+    paddingBottom: Platform.OS === 'ios' ? 34 : spacing.lg,
     ...shadows.lg,
   },
-  memberSelectorHeader: {
+  bottomSheetHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#D1D5DB',
+    alignSelf: 'center',
+    marginTop: spacing.sm,
+    marginBottom: spacing.xs,
+  },
+  bottomSheetHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border.light,
+    borderBottomColor: '#F0F0F0',
   },
-  memberSelectorTitle: {
-    fontSize: 20,
+  bottomSheetTitle: {
+    fontSize: 17,
     fontWeight: '700',
-    color: colors.text.primary,
+    color: '#111111',
   },
   memberList: {
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.sm,
   },
   memberOption: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.md,
-    backgroundColor: colors.background,
+    backgroundColor: '#F9F9F9',
     borderRadius: 12,
     marginBottom: spacing.sm,
     gap: spacing.sm,
@@ -841,7 +881,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text.primary,
+    color: '#111111',
   },
   emptyState: {
     padding: spacing.xl,
@@ -849,6 +889,65 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 15,
-    color: colors.text.secondary,
+    color: '#6B7280',
   },
+  // ── Date picker modal ───────────────────────────────────────────────
+  datePickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  datePickerHeaderBtn: {
+    minWidth: 64,
+  },
+  datePickerCancel: {
+    fontSize: 16,
+    color: '#6B7280',
+  },
+  datePickerConfirm: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.primary,
+    textAlign: 'right',
+  },
+  // Explicit white container — this is what actually fixes the contrast bug
+  datePickerBg: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: spacing.md,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: spacing.md,
+  },
+  datePicker: {
+    height: 200,
+    backgroundColor: '#FFFFFF',
+  },
+  datePreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    paddingVertical: spacing.md,
+  },
+  datePreviewText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  // Kept for completeness — referenced nowhere active but harmless
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
+  },
+  backButton: { padding: spacing.xs },
+  headerTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary },
 });
