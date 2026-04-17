@@ -192,7 +192,7 @@ export default function FormPayment() {
         paymentable_type: params.type,
         location,
         recipient_id: params.recipient_id,
-        agreement_date: date.toISOString(),
+        agreement_date: formatDateForAPI(date),
         notes,
         ...(isUnevenSplit && {
           uneven_amounts: payers
@@ -213,6 +213,13 @@ export default function FormPayment() {
       console.error('Error:', error);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
+  };
+
+  const formatDateForAPI = (d: Date): string => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   };
 
   const formatDateDisplay = (d: Date) =>
