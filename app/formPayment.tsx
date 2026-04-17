@@ -31,6 +31,9 @@ const CATEGORIES = [
   { value: 0, label: 'Other', emoji: '⚪' },
 ];
 
+// Which keypad target is active
+type KeyPadTarget = 'total' | string; // 'total' or a payer id (string/number)
+
 export default function FormPayment() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -53,7 +56,10 @@ export default function FormPayment() {
   const [notes, setNotes] = useState('');
   const [receipt, setReceipt] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Keypad state — tracks which field is being edited
   const [showKeyPad, setShowKeyPad] = useState(false);
+  const [keyPadTarget, setKeyPadTarget] = useState<KeyPadTarget>('total');
 
   // Who paid what - for unequal split
   const [payers, setPayers] = useState([]);
@@ -62,6 +68,68 @@ export default function FormPayment() {
   const [showMemberSelector, setShowMemberSelector] = useState(false);
   const [selectingForPayerId, setSelectingForPayerId] = useState(null);
 
+  // -----------------------------------------------------------------
+  // Helpers to open the keypad for a specific target
+  // -----------------------------------------------------------------
+  const openKeyPadForTotal = () => {
+    setKeyPadTarget('total');
+    setShowKeyPad(true);
+  };
+
+  const openKeyPadForPayer = (payerId) => {
+    setKeyPadTarget(payerId);
+    setShowKeyPad(true);
+  };
+
+  const closeKeyPad = () => {
+    setShowKeyPad(false);
+    // Keep keyPadTarget so the UI doesn't flash; reset lazily on next open
+  };
+
+  // Returns the current value shown in the keypad
+  const getKeyPadAmount = (): string => {
+    if (keyPadTarget === 'total') return total;
+    const payer = payers.find(p => p.id === keyPadTarget);
+    return payer ? String(payer.amount) : '0';
+  };
+
+  // -----------------------------------------------------------------
+  // Key press handler — routes to the right field
+  // -----------------------------------------------------------------
+  const handleKeyPress = (key: string) => {
+    if (keyPadTarget === 'total') {
+      setTotal(prev => {
+        if (key === '⌫') return prev.slice(0, -1) || '0';
+        return prev === '0' ? key : prev + key;
+      });
+    } else {
+      // Update the specific payer's amount and recalculate total
+      setPayers(prev => {
+        const updated = prev.map(p => {
+          if (p.id !== keyPadTarget) return p;
+          const current = String(p.amount);
+          const next =
+            key === '⌫'
+              ? current.slice(0, -1) || '0'
+              : current === '0' ? key : current + key;
+          return { ...p, amount: next };
+        });
+
+        // Auto-recalculate total for uneven split
+        const sum = updated.reduce(
+          (acc, p) => acc + (parseFloat(String(p.amount).replace(/[^0-9.]/g, '')) || 0),
+          0
+        );
+        setTotal(sum.toFixed(2));
+
+        return updated;
+      });
+    }
+  };
+
+  // -----------------------------------------------------------------
+  // Other handlers
+  // -----------------------------------------------------------------
   const handleSplitTypeChange = (key) => {
     setSplitType(key);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -73,35 +141,22 @@ export default function FormPayment() {
   };
 
   const handleAddPayer = () => {
-    setPayers([...payers, { id: Date.now(), userId: null, name: '', amount: '0.00' }]);
+    setPayers([...payers, { id: Date.now(), userId: null, name: '', amount: '0' }]);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleRemovePayer = (id) => {
     if (payers.length > 1) {
-      setPayers(payers.filter(p => p.id !== id));
+      setPayers(prev => {
+        const updated = prev.filter(p => p.id !== id);
+        const sum = updated.reduce(
+          (acc, p) => acc + (parseFloat(String(p.amount).replace(/[^0-9.]/g, '')) || 0),
+          0
+        );
+        setTotal(sum.toFixed(2));
+        return updated;
+      });
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-  };
-
-  const handleKeyPress = (key) => {
-    if (key === '⌫') {
-      setTotal(prev => prev.slice(0, -1) || '0');
-    } else {
-      setTotal(prev => prev === '0' ? key : prev + key);
-    }
-  };
-
-  const updatePayerAmount = (id, amount) => {
-    setPayers(payers.map(p => p.id === id ? { ...p, amount } : p));
-
-    // Auto-calculate total if unequal split
-    if (splitType === 'uneven') {
-      const sum = payers.reduce((acc, p) => {
-        const amt = p.id === id ? amount : p.amount;
-        return acc + (parseFloat(amt.replace(/[^0-9.]/g, '')) || 0);
-      }, 0);
-      setTotal(sum.toFixed(2));
     }
   };
 
@@ -172,6 +227,13 @@ export default function FormPayment() {
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  // Format display value — show placeholder style when zero
+  const formatAmountDisplay = (value: string) => {
+    return !value || value === '0' ? '0.00' : value;
+  };
+
+  const isZeroAmount = (value: string) => !value || value === '0';
+
   return (
     <>
       <View style={styles.container}>
@@ -196,14 +258,14 @@ export default function FormPayment() {
           )}
 
           {/* In name of other member */}
-          { admin && (
-          <ContactSelector
-            label="Another member paid for this?"
-            contacts={members}
-            selectedContactId={creator}
-            onSelectContact={setCreator}
-          />)
-          }
+          {admin && (
+            <ContactSelector
+              label="Another member paid for this?"
+              contacts={members}
+              selectedContactId={creator}
+              onSelectContact={setCreator}
+            />
+          )}
 
           {/* What was this for? */}
           <CustomTextInput
@@ -217,20 +279,25 @@ export default function FormPayment() {
           {/* Total (only show if split equally, or not a balance) */}
           {(splitType === 'equal' || !isBalance) && (
             <View style={styles.section}>
-              <Text style={styles.label}>Total {splitType === 'uneven' && '(calculated)'}</Text>
-              <View style={styles.amountInputWrapper}>
+              <Text style={styles.label}>Total</Text>
+              {/* TouchableOpacity instead of TextInput — prevents native keyboard on iOS */}
+              <TouchableOpacity
+                testID="payment-total-input"
+                style={styles.amountInputWrapper}
+                onPress={openKeyPadForTotal}
+                activeOpacity={0.7}
+              >
                 <Text style={styles.currencySymbol}>$</Text>
-                <TextInput
-                  testID="payment-total-input"
-                  style={styles.amountInput}
-                  value={total}
-                  onFocus={() => setShowKeyPad(true)}
-                  placeholder="0.00"
-                  keyboardType="decimal-pad"
-                  placeholderTextColor={colors.text.tertiary}
-                  editable={splitType === 'equal'}
-                />
-              </View>
+                <Text
+                  style={[
+                    styles.amountInput,
+                    isZeroAmount(total) && styles.amountPlaceholder,
+                  ]}
+                >
+                  {formatAmountDisplay(total)}
+                </Text>
+                <Ionicons name="pencil-outline" size={16} color={colors.text.tertiary} />
+              </TouchableOpacity>
             </View>
           )}
 
@@ -271,21 +338,21 @@ export default function FormPayment() {
                   <View style={styles.payerCard}>
                     {/* Person selector */}
                     <View style={styles.payerHeader}>
-                        <TouchableOpacity
-                          style={styles.payerSelector}
-                          onPress={() => handleOpenMemberSelector(payer.id)}
-                          activeOpacity={0.7}
-                        >
-                          {payer.userId ? (
-                            <View style={styles.payerInfoRow}>
-                              <Avatar name={payer.name} size={24} />
-                              <Text style={styles.payerSelectedText}>{payer.name}</Text>
-                            </View>
-                          ) : (
-                            <Text style={styles.payerSelectorText}>Select person...</Text>
-                          )}
-                          <Ionicons name="chevron-down" size={20} color={colors.text.secondary} />
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.payerSelector}
+                        onPress={() => handleOpenMemberSelector(payer.id)}
+                        activeOpacity={0.7}
+                      >
+                        {payer.userId ? (
+                          <View style={styles.payerInfoRow}>
+                            <Avatar name={payer.name} size={24} />
+                            <Text style={styles.payerSelectedText}>{payer.name}</Text>
+                          </View>
+                        ) : (
+                          <Text style={styles.payerSelectorText}>Select person...</Text>
+                        )}
+                        <Ionicons name="chevron-down" size={20} color={colors.text.secondary} />
+                      </TouchableOpacity>
 
                       {index > 0 && (
                         <TouchableOpacity
@@ -297,18 +364,23 @@ export default function FormPayment() {
                       )}
                     </View>
 
-                    {/* Amount input */}
-                    <View style={styles.amountInputWrapper}>
+                    {/* Amount input — taps open keypad, no native keyboard */}
+                    <TouchableOpacity
+                      style={styles.amountInputWrapper}
+                      onPress={() => openKeyPadForPayer(payer.id)}
+                      activeOpacity={0.7}
+                    >
                       <Text style={styles.currencySymbol}>$</Text>
-                      <TextInput
-                        style={styles.amountInput}
-                        value={payer.amount}
-                        onChangeText={(text) => updatePayerAmount(payer.id, text)}
-                        placeholder="0.00"
-                        keyboardType="decimal-pad"
-                        placeholderTextColor={colors.text.tertiary}
-                      />
-                    </View>
+                      <Text
+                        style={[
+                          styles.amountInput,
+                          isZeroAmount(String(payer.amount)) && styles.amountPlaceholder,
+                        ]}
+                      >
+                        {formatAmountDisplay(String(payer.amount))}
+                      </Text>
+                      <Ionicons name="pencil-outline" size={16} color={colors.text.tertiary} />
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))}
@@ -328,15 +400,11 @@ export default function FormPayment() {
               {/* Show calculated total */}
               <View style={[styles.section, { marginTop: spacing.md }]}>
                 <Text style={styles.label}>Total (calculated)</Text>
-                <View style={styles.amountInputWrapper}>
+                <View style={[styles.amountInputWrapper, styles.amountInputReadOnly]}>
                   <Text style={styles.currencySymbol}>$</Text>
-                  <TextInput
-                    style={[styles.amountInput, { color: colors.text.secondary }]}
-                    value={total}
-                    editable={false}
-                    placeholder="0.00"
-                    placeholderTextColor={colors.text.tertiary}
-                  />
+                  <Text style={[styles.amountInput, { color: colors.text.secondary }]}>
+                    {formatAmountDisplay(total)}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -351,7 +419,7 @@ export default function FormPayment() {
                 style={[styles.textInput, { width: '100%' }]}
                 value={location}
                 onChangeText={setLocation}
-                placeholder="Where did this happen?2"
+                placeholder="Where did this happen?"
                 placeholderTextColor={colors.text.tertiary}
               />
             </View>
@@ -429,13 +497,14 @@ export default function FormPayment() {
         </View>
       </View>
 
+      {/* Custom KeyPad — rendered above everything, no native keyboard */}
       {showKeyPad && (
-        <View style={[styles.container, { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999, elevation: 999 }]}>
+        <View style={styles.keyPadOverlay}>
           <PaymentKeyPad
-            amount={total}
+            amount={getKeyPadAmount()}
             amountSuggestion={params.amount_payments}
             onKeyPress={handleKeyPress}
-            handleSubmit={() => setShowKeyPad(false)}
+            handleSubmit={closeKeyPad}
           />
         </View>
       )}
@@ -557,16 +626,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border.light,
   },
+  amountInputReadOnly: {
+    opacity: 0.6,
+  },
   currencySymbol: {
     fontSize: 20,
     fontWeight: '600',
     color: colors.text.secondary,
   },
+  // Used for both TextInput (notes/location) and Text (amount display)
   amountInput: {
     flex: 1,
     fontSize: 20,
     fontWeight: '600',
     color: colors.text.primary,
+  },
+  amountPlaceholder: {
+    color: colors.text.tertiary,
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -711,6 +787,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     color: colors.surface,
+  },
+  // KeyPad overlay — covers full screen, sits above everything
+  keyPadOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+    elevation: 999,
+    backgroundColor: colors.background,
   },
   // Member Selector Modal
   modalOverlay: {
