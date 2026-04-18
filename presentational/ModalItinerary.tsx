@@ -186,13 +186,13 @@ export default function ModalItinerary({ payments, visible, onClose }: ModalItin
                                                                 style={styles.paymentName}
                                                                 numberOfLines={1}
                                                             >
-                                                                {payment.location || payment.title || "Payment"}
+                                                                {payment.title || "Payment"}
                                                             </Text>
                                                             <Text
                                                                 style={styles.paymentDescription}
                                                                 numberOfLines={1}
                                                             >
-                                                                {payment.location ? payment.title : payment.creator_name}
+                                                                {payment.location || payment.creator_name}
                                                             </Text>
                                                         </View>
                                                         <Text style={styles.paymentAmount}>
