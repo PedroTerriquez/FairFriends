@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Platform,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +26,30 @@ import PaymentKeyPad from '@/presentational/PaymentKeypad';
 import CustomTextInput from '@/presentational/CustomTextInput';
 import ContactSelector from '@/presentational/ContactSelector';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Currency config
+// Base currency is MXN (what gets stored). We fetch live rates so the user can
+// see exactly what rate is being used before converting.
+// ─────────────────────────────────────────────────────────────────────────────
+const TARGET_CURRENCY = 'MXN';
+
+const CONVERTER_CURRENCIES = [
+  { code: 'USD', symbol: '$', flag: '🇺🇸' },
+  { code: 'EUR', symbol: '€', flag: '🇪🇺' },
+  { code: 'GBP', symbol: '£', flag: '🇬🇧' },
+  { code: 'CAD', symbol: '$', flag: '🇨🇦' },
+];
+
+// Fallback rates in case the network call fails (updated periodically in code)
+const FALLBACK_RATES: Record<string, number> = {
+  USD: 17.15,
+  EUR: 18.60,
+  GBP: 21.70,
+  CAD: 12.55,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const CATEGORIES = [
   { value: 1, label: 'Transportation', emoji: '🚗' },
   { value: 2, label: 'Entertainment', emoji: '🎭' },
@@ -36,8 +61,14 @@ const CATEGORIES = [
   { value: 0, label: 'Other', emoji: '⚪' },
 ];
 
-// 'total' or a payer id (number from Date.now())
 type KeyPadTarget = 'total' | number;
+type RateStatus = 'loading' | 'live' | 'fallback' | 'error';
+
+interface RateInfo {
+  rates: Record<string, number>;
+  status: RateStatus;
+  fetchedAt: string; // human-readable timestamp
+}
 
 export default function FormPayment() {
   const { t } = useTranslation();
@@ -64,7 +95,6 @@ export default function FormPayment() {
   const [receipt, setReceipt] = useState(null);
 
   // ── Date picker ─────────────────────────────────────────────────────
-  // tempDate holds the in-progress selection; only committed on "Confirm"
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
 
@@ -79,6 +109,77 @@ export default function FormPayment() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [showMemberSelector, setShowMemberSelector] = useState(false);
   const [selectingForPayerId, setSelectingForPayerId] = useState(null);
+
+  // ── Currency rates ──────────────────────────────────────────────────
+  const [rateInfo, setRateInfo] = useState<RateInfo>({
+    rates: FALLBACK_RATES,
+    status: 'loading',
+    fetchedAt: '',
+  });
+  // Track which currency button was last tapped (for visual feedback)
+  const [convertingCode, setConvertingCode] = useState<string | null>(null);
+
+  // Fetch live rates on mount
+  // Uses the open.er-api.com free endpoint (no API key needed, 1500 req/month)
+  useEffect(() => {
+    let cancelled = false;
+    const fetchRates = async () => {
+      try {
+        const res = await fetch(
+          `https://open.er-api.com/v6/latest/${TARGET_CURRENCY}`
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        if (cancelled) return;
+
+        // The API returns rates AS MXN base, meaning json.rates.USD = how many
+        // USD per 1 MXN. We want "how many MXN per 1 FOREIGN_CURRENCY", so
+        // we invert: rate_to_mxn = 1 / json.rates[code]
+        const rates: Record<string, number> = {};
+        for (const { code } of CONVERTER_CURRENCIES) {
+          if (json.rates[code]) {
+            rates[code] = parseFloat((1 / json.rates[code]).toFixed(4));
+          } else {
+            rates[code] = FALLBACK_RATES[code];
+          }
+        }
+
+        const now = new Date();
+        const fetchedAt = now.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        setRateInfo({ rates, status: 'live', fetchedAt });
+      } catch (e) {
+        if (cancelled) return;
+        setRateInfo({
+          rates: FALLBACK_RATES,
+          status: 'fallback',
+          fetchedAt: 'offline',
+        });
+      }
+    };
+
+    fetchRates();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ── Currency conversion ─────────────────────────────────────────────
+  const handleConvert = (currencyCode: string) => {
+    const currentAmount = parseFloat(total.replace(/[^0-9.]/g, ''));
+    if (!currentAmount || currentAmount === 0) return;
+
+    const rate = rateInfo.rates[currencyCode];
+    if (!rate) return;
+
+    const converted = (currentAmount * rate).toFixed(2);
+    setTotal(converted);
+    setConvertingCode(currencyCode);
+    setTimeout(() => setConvertingCode(null), 800);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
 
   // ── Keypad helpers ──────────────────────────────────────────────────
   const openKeyPadForTotal = () => {
@@ -215,6 +316,7 @@ export default function FormPayment() {
     }
   };
 
+  // Uses local calendar values — avoids UTC off-by-one-day bug with Rails t.date
   const formatDateForAPI = (d: Date): string => {
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -273,10 +375,12 @@ export default function FormPayment() {
             placeholder="e.g., Dinner at Italian restaurant"
           />
 
-          {/* Total — TouchableOpacity prevents native keyboard on iOS */}
+          {/* ── Total + currency converter ─────────────────────────────── */}
           {(splitType === 'equal' || !isBalance) && (
             <View style={styles.section}>
-              <Text style={styles.label}>Total</Text>
+              <Text style={styles.label}>Total (MXN)</Text>
+
+              {/* Amount tap target */}
               <TouchableOpacity
                 testID="payment-total-input"
                 style={styles.amountInputWrapper}
@@ -292,8 +396,71 @@ export default function FormPayment() {
                 >
                   {formatAmountDisplay(total)}
                 </Text>
+                <Text style={styles.mxnBadge}>MXN</Text>
                 <Ionicons name="pencil-outline" size={16} color={colors.text.tertiary} />
               </TouchableOpacity>
+
+              {/* ── Currency converter pill row ──────────────────────── */}
+              <View style={styles.converterRow}>
+                {/* Rate source badge */}
+                <View style={styles.rateSourceBadge}>
+                  {rateInfo.status === 'loading' ? (
+                    <ActivityIndicator size="small" color={colors.text.tertiary} style={{ marginRight: 4 }} />
+                  ) : (
+                    <View
+                      style={[
+                        styles.rateSourceDot,
+                        rateInfo.status === 'live'
+                          ? styles.rateSourceDotLive
+                          : styles.rateSourceDotFallback,
+                      ]}
+                    />
+                  )}
+                  <Text style={styles.rateSourceText}>
+                    {rateInfo.status === 'loading'
+                      ? 'Fetching rates…'
+                      : rateInfo.status === 'live'
+                      ? `Live · ${rateInfo.fetchedAt}`
+                      : 'Fallback rates'}
+                  </Text>
+                </View>
+
+                {/* Currency buttons */}
+                <View style={styles.currencyButtons}>
+                  {CONVERTER_CURRENCIES.map(({ code, symbol, flag }) => {
+                    const rate = rateInfo.rates[code];
+                    const isConverting = convertingCode === code;
+                    return (
+                      <TouchableOpacity
+                        key={code}
+                        style={[
+                          styles.currencyBtn,
+                          isConverting && styles.currencyBtnActive,
+                          rateInfo.status === 'loading' && styles.currencyBtnDisabled,
+                        ]}
+                        onPress={() => handleConvert(code)}
+                        disabled={rateInfo.status === 'loading'}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.currencyBtnFlag}>{flag}</Text>
+                        <Text style={[styles.currencyBtnCode, isConverting && styles.currencyBtnCodeActive]}>
+                          {code}
+                        </Text>
+                        {rate ? (
+                          <Text style={[styles.currencyBtnRate, isConverting && styles.currencyBtnRateActive]}>
+                            {rate.toFixed(2)}
+                          </Text>
+                        ) : null}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                {/* Helper hint */}
+                <Text style={styles.converterHint}>
+                  Tap a currency to convert your amount → MXN
+                </Text>
+              </View>
             </View>
           )}
 
@@ -361,7 +528,6 @@ export default function FormPayment() {
                       )}
                     </View>
 
-                    {/* Payer amount — no native keyboard */}
                     <TouchableOpacity
                       style={styles.amountInputWrapper}
                       onPress={() => openKeyPadForPayer(payer.id)}
@@ -393,7 +559,6 @@ export default function FormPayment() {
                 </TouchableOpacity>
               )}
 
-              {/* Calculated total */}
               <View style={[styles.section, { marginTop: spacing.md }]}>
                 <Text style={styles.label}>Total (calculated)</Text>
                 <View style={[styles.amountInputWrapper, styles.amountInputReadOnly]}>
@@ -421,13 +586,13 @@ export default function FormPayment() {
             </View>
           </View>
 
-          {/* Date — tapping opens a bottom-sheet modal with explicit white background */}
+          {/* Date */}
           <View style={styles.section}>
             <Text style={styles.label}>Date</Text>
             <TouchableOpacity
               style={styles.inputWithIcon}
               onPress={() => {
-                setTempDate(date); // seed picker with current committed date
+                setTempDate(date);
                 setShowDatePicker(true);
               }}
               activeOpacity={0.7}
@@ -480,7 +645,7 @@ export default function FormPayment() {
         </View>
       </View>
 
-      {/* ── Custom KeyPad overlay ───────────────────────────────────────── */}
+      {/* KeyPad overlay */}
       {showKeyPad && (
         <View style={styles.keyPadOverlay}>
           <PaymentKeyPad
@@ -492,7 +657,7 @@ export default function FormPayment() {
         </View>
       )}
 
-      {/* ── Success modal ───────────────────────────────────────────────── */}
+      {/* Success modal */}
       <SuccessPaymentModal
         visible={isModalVisible}
         total={total}
@@ -500,7 +665,7 @@ export default function FormPayment() {
         onBack={() => router.back()}
       />
 
-      {/* ── Member selector modal ───────────────────────────────────────── */}
+      {/* Member selector modal */}
       <Modal
         visible={showMemberSelector}
         transparent
@@ -539,15 +704,7 @@ export default function FormPayment() {
         </View>
       </Modal>
 
-      {/* ── Date picker modal ───────────────────────────────────────────── */}
-      {/*
-        The iOS spinner inherits whatever background colour surrounds it, which
-        on this app is a very light grey → grey text on grey bg = unreadable.
-        Fix: wrap in an explicit #FFFFFF View, pass themeVariant="light" and
-        textColor="#111111" so the picker always renders dark text on white.
-        Changes are staged in tempDate and only committed when the user taps
-        "Confirm", matching standard iOS date-picker UX.
-      */}
+      {/* Date picker modal */}
       <Modal
         visible={showDatePicker}
         transparent
@@ -557,8 +714,6 @@ export default function FormPayment() {
         <View style={styles.modalOverlay}>
           <View style={styles.bottomSheet}>
             <View style={styles.bottomSheetHandle} />
-
-            {/* Cancel | Select Date | Confirm */}
             <View style={styles.datePickerHeader}>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(false)}
@@ -567,9 +722,7 @@ export default function FormPayment() {
               >
                 <Text style={styles.datePickerCancel}>Cancel</Text>
               </TouchableOpacity>
-
               <Text style={styles.bottomSheetTitle}>Select Date</Text>
-
               <TouchableOpacity
                 onPress={() => {
                   setDate(tempDate);
@@ -582,8 +735,6 @@ export default function FormPayment() {
                 <Text style={styles.datePickerConfirm}>Confirm</Text>
               </TouchableOpacity>
             </View>
-
-            {/* Hard-white container fixes grey-on-grey contrast bug */}
             <View style={styles.datePickerBg}>
               <DateTimePicker
                 value={tempDate}
@@ -597,8 +748,6 @@ export default function FormPayment() {
                 }}
               />
             </View>
-
-            {/* Live preview of selected date */}
             <View style={styles.datePreview}>
               <Ionicons name="calendar-outline" size={15} color="#6B7280" />
               <Text style={styles.datePreviewText}>{formatDateDisplay(tempDate)}</Text>
@@ -639,7 +788,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border.light,
   },
-  // Sits inside inputWithIcon — parent provides background & padding
   inlineTextInput: {
     flex: 1,
     fontSize: 16,
@@ -684,6 +832,95 @@ const styles = StyleSheet.create({
   amountPlaceholder: {
     color: colors.text.tertiary,
   },
+  mxnBadge: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text.tertiary,
+    backgroundColor: colors.background,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+
+  // ── Currency converter ──────────────────────────────────────────────
+  converterRow: {
+    marginTop: spacing.sm,
+  },
+  rateSourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    gap: 5,
+  },
+  rateSourceDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  rateSourceDotLive: {
+    backgroundColor: '#22C55E', // green
+  },
+  rateSourceDotFallback: {
+    backgroundColor: '#F59E0B', // amber
+  },
+  rateSourceText: {
+    fontSize: 12,
+    color: colors.text.tertiary,
+    fontWeight: '500',
+  },
+  currencyButtons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    flexWrap: 'wrap',
+  },
+  currencyBtn: {
+    flex: 1,
+    minWidth: 70,
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    borderWidth: 1.5,
+    borderColor: colors.border.light,
+    gap: 2,
+    ...shadows.sm,
+  },
+  currencyBtnActive: {
+    backgroundColor: '#FFF3E0',
+    borderColor: '#FF9800',
+  },
+  currencyBtnDisabled: {
+    opacity: 0.4,
+  },
+  currencyBtnFlag: {
+    fontSize: 18,
+  },
+  currencyBtnCode: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text.primary,
+  },
+  currencyBtnCodeActive: {
+    color: '#F57C00',
+  },
+  currencyBtnRate: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: colors.text.tertiary,
+  },
+  currencyBtnRateActive: {
+    color: '#E65100',
+  },
+  converterHint: {
+    fontSize: 11,
+    color: colors.text.tertiary,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
+
+  // ── Category ────────────────────────────────────────────────────────
   categoryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -717,6 +954,8 @@ const styles = StyleSheet.create({
   categoryTextSelected: {
     color: '#F57C00',
   },
+
+  // ── Payers ──────────────────────────────────────────────────────────
   payerRow: {
     marginBottom: spacing.sm,
   },
@@ -780,6 +1019,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.primary,
   },
+
+  // ── Misc fields ─────────────────────────────────────────────────────
   dateText: {
     fontSize: 16,
     color: colors.text.primary,
@@ -805,6 +1046,8 @@ const styles = StyleSheet.create({
     height: 80,
     paddingTop: spacing.md,
   },
+
+  // ── Footer ──────────────────────────────────────────────────────────
   footer: {
     padding: spacing.md,
     backgroundColor: 'transparent',
@@ -824,7 +1067,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.surface,
   },
-  // ── KeyPad full-screen overlay ──────────────────────────────────────
+
+  // ── KeyPad overlay ──────────────────────────────────────────────────
   keyPadOverlay: {
     position: 'absolute',
     top: 0,
@@ -835,6 +1079,7 @@ const styles = StyleSheet.create({
     elevation: 999,
     backgroundColor: colors.background,
   },
+
   // ── Shared bottom-sheet chrome ──────────────────────────────────────
   modalOverlay: {
     flex: 1,
@@ -842,7 +1087,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   bottomSheet: {
-    backgroundColor: '#FFFFFF', // hard white — never inherits app background
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: Platform.OS === 'ios' ? 34 : spacing.lg,
@@ -898,7 +1143,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#6B7280',
   },
-  // ── Date picker modal ───────────────────────────────────────────────
+
+  // ── Date picker ─────────────────────────────────────────────────────
   datePickerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -921,7 +1167,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     textAlign: 'right',
   },
-  // Explicit white container — this is what actually fixes the contrast bug
   datePickerBg: {
     backgroundColor: '#FFFFFF',
     marginHorizontal: spacing.md,
@@ -945,7 +1190,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#374151',
   },
-  // Kept for completeness — referenced nowhere active but harmless
+
+  // Kept for completeness
   header: {
     flexDirection: 'row',
     alignItems: 'center',
