@@ -133,7 +133,8 @@ function BalanceCard({ id, total, name, members, myTotal, status, budget }) {
       <View style={styles.membersList}>
         {sortedMembers.map((member, index) => {
           const memberAmount = member.money || 0;
-          const percentage = (memberAmount / total) * 100;
+          const maxContribution = Math.max(...members.map(m => m.money || 0));
+          const percentage = maxContribution > 0 ? (memberAmount / maxContribution) * 100 : 0;
           const isCurrentUser = member.user_id === currentUserId || member.money === myTotal;
 
           return (
