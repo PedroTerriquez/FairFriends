@@ -150,7 +150,16 @@ export const login = (email, password) =>
   apiCall(instance.post("/login", { email, password }));
 
 export const signup = (first_name, last_name, email, password, password_confirmation, phone_number) =>
-  apiCall(instance.post("/users", { first_name, last_name, email, password, password_confirmation, phone_number }));
+  apiCall(instance.post("/users", {
+    first_name,
+    last_name,
+    email,
+    password,
+    password_confirmation,
+    // The phone number is optional. Send null rather than "" for an empty
+    // field so the backend's allow_nil validation applies to it.
+    phone_number: phone_number || null,
+  }));
 
 // Friendships
 export const findFriends = (search) =>

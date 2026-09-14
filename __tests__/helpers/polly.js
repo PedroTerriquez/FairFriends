@@ -2,8 +2,10 @@
 // Uses Polly.js + node-http adapter (works because axios in jest runs on Node's http module).
 //
 // Modes:
-//   - default: replay from __recordings__/. Records on first run if missing.
-//   - POLLY_MODE=record: always re-record (overwrite existing fixtures).
+//   - default: replay from __recordings__/. A request with no fixture fails
+//     loudly instead of silently hitting the network, so a desynced test shows
+//     up as "recording not found" rather than a confusing waitFor timeout.
+//   - POLLY_MODE=record: (re-)record against the live backend.
 
 const path = require('path');
 const { Polly } = require('@pollyjs/core');
@@ -15,7 +17,7 @@ Polly.register(FSPersister);
 
 function setupPolly(recordingName) {
   const mode = process.env.POLLY_MODE === 'record' ? 'record' : 'replay';
-  return new Polly(recordingName, {
+  const polly = new Polly(recordingName, {
     adapters: ['node-http'],
     persister: 'fs',
     persisterOptions: {
@@ -24,7 +26,7 @@ function setupPolly(recordingName) {
       },
     },
     mode,
-    recordIfMissing: true,
+    recordIfMissing: mode === 'record',
     recordFailedRequests: true,
     flushRequestsOnStop: true,
     // Match requests by method + URL + order only. We deliberately ignore
@@ -37,6 +39,18 @@ function setupPolly(recordingName) {
       order: true,
     },
   });
+
+  // POLLY_DEBUG=1 prints every request and where its response came from.
+  // Invaluable when the happy path desyncs from the recorded fixtures.
+  if (process.env.POLLY_DEBUG) {
+    polly.server.any().on('response', (req, res) => {
+      console.log(
+        `[polly] ${req.method} ${req.url} -> ${res.statusCode} (${req.action || 'replay'})`
+      );
+    });
+  }
+
+  return polly;
 }
 
 module.exports = { setupPolly };
