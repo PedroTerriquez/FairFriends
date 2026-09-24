@@ -22,7 +22,7 @@ export default function Promises() {
   const [loading, setLoading] = useState(false);
   const { serverReady } = useServer();
 
-  const fetchPromises = async () => {
+  const fetchPromises = useCallback(async () => {
     setLoading(true);
     setRefreshing(true);
     getPromises()
@@ -36,7 +36,7 @@ export default function Promises() {
       .finally(() => {
         setRefreshing(false);
       });
-  }
+  }, []);
 
   // FlatList render callbacks - memoized for performance
   const renderPromiseItem = useCallback(({ item }) => (
@@ -91,14 +91,15 @@ export default function Promises() {
   useFocusEffect(
     useCallback(() => {
       fetchPromises();
-    }, [])
+    }, [fetchPromises])
   );
 
   useEffect(() => {
     if (serverReady) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch once the backend is up; the loading state is intended
       fetchPromises();
     }
-  }, [serverReady]);
+  }, [serverReady, fetchPromises]);
 
   return (
     <View style={baseStyles.viewContainerFull}>

@@ -4,7 +4,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
 import { useSession } from '@/services/authContext';
-import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -32,7 +31,6 @@ const CATEGORIES = [
 ];
 
 export default function FormPayment() {
-  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user } = useSession();
@@ -40,7 +38,7 @@ export default function FormPayment() {
   const isBalance = params.type === 'Balance';
   const isEditing = !!params.payment_id;
   const members = params.members ? JSON.parse(params.members) : [];
-  const admin = params.admin == 'true';
+  const admin = params.admin === 'true';
 
   // Form state
   const [splitType, setSplitType] = useState('equal');
@@ -51,7 +49,6 @@ export default function FormPayment() {
   const [creator, setCreator] = useState(user?.id);
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState('');
-  const [receipt, setReceipt] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showKeyPad, setShowKeyPad] = useState(false);
 

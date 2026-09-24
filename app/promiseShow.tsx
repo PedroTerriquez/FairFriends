@@ -21,7 +21,7 @@ export default function Promise() {
     const [loading, setLoading] = useState(false);
     const { id } = useLocalSearchParams();
 
-    const fetchPromiseDetails = async () => {
+    const fetchPromiseDetails = useCallback(async () => {
         setLoading(true);
         setRefreshing(true);
         getPromiseDetail(id)
@@ -35,7 +35,7 @@ export default function Promise() {
                 setRefreshing(false);
                 setLoading(false);
             });
-    };
+    }, [id]);
     const renderPaymentsHeader = () => {
         return (
             <>
@@ -62,6 +62,10 @@ export default function Promise() {
             </>)
     }
 
+    const acceptPayment = useCallback((quantity) => {
+        setPromise((prev) => ({ ...prev, paid_amount: (prev.paid_amount || 0) + quantity }));
+    }, []);
+
     // FlatList render callbacks - memoized for performance
     const renderPaymentItem = useCallback(({ item }) => (
         <Payment
@@ -77,8 +81,7 @@ export default function Promise() {
             title={item.title}
             handleAccept={acceptPayment}
         />
-    ), []);
-    //fix previus line
+    ), [acceptPayment]);
 
     const paymentKeyExtractor = useCallback((item) => item.id.toString(), []);
 
@@ -141,20 +144,16 @@ export default function Promise() {
         //Through the notification we accept the promise
         patchNotification(id, 'accepted')
             .then((response) => {
-                if (response.status == 200) {
+                if (response.status === 200) {
                     setPromise({ ...promise, status: 'accepted' });
                 }
             });
     };
 
-    const acceptPayment = (quantity) => {
-        setPromise({ ...promise, paid_amount: (promise.paid_amount || 0) + quantity });
-    }
-
     useFocusEffect(
         useCallback(() => {
             fetchPromiseDetails();
-        }, [id])
+        }, [fetchPromiseDetails])
     );
 
     if (loading) return <Spinner />;

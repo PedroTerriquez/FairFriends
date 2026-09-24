@@ -6,6 +6,8 @@ import en from './translations/en.json';
 
 const deviceLocale = Localization.getLocales()[0]?.languageCode || 'es';
 
+// i18next's named `use` export is unbound, so it has to be called on the instance.
+// eslint-disable-next-line import/no-named-as-default-member
 i18n
   .use(initReactI18next)
   .init({

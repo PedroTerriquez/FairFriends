@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import ContactCard from '@/presentational/ContactCard';
@@ -10,13 +10,13 @@ import Spinner from "@/presentational/Spinner";
 import { findPeople, addFriend } from "@/services/api";
 import { useTranslation } from "react-i18next";
 
-export default function addContact() {
+export default function AddContact() {
     const { t } = useTranslation();
     const [people, setPeople] = useState([])
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const fetchPeople = async () => {
+    const fetchPeople = useCallback(async () => {
         setLoading(true);
         findPeople(text)
             .then((response) => {
@@ -27,7 +27,7 @@ export default function addContact() {
             .finally(() => {
                 setLoading(false);
             })
-    }
+    }, [text])
 
     const onAdd = (id) => {
         addFriend(id)
@@ -56,7 +56,7 @@ export default function addContact() {
 
 
     const renderPeople = () => {
-        if (people.length == 0) return renderEmptyContacts();
+        if (people.length === 0) return renderEmptyContacts();
         return people.map(friend => (
             <ContactCard key={friend.id} person={friend}>
                 { friend.id && (
@@ -69,8 +69,9 @@ export default function addContact() {
         ))
     }
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
         fetchPeople();
-    }, [text]);
+    }, [fetchPeople]);
 
     if (loading) return <Spinner />;
 

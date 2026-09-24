@@ -1,11 +1,9 @@
 import { updatePromise, createPromise, getPromiseDetail, findFriends } from "@/services/api";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
   TouchableOpacity,
   StyleSheet,
   Platform
@@ -13,17 +11,15 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import * as Haptics from 'expo-haptics';
-import { useTranslation } from 'react-i18next';
 
 import LabeledInput from "@/presentational/LabeledInput";
 import MoneyInput from "@/presentational/MoneyInput";
 import PercentageInput from "@/presentational/PercentageInput";
 import DateInput from "@/presentational/DateInput";
 import ContactSelector from "@/presentational/ContactSelector";
-import { colors, spacing, typography, shadows } from '@/theme';
+import { colors, spacing, shadows } from '@/theme';
 
 export default function FormPromise() {
-  const { t } = useTranslation();
   const { administrator_id, paymentable_id } = useLocalSearchParams();
   const [friends, setFriends] = useState([]);
   const [selectedContactId, setSelectedContactId] = useState(administrator_id || null);
@@ -37,23 +33,16 @@ export default function FormPromise() {
   });
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    fetchFriends();
-    if (paymentable_id) {
-      fetchPromiseData();
-    }
-  }, [paymentable_id]);
-
-  const fetchFriends = async () => {
+  const fetchFriends = useCallback(async () => {
     try {
       const response = await findFriends("");
       setFriends(response.data);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
-  const fetchPromiseData = async () => {
+  const fetchPromiseData = useCallback(async () => {
     try {
       const response = await getPromiseDetail(paymentable_id);
       setPromise({
@@ -64,7 +53,15 @@ export default function FormPromise() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [paymentable_id]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
+    fetchFriends();
+    if (paymentable_id) {
+      fetchPromiseData();
+    }
+  }, [paymentable_id, fetchFriends, fetchPromiseData]);
 
   const handleChange = (field, value) => {
     setPromise((prevPromise) => ({

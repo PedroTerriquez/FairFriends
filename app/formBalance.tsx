@@ -1,6 +1,6 @@
 import { createGroup, findFriends, getBalanceDetail, updateBalance } from "@/services/api";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useEffectEvent, useState } from "react";
 import {
   View,
   TouchableWithoutFeedback,
@@ -12,14 +12,15 @@ import {
   Animated,
   StyleSheet,
   Switch,
-  Platform
+  Platform,
+  Dimensions
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Avatar from "@/presentational/Avatar";
-import { colors, spacing, typography, shadows } from '@/theme';
+import { colors, spacing, shadows } from '@/theme';
 import { useTranslation } from "react-i18next";
 
 export default function FormBalance() {
@@ -33,20 +34,12 @@ export default function FormBalance() {
   const [showContacts, setShowContacts] = useState(true);
   const [budget, setBudget] = useState("");
   const [showBudget, setShowBudget] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  const [startDate, setStartDate] = useState(() => new Date());
+  const [endDate, setEndDate] = useState(() => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
-  const budgetHeightAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (isEdit) {
-      prefillFromBalance();
-    } else {
-      fetchFriends();
-    }
-  }, []);
+  const [budgetHeightAnim] = useState(() => new Animated.Value(0));
 
   const parseISODate = (s) => {
     const [y, m, d] = s.split('-').map(Number);
@@ -80,7 +73,7 @@ export default function FormBalance() {
       tension: 200,
       friction: 25,
     }).start();
-  }, [showBudget]);
+  }, [showBudget, budgetHeightAnim]);
 
   const fetchFriends = async () => {
     try {
@@ -90,6 +83,19 @@ export default function FormBalance() {
       console.log(error);
     }
   };
+
+  const loadInitialData = useEffectEvent(() => {
+    if (isEdit) {
+      prefillFromBalance();
+    } else {
+      fetchFriends();
+    }
+  });
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
+    loadInitialData();
+  }, []);
 
   const toggleSelectFriend = (friendId) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -246,7 +252,7 @@ export default function FormBalance() {
               <ScrollView
               style={[
                 styles.contactsList,
-                { maxHeight: require('react-native').Dimensions.get('window').height * 0.40 }
+                { maxHeight: Dimensions.get('window').height * 0.40 }
               ]}
               contentContainerStyle={{}}
               showsVerticalScrollIndicator={true}

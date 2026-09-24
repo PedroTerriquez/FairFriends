@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +18,6 @@ export default function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
 
   const handleSignUp = () => {
     if (password !== confirmPassword) {
@@ -105,7 +104,6 @@ export default function SignUp() {
                 secureTextEntry
                 autoComplete="password-new"
               />
-              {error && <Text style={baseStyles.errorText}>{error}</Text>}
             </View>
             <TouchableOpacity
               testID="signup-submit"

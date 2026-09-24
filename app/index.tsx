@@ -14,7 +14,7 @@ export default function Index() {
     } else {
       router.push("/login");
     }
-  }, [session, loading]);
+  }, [session, loading, router]);
 
   return null;
 }

@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import { Text, View, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, RefreshControl, Pressable, TouchableOpacity } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from 'react-i18next';
 
 import ContactCard from '@/presentational/ContactCard';
@@ -9,9 +9,8 @@ import baseStyles from '@/presentational/BaseStyles';
 import EmptyList from "@/presentational/EmptyList";
 import SearchBarInput from "@/presentational/SearchBarInput";
 import FloatingButton from "@/presentational/FloatingButton";
-import ButtonWithIcon from "@/presentational/ButtonWithIcon";
 import SkeletonWrapper from "@/presentational/SkeletonWrapper";
-import { findFriends, createBalance } from "@/services/api";
+import { findFriends } from "@/services/api";
 import { useServer } from "@/services/serverContext";
 
 export default function Contacts() {
@@ -24,7 +23,7 @@ export default function Contacts() {
     const { serverReady } = useServer();
 
     // Fetch functions
-    const fetchFriends = async () => {
+    const fetchFriends = useCallback(async () => {
         setLoading(true);
         setRefreshing(true);
         findFriends(text)
@@ -37,20 +36,13 @@ export default function Contacts() {
             .finally(() => {
                 setRefreshing(false);
             });
-    };
+    }, [text]);
 
     // Navigation functions
     const navigateProfile = (id) => {
         router.push({
             pathname: '/profileShow',
             params: { id }
-        });
-    };
-
-    const startPromise = (id, name) => {
-        router.push({
-            pathname: '/promiseForm',
-            params: { administrator_id: id, administrator_name: name }
         });
     };
 
@@ -76,8 +68,8 @@ export default function Contacts() {
     );
 
     const renderContacts = (friends) => {
-        if (friends.length == 0 && text === "") return renderEmptyFriend();
-        if (friends.length == 0 && text !== "") return renderNoPeopleFound();
+        if (friends.length === 0 && text === "") return renderEmptyFriend();
+        if (friends.length === 0 && text !== "") return renderNoPeopleFound();
 
         let fullList = [];
 
@@ -106,12 +98,17 @@ export default function Contacts() {
     useFocusEffect(
         useCallback(() => {
             fetchFriends();
-        }, [router, text])
+        }, [fetchFriends])
     ); 
+
+    const onServerReady = useEffectEvent(() => {
+        fetchFriends();
+    });
 
     useEffect(() => {
         if (serverReady) {
-            fetchFriends();
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch once the backend is up; the loading state is intended
+            onServerReady();
         }
     }, [serverReady]);
 

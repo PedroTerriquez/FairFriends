@@ -1,5 +1,5 @@
 import { getHome } from "@/services/api";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useEffectEvent, useState } from "react";
 import { Alert, FlatList, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useSession } from "@/services/authContext";
 import { useRouter } from 'expo-router';
@@ -27,7 +27,7 @@ export default function Home() {
   const [notificationsQuantity, setNotificationsQuantity] = useState(null);
   const [activeTab, setActiveTab] = useState('Promises');
   const [loading, setLoading] = useState(false);
-  const { user, signOut } = useSession()!;
+  const { signOut } = useSession()!;
   const { serverReady, serverLoading } = useServer() as any;
 
   const router = useRouter();
@@ -134,9 +134,6 @@ export default function Home() {
   // Get current payments based on active tab
   const currentPayments = activeTab === "promises" ? promisePayments : balancePayments;
 
-  // Calculate pending actions count (payments + promises + notifications)
-  const pendingActionsCount = notificationsQuantity || 0;
-
   const renderPaymentSkeleton = useCallback(({ item }) => (
     <SkeletonWrapper>
       <View style={[baseStyles.card, { height: 80, marginBottom: 10 }]} />
@@ -146,9 +143,14 @@ export default function Home() {
   const skeletonData = Array.from({ length: 4 }, (_, i) => ({ id: i.toString() }));
   const skeletonKeyExtractor = useCallback((item) => item.id, []);
 
+  const loadHome = useEffectEvent(() => {
+    fetchPayments();
+  });
+
   useEffect(() => {
     if (serverReady) {
-      fetchPayments();
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch once the backend is up; the loading state is intended
+      loadHome();
     }
   }, [serverReady]);
 
@@ -156,8 +158,9 @@ export default function Home() {
     if (router?.pathname) {
       router.replace(router.pathname);
     }
-    fetchPayments();
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch on mount; the loading state is intended
+    loadHome();
+  }, [router]);
 
   const listHeader = (
     <>
