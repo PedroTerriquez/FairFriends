@@ -43,6 +43,9 @@ export default {
         },
       ],
       'expo-secure-store',
+      'expo-font',
+      'expo-localization',
+      'expo-web-browser',
     ],
     experiments: {
       typedRoutes: true,
