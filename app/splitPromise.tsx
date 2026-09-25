@@ -11,7 +11,7 @@ export default function SplitPromise() {
     const [promises, setPromises] = useState([]);
     const { payment_id } = useLocalSearchParams();
 
-    const fetchPromises = async () => {
+    const fetchPromises = useCallback(async () => {
         getSplitPromises(payment_id)
         .then((response) => {
             setPromises(response.data.promises);
@@ -19,7 +19,7 @@ export default function SplitPromise() {
         .catch((error) => {
             console.log(error)
         })
-    }
+    }, [payment_id])
 
     const renderPromises = () => {
         if (promises.length === 0) {
@@ -27,6 +27,7 @@ export default function SplitPromise() {
         }
         return promises.map((promise) => (
             <PromiseCard
+                key={promise.id}
                 id={promise.id}
                 title={promise.title}
                 total={promise.total}
@@ -42,7 +43,7 @@ export default function SplitPromise() {
     useFocusEffect(
         useCallback(() => {
             fetchPromises();
-        }, [payment_id])
+        }, [fetchPromises])
     );
 
     return (<View style={baseStyles.viewContainerFull}>

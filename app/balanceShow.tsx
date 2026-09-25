@@ -20,12 +20,9 @@ import InsightCard from "@/presentational/InsightCard";
 import FloatingButton from "@/presentational/FloatingButton";
 import { colors, spacing, typography } from '@/theme';
 import {
-  calculateFairnessInsight,
   isBalanceFair,
-  calculatePaceInsight,
   calculateSettlements
 } from '@/services/balanceIntelligence';
-import formatMoney from '@/services/formatMoney';
 
 const WHATSAPP_NUMBER = '15556284318';
 
@@ -60,12 +57,12 @@ export default function Balance() {
         return;
       }
       showToast(t('balance.whatsapp_unavailable'), 'error');
-    } catch (e) {
+    } catch {
       showToast(t('balance.whatsapp_unavailable'), 'error');
     }
   };
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
     setLoading(true);
     setRefreshing(true);
     getBalanceDetail(id)
@@ -80,27 +77,27 @@ export default function Balance() {
         setRefreshing(false);
         setLoading(false);
       });
-  };
+  }, [id]);
 
-  const fetchInfo = async () => {
+  const fetchInfo = useCallback(async () => {
     getBalanceInfo(id)
       .then((response) => {
         setBalanceSplitted(response.data);
       })
       .catch((error) => {
       });
-  };
+  }, [id]);
 
-  const membersAsString = () => {
+  const membersAsString = useCallback(() => {
     return JSON.stringify(balance.balance_members.map(member => {
       return {
         id: member.user_id,
         name: member.name,
       };
     }));
-  }
+  }, [balance]);
 
-  const handleAcceptPayment = (data) => {
+  const handleAcceptPayment = useCallback((data) => {
     setBalance((prevBalance) => {
       if (!prevBalance) return prevBalance;
 
@@ -120,7 +117,7 @@ export default function Balance() {
         balance_members: updatedBalanceMembers,
       };
     });
-  }
+  }, []);
 
   const formPaymentParams = () => {
     return {
@@ -154,7 +151,7 @@ export default function Balance() {
       image={item.image}
       handleAccept={handleAcceptPayment}
     />
-  ), [balance, handleAcceptPayment]);
+  ), [balance, handleAcceptPayment, membersAsString]);
 
   const renderUnevenPaymentItem = useCallback(({ item }) => (
     <UnevenPaymentCard
@@ -190,10 +187,8 @@ export default function Balance() {
   // FlatList header with balance card and buttons
   const renderListHeader = () => {
     // Calculate Balance Intelligence insights
-    const fairnessInsight = calculateFairnessInsight(balance);
     const isFair = isBalanceFair(balance);
     const settlements = calculateSettlements(balance);
-    const paceInsight = calculatePaceInsight(balance); // null if no budget/dates
 
     return (
       <>
@@ -410,7 +405,7 @@ export default function Balance() {
     useCallback(() => {
       fetchBalance();
       fetchInfo();
-    }, [id])
+    }, [fetchBalance, fetchInfo])
   );
 
   if (loading) return <Spinner />;

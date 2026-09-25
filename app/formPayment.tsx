@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { createPayment, updatePayment } from '@/services/api';
 import { useSession } from '@/services/authContext';
-import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -71,7 +70,6 @@ interface RateInfo {
 }
 
 export default function FormPayment() {
-  const { t } = useTranslation();
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user } = useSession();
@@ -92,7 +90,6 @@ export default function FormPayment() {
   const [creator, setCreator] = useState(user?.id);
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState('');
-  const [receipt, setReceipt] = useState(null);
 
   // ── Date picker ─────────────────────────────────────────────────────
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -152,7 +149,7 @@ export default function FormPayment() {
         });
 
         setRateInfo({ rates, status: 'live', fetchedAt });
-      } catch (e) {
+      } catch {
         if (cancelled) return;
         setRateInfo({
           rates: FALLBACK_RATES,

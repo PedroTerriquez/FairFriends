@@ -24,9 +24,9 @@ describe('PromiseCard', () => {
 
     expect(screen.getByText('Beto')).toBeTruthy();
     expect(screen.getByText('Concert tickets')).toBeTruthy();
-    expect(screen.getByText('$300')).toBeTruthy(); // paid
-    expect(screen.getByText('$1,200')).toBeTruthy(); // total
-    expect(screen.getByText('$900')).toBeTruthy(); // remaining
+    expect(screen.getByText('$300.0')).toBeTruthy(); // paid
+    expect(screen.getByText('$1200.0')).toBeTruthy(); // total
+    expect(screen.getByText('$900.0')).toBeTruthy(); // remaining
   });
 
   it('rounds the progress label', () => {

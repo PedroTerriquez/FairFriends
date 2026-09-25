@@ -18,7 +18,7 @@ export default function Balances() {
   const [loading, setLoading] = useState(false);
   const { serverReady } = useServer();
 
-  const fetchBalances = async () => {
+  const fetchBalances = useCallback(async () => {
     setLoading(true);
     setRefreshing(true);
     getBalances()
@@ -31,7 +31,7 @@ export default function Balances() {
       .finally(() => {
         setRefreshing(false);
       });
-  }
+  }, []);
 
   // FlatList render callbacks - memoized for performance
   const renderBalanceItem = useCallback(({ item }) => (
@@ -82,14 +82,15 @@ export default function Balances() {
   useFocusEffect(
     useCallback(() => {
       fetchBalances();
-    }, [])
+    }, [fetchBalances])
   );
 
   useEffect(() => {
     if (serverReady) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch once the backend is up; the loading state is intended
       fetchBalances();
     }
-  }, [serverReady]);
+  }, [serverReady, fetchBalances]);
 
   return (
     <View style={baseStyles.viewContainerFull} >

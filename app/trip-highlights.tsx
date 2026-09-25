@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
   SafeAreaView,
   Share,
   Platform,
@@ -21,8 +20,6 @@ import Avatar from "@/presentational/Avatar";
 import Spinner from "@/presentational/Spinner";
 import { colors, spacing, typography } from "@/theme";
 import formatMoney from "@/services/formatMoney";
-
-const { width } = Dimensions.get("window");
 
 interface HighlightSlide {
   id: string;
@@ -91,18 +88,19 @@ export default function TripHighlights() {
   // Use useEffect for side effects (data fetching)
   useEffect(() => {
     if (id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
       fetchData();
     }
   }, [id, fetchData]);
 
   // Prepare data with defaults (moved before conditional - no early returns)
   const balance = balanceDetail;
-  const payments: Payment[] = balanceInfo?.payments || [];
+  const payments: Payment[] = useMemo(() => balanceInfo?.payments || [], [balanceInfo]);
 
   // Calculate member count
   const memberCount = useMemo(() => {
     return balance?.balance_members?.length || 0;
-  }, [balance?.balance_members]);
+  }, [balance]);
 
   // Calculate member contributions
   const memberContributions = useMemo(() => {
@@ -111,7 +109,7 @@ export default function TripHighlights() {
       member,
       contribution: member.money || 0,
     }));
-  }, [balance?.balance_members]);
+  }, [balance]);
 
   const topContributor = useMemo(() => {
     if (memberContributions.length === 0) return null;

@@ -16,7 +16,7 @@ import AcceptButton, { RejectButton, CancelRequestButton } from "@/presentationa
 import SegmentedControl from "@/presentational/SegmentedControl";
 import { spacing } from '@/theme';
 
-export default function contactRequests() {
+export default function ContactRequests() {
   const [pending, setPending] = useState([]);
   const [sent, setSent] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
@@ -65,19 +65,19 @@ export default function contactRequests() {
   }
 
   const removeCard = (friendship_id, type) => {
-    if (type == 'sent') {
+    if (type === 'sent') {
       const newPeople = sent.filter((friendship) => friendship.friendship_id !== friendship_id)
       setSent(newPeople)
-    } else if (type == 'pending') {
+    } else if (type === 'pending') {
       const newPeople = pending.filter((friendship) => friendship.friendship_id !== friendship_id)
       setPending(newPeople)
     }
   }
   
   const renderRequests = (contacts, type) => {
-    if (type == 'pending') {
+    if (type === 'pending') {
       return renderPendingContacts(contacts)
-    } else if (type == 'sent') {
+    } else if (type === 'sent') {
       return renderSentRequests(contacts)
     }
   }
@@ -91,7 +91,7 @@ export default function contactRequests() {
   </EmptyList>;
 
   const renderSentRequests = (contacts) => {
-    if (contacts.length == 0) return emptySentRequests;
+    if (contacts.length === 0) return emptySentRequests;
 
     return contacts.map(contact => (
       <ContactCard key={contact.friendship_id} person={contact} >
@@ -112,7 +112,7 @@ export default function contactRequests() {
     </EmptyList>;
 
   const renderPendingContacts = (contacts) => {
-    if (contacts.length == 0) return emptyPendingFriendships;
+    if (contacts.length === 0) return emptyPendingFriendships;
 
     return contacts.map(contact => (
       <ContactCard key={contact.friendship_id} person={contact} >
@@ -135,6 +135,7 @@ export default function contactRequests() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
     fetchRequests();
   }, []);
 

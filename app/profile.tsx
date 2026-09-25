@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,7 +19,7 @@ export default function Profile() {
   const { id } = useLocalSearchParams();
   const { signOut } = useSession();
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     setLoading(true);
     getProfile(id)
       .then((response) => {
@@ -29,11 +29,12 @@ export default function Profile() {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, [id]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch; the loading state is intended
     fetchProfile();
-  }, [id]);
+  }, [fetchProfile]);
 
   const logout = () => {
     signOut();
@@ -138,7 +139,7 @@ export default function Profile() {
       ))}
 
       {/* Sign Out */}
-      {info.me == 1 && (
+      {!!info.me && (
         <TouchableOpacity
           testID="profile-logout"
           style={[styles.sectionCard, styles.signOutButton]}
