@@ -9,8 +9,6 @@ export default {
     icon: './assets/images/icon.png',
     scheme: 'myapp',
     userInterfaceStyle: 'automatic',
-    newArchEnabled: true,
-    sdkVersion: '54.0.0',
     runtimeVersion: {
       policy: 'sdkVersion',
     },
