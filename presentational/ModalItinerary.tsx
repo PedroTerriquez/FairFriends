@@ -14,6 +14,7 @@ interface Payment {
     category: number;
     title?: string;
     created_at: string;
+    agreement_date: string;
 }
 
 interface ModalItineraryProps {
@@ -81,7 +82,7 @@ export default function ModalItinerary({ payments, visible, onClose }: ModalItin
     };
 
     const paymentsByDate = payments.reduce((acc, p) => {
-        const key = isoKey(p.created_at);
+        const key = isoKey(p.agreement_date);
         if (!acc[key]) acc[key] = [];
         acc[key].push(p);
         return acc;
@@ -185,13 +186,13 @@ export default function ModalItinerary({ payments, visible, onClose }: ModalItin
                                                                 style={styles.paymentName}
                                                                 numberOfLines={1}
                                                             >
-                                                                {payment.location || payment.title || "Payment"}
+                                                                {payment.title || "Payment"}
                                                             </Text>
                                                             <Text
                                                                 style={styles.paymentDescription}
                                                                 numberOfLines={1}
                                                             >
-                                                                {payment.location ? payment.title : payment.creator_name}
+                                                                {payment.location || payment.creator_name}
                                                             </Text>
                                                         </View>
                                                         <Text style={styles.paymentAmount}>
