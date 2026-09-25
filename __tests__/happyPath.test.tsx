@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 /**
  * End-to-end happy-path integration test. Steps 1–19:
  *  1.  Friend signs up
@@ -39,7 +38,7 @@
 
 import React from 'react';
 import { Text, View } from 'react-native';
-import { render, fireEvent, waitFor, act, screen } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, act, screen, within } from '@testing-library/react-native';
 import { I18nextProvider } from 'react-i18next';
 import { setupPolly } from './helpers/polly';
 
@@ -153,7 +152,6 @@ const signOut = async () => {
 // Step tracer — prints to stderr so failures surface the furthest reached step
 // when run in CI. Comment out or remove once the Part B fixtures are stable.
 const step = (label: string) => {
-  // eslint-disable-next-line no-console
   console.log(`[step] ${label}`);
 };
 
@@ -176,17 +174,22 @@ describe('happy path: two-user contact flow', () => {
     // in the backend DB. Polly is configured to match requests by method+URL+order,
     // not by body, so replay mode still works even though the email differs.
     const stamp = Date.now();
+    // Phone numbers are validated as 8-15 digits and must be unique per user,
+    // so derive them from the same stamp as the emails.
+    const phoneBase = String(stamp).slice(-9);
     const FRIEND = {
       first: 'Friend',
       last: 'Tester',
       email: `friend-e2e-${stamp}@test.dev`,
       pw: 'password123',
+      phone: `1${phoneBase}`,
     };
     const ME = {
       first: 'Principal',
       last: 'Tester',
       email: `principal-e2e-${stamp}@test.dev`,
       pw: 'password123',
+      phone: `2${phoneBase}`,
     };
 
     render(<TestApp />);
@@ -202,6 +205,7 @@ describe('happy path: two-user contact flow', () => {
     fireEvent.changeText(screen.getByTestId('signup-first-name'), FRIEND.first);
     fireEvent.changeText(screen.getByTestId('signup-last-name'), FRIEND.last);
     fireEvent.changeText(screen.getByTestId('signup-email'), FRIEND.email);
+    fireEvent.changeText(screen.getByTestId('signup-phone-number'), FRIEND.phone);
     fireEvent.changeText(screen.getByTestId('signup-password'), FRIEND.pw);
     fireEvent.changeText(screen.getByTestId('signup-confirm-password'), FRIEND.pw);
     fireEvent.press(screen.getByTestId('signup-submit'));
@@ -225,6 +229,7 @@ describe('happy path: two-user contact flow', () => {
     fireEvent.changeText(screen.getByTestId('signup-first-name'), ME.first);
     fireEvent.changeText(screen.getByTestId('signup-last-name'), ME.last);
     fireEvent.changeText(screen.getByTestId('signup-email'), ME.email);
+    fireEvent.changeText(screen.getByTestId('signup-phone-number'), ME.phone);
     fireEvent.changeText(screen.getByTestId('signup-password'), ME.pw);
     fireEvent.changeText(screen.getByTestId('signup-confirm-password'), ME.pw);
     fireEvent.press(screen.getByTestId('signup-submit'));
@@ -258,6 +263,14 @@ describe('happy path: two-user contact flow', () => {
     );
     fireEvent.press(friendRow);
 
+    // addFriend() is fired but not awaited by the screen; on resolve it drops
+    // the row from the list. Wait for that before signing out — otherwise the
+    // POST goes out after the session is cleared and 401s.
+    await waitFor(
+      () => expect(screen.queryAllByTestId(/^add-contact-row-\d+$/)).toHaveLength(0),
+      { timeout: 5000 }
+    );
+
     // ------------------------------------------------------------------
     // Step 5 — Principal logs out
     // ------------------------------------------------------------------
@@ -290,6 +303,12 @@ describe('happy path: two-user contact flow', () => {
       { timeout: 5000 }
     );
     fireEvent.press(acceptBtn);
+
+    // Same reason as step 4: let the accept land before clearing the session.
+    await waitFor(
+      () => expect(screen.queryAllByTestId(/^accept-request-\d+$/)).toHaveLength(0),
+      { timeout: 5000 }
+    );
 
     // ------------------------------------------------------------------
     // Step 7 — Friend logs out
@@ -384,7 +403,8 @@ describe('happy path: two-user contact flow', () => {
       );
       fireEvent.changeText(screen.getByTestId('payment-title-input'), paymentTitle);
       fireEvent.changeText(screen.getByTestId('payment-total-input'), amount);
-      fireEvent.press(screen.getByTestId('payment-category-food'));
+      // CATEGORIES in app/formPayment.tsx is keyed by number; 7 is "Food & Dining".
+      fireEvent.press(screen.getByTestId('payment-category-7'));
       fireEvent.press(screen.getByTestId('payment-submit'));
 
       // handleSubmit is async; give the POST a tick to flush, then return to
@@ -418,6 +438,9 @@ describe('happy path: two-user contact flow', () => {
       () => expect(screen.getByTestId('promise-title-input')).toBeTruthy(),
       { timeout: 5000 }
     );
+
+    // The ContactSelector starts collapsed behind a "Show Contacts" toggle.
+    fireEvent.press(screen.getByTestId('contact-selector-toggle'));
 
     // Pick first contact (Friend) in the ContactSelector.
     const contactRow = await waitFor(
@@ -486,25 +509,25 @@ describe('happy path: two-user contact flow', () => {
     // Step 16 — Accept the first pending notification (e.g. "notification test")
     // ------------------------------------------------------------------
     step('16 accept notification test');
-    // Note: NotificationCard doesn't surface the payment title, so we accept
-    // whichever pending notification is listed first under the Payments tab.
-    // Ordering comes from the backend fixture; this may need disambiguation
-    // once notification payloads include the payment title.
+    // The notification payload carries the payment title in `message`, so we
+    // target "notification test" exactly rather than whichever card happens to
+    // be listed first — the "dashboard test" card is still listed as pending
+    // here even though step 15 already accepted that payment from Home.
     routerGo('/notifications');
-    const notifToggle = await waitFor(
-      () => {
-        const toggles = screen.getAllByTestId(/^notification-toggle-\d+$/);
-        if (toggles.length === 0) throw new Error('no pending notifications');
-        return toggles[0];
-      },
-      { timeout: 5000 }
-    );
-    fireEvent.press(notifToggle);
+    // Open the notification card. The current NotificationCard renders its
+    // accept/reject actions inline for pending notifications, so there may be
+    // no toggle to press — but the step is kept so that if the collapsible UI
+    // comes back, the happy path still exercises it.
+    const notifToggles = screen.queryAllByTestId(/^notification-toggle-\d+$/);
+    if (notifToggles.length > 0) {
+      fireEvent.press(notifToggles[0]);
+    }
     const notifAccept = await waitFor(
       () => {
-        const accepts = screen.getAllByTestId(/^notification-accept-\d+$/);
-        if (accepts.length === 0) throw new Error('notification accept not visible');
-        return accepts[0];
+        const cards = screen.getAllByTestId(/^notification-card-\d+$/);
+        const card = cards.find((c) => within(c).queryByText(/notification test/));
+        if (!card) throw new Error('no card for "notification test" yet');
+        return within(card).getByTestId(/^notification-accept-\d+$/);
       },
       { timeout: 5000 }
     );
@@ -556,6 +579,9 @@ describe('happy path: two-user contact flow', () => {
       () => expect(screen.getByTestId('promise-title-input')).toBeTruthy(),
       { timeout: 5000 }
     );
+    // Same as step 13: the ContactSelector starts collapsed.
+    fireEvent.press(screen.getByTestId('contact-selector-toggle'));
+
     const reverseContactRow = await waitFor(
       () => {
         const rows = screen.getAllByTestId(/^contact-selector-row-\d+$/);

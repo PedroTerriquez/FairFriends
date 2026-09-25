@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `npm start` / `npx expo start` — start the Expo dev server (Metro).
 - `npm run ios` / `npm run android` / `npm run web` — start with a specific target.
-- `npm test` — runs `jest --watchAll` via the `jest-expo` preset. Run a single test with `npx jest path/to/file.test.tsx` or `npx jest -t "test name"`.
+- `npm test` — runs `jest` once via the `jest-expo` preset. `npm run test:watch` for watch mode. Run a single test with `npx jest path/to/file.test.tsx` or `npx jest -t "test name"`.
+- `npm run test:record` — re-records the Polly.js HTTP fixtures for `__tests__/happyPath.test.tsx` against a live backend (`rm -rf __recordings__` first).
 - `npm run lint` — `expo lint`.
 - `npm run reset-project` — moves starter code aside (rarely needed; starter template helper).
 

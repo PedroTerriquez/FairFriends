@@ -59,6 +59,7 @@ export default function NotificationCard({
 
   return (
     <Pressable
+      testID={`notification-card-${id}`}
       onPress={handleShow}
       style={[baseStyles.card, isPending && styles.cardPending]}>
       <View style={styles.header}>

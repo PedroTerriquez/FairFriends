@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 // Test environment setup. Runs before each test file via package.json -> jest.setupFiles.
 
 // 0. Load .env so EXPO_PUBLIC_API and friends are available to mocks + real HTTP.
@@ -10,6 +9,15 @@ require('dotenv').config({
 // Polly's node-http adapter can intercept requests. jest-expo's default
 // resolution picks the react-native/browser bundle, which only has XHR/fetch
 // adapters and cannot be intercepted by nock.
+//
+// 0c. axios probes for fetch/stream support at import time by creating a
+// ReadableStream and cancelling it. Expo's polyfilled ReadableStream throws
+// "Cannot cancel a stream that already has a reader" during that probe, which
+// jest reports as a suite error. Dropping the polyfills makes axios fall back
+// to the Node http adapter — which is the one Polly intercepts anyway.
+delete global.ReadableStream;
+delete global.WritableStream;
+delete global.TransformStream;
 
 // 1. expo-constants ------------------------------------------------------------
 // Must be mocked BEFORE services/api.js is imported, since api.js reads
@@ -60,10 +68,10 @@ jest.mock('expo-localization', () => ({
 jest.mock('@expo/vector-icons', () => {
   const React = require('react');
   const { Text } = require('react-native');
-  const makeIcon =
-    () =>
-    ({ name, testID, ...rest }) =>
-      React.createElement(Text, { testID, ...rest }, name ? `[${name}]` : null);
+  const makeIcon = () =>
+    function IconMock({ name, testID, ...rest }) {
+      return React.createElement(Text, { testID, ...rest }, name ? `[${name}]` : null);
+    };
   return {
     __esModule: true,
     Ionicons: makeIcon(),
@@ -163,9 +171,12 @@ jest.mock('expo-router', () => {
     usePathname: () => state.current,
     useFocusEffect: (cb) => {
       // Behave like useEffect on mount.
+      // Deliberately mount-only: useFocusEffect fires once per focus, and the
+      // mock has no focus events to react to.
       React.useEffect(() => {
         const cleanup = cb();
         return typeof cleanup === 'function' ? cleanup : undefined;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
     },
     Stack,
@@ -180,7 +191,6 @@ jest.mock('expo-router', () => {
 // 6. react-native-reanimated ---------------------------------------------------
 // jest-expo handles most RN modules but reanimated needs the official mock.
 try {
-  // eslint-disable-next-line global-require
   jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 } catch (_e) {
   // mock not present; ignore
@@ -202,15 +212,23 @@ jest.mock('moti', () => {
 // 7b. Toast component — the real one starts timers that outlive the test run,
 // spamming errors after teardown. Replace with a passthrough that renders
 // nothing visible but keeps the `useToast()` hook functional.
-jest.mock('@/presentational/Toast', () => {
-  const React = require('react');
-  return { __esModule: true, default: () => null };
-});
+jest.mock('@/presentational/Toast', () => ({
+  __esModule: true,
+  default: function ToastMock() {
+    return null;
+  },
+}));
 // Same mock via the relative path used inside ToastContext.
-jest.mock('./presentational/Toast', () => {
-  const React = require('react');
-  return { __esModule: true, default: () => null };
-}, { virtual: true });
+jest.mock(
+  './presentational/Toast',
+  () => ({
+    __esModule: true,
+    default: function ToastMock() {
+      return null;
+    },
+  }),
+  { virtual: true }
+);
 
 // 8. Skeleton placeholder libs (used by SkeletonWrapper) -----------------------
 jest.mock('moti/skeleton', () => {

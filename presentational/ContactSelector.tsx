@@ -42,6 +42,7 @@ export default function ContactSelector({
 
       {showToggle && (
         <TouchableOpacity
+          testID="contact-selector-toggle"
           style={styles.toggle}
           onPress={() => setIsExpanded(!isExpanded)}
           activeOpacity={0.7}

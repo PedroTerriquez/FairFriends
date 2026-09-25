@@ -31,7 +31,9 @@ export default function Notifications() {
     const updateStatus = (id, status) => {
         patchNotification(id, status)
             .then((response) => {
-                if (response.status === 200) {
+                // apiCall() resolves to null on failure (it toasts the error),
+                // so this must be null-checked before reading .status.
+                if (response?.status === 200) {
                     setNotifications(prev =>
                         prev.map(notification =>
                             notification.id === id ? { ...notification, status } : notification
