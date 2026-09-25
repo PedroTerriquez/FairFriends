@@ -44,6 +44,8 @@ export default {
       'expo-font',
       'expo-localization',
       'expo-web-browser',
+      '@react-native-community/datetimepicker',
+      'expo-status-bar',
     ],
     experiments: {
       typedRoutes: true,
