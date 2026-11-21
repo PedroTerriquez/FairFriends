@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FairFriends — Money between friends, made fair</title>
+  <meta name="description" content="FairFriends keeps track of what everyone owes and who paid what — group balances, IOUs between friends, and payments you accept with one tap. Free, in English and Spanish." />
+  <meta property="og:title" content="FairFriends — Money between friends, made fair" />
+  <meta property="og:description" content="Group balances, IOUs ('promises'), and payments you accept with one tap. In English and Spanish." />
+  <meta name="theme-color" content="#F8F9FA" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%235B7FFF'/%3E%3Cpath d='M30 68 L38 36 L62 36 M28 52 L52 52' stroke='%23fff' stroke-width='9' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="FairFriends home">
+        <span class="brand-mark" aria-hidden="true">F</span>
+        <span class="brand-name">Fair<span class="brand-accent">Friends</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#features" data-i18n="nav.features">Features</a>
+        <a href="#how" data-i18n="nav.how">How it works</a>
+        <a href="#early" data-i18n="nav.early">Early access</a>
+      </nav>
+      <div class="nav-actions">
+        <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch language">
+          <span class="lang-opt" data-lang="en">EN</span><span class="lang-div" aria-hidden="true"></span><span class="lang-opt" data-lang="es">ES</span>
+        </button>
+        <a class="btn btn-primary" href="#early" data-i18n="nav.cta">Join early access</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-glow hero-glow--blue" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow--purple" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <h1 data-i18n="hero.title">Money between friends, <em>made fair.</em></h1>
+          <p class="hero-sub" data-i18n="hero.sub">
+            FairFriends keeps track of what everyone owes and who paid what —
+            group balances for shared plans, IOUs between two people, and
+            payments you accept with one tap. No awkward math, no forgotten debts.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#early" data-i18n="hero.cta">Join early access</a>
+            <a class="btn btn-ghost" href="https://github.com/PedroTerriquez/FairFriends" target="_blank" rel="noopener noreferrer" data-i18n="hero.github">View the project</a>
+          </div>
+          <p class="hero-note" data-i18n="hero.note">Free · English and Spanish · Your data stays between you and your friends</p>
+        </div>
+
+        <div class="hero-phone-wrap" aria-hidden="true">
+          <div class="hero-phone" id="phone">
+            <div class="phone-screen">
+              <div class="app-greet">Hola, Raj <span class="app-wave">👋</span></div>
+              <div class="app-card app-card--balance">
+                <div class="app-card-head">
+                  <span class="app-card-title" data-i18n="mock.trip">Cabin trip</span>
+                  <span class="app-chip app-chip--balance" data-i18n="mock.balance">Balance</span>
+                </div>
+                <div class="app-row"><span class="app-avatar" style="--av:#7E22CE">A</span><span>Ana</span><span class="app-amount app-pos">+$120.00</span></div>
+                <div class="app-row"><span class="app-avatar" style="--av:#4A5FCC">M</span><span>Marta</span><span class="app-amount app-neg">−$45.50</span></div>
+                <div class="app-row"><span class="app-avatar" style="--av:#059669">T</span><span>Tavo</span><span class="app-amount app-neutral">$0.00</span></div>
+              </div>
+              <div class="app-card app-card--promise">
+                <div class="app-card-head">
+                  <span class="app-card-title" data-i18n="mock.owes">Owes me $80</span>
+                  <span class="app-chip app-chip--promise" data-i18n="mock.promise">Promise</span>
+                </div>
+                <div class="app-meter"><span style="width:62%"></span></div>
+                <div class="app-meter-caption">$50.00 of $80.00 <span data-i18n="mock.paid">paid</span></div>
+              </div>
+              <div class="app-toast">
+                <span class="app-check" aria-hidden="true">✓</span>
+                <span>Ana <span data-i18n="mock.accepted">accepted your payment</span> · $25.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-inner">
+        <h2 data-i18n="features.title">Four words carry the whole app.</h2>
+        <p class="section-sub" data-i18n="features.sub">FairFriends is built around the way friends actually handle money — not ledger software.</p>
+        <div class="feature-rows">
+          <div class="feature-row">
+            <h3>Balance<span class="feature-es" data-i18n="f1.es"> · Balance</span></h3>
+            <p data-i18n="f1.body">A shared tab among a group — a trip, a flat, a birthday dinner. Everyone's part is tracked live, so “who owes what” is a glance, not a spreadsheet.</p>
+          </div>
+          <div class="feature-row">
+            <h3>Promise<span class="feature-es" data-i18n="f2.es"> · Promesa</span></h3>
+            <p data-i18n="f2.body">A simple IOU between two people. One of you owes the other a fixed amount — FairFriends keeps the deadline and lets you split it across members when it's not one person's burden.</p>
+          </div>
+          <div class="feature-row">
+            <h3>Payment<span class="feature-es" data-i18n="f3.es"> · Pago</span></h3>
+            <p data-i18n="f3.body">Payments land as suggestions, not surprises: the receiver accepts or rejects, and amounts can be uneven. Paid $63 of a $90 promise? That's allowed, and it's recorded.</p>
+          </div>
+          <div class="feature-row">
+            <h3>Friendship<span class="feature-es" data-i18n="f4.es"> · Amistad</span></h3>
+            <p data-i18n="f4.body">Contacts join by request and accept on their side — nobody tracks money for a stranger. Everything else stays between the people who were there.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="how">
+      <div class="section-inner">
+        <h2 data-i18n="how.title">How it works.</h2>
+        <div class="how-steps">
+          <div class="how-step">
+            <span class="how-num">1</span>
+            <h3 data-i18n="how.s1">Add your friends</h3>
+            <p data-i18n="how.s1b">Send a contact request. They accept — now you share a ledger, nothing more.</p>
+          </div>
+          <div class="how-step">
+            <span class="how-num">2</span>
+            <h3 data-i18n="how.s2">Create a balance or a promise</h3>
+            <p data-i18n="how.s2b">Group plan or one-on-one IOU — pick the shape that fits, set amounts, done.</p>
+          </div>
+          <div class="how-step">
+            <span class="how-num">3</span>
+            <h3 data-i18n="how.s3">Accept payments as they land</h3>
+            <p data-i18n="how.s3b">One tap confirms what came in. FairFriends updates everyone's part instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--closing" id="early">
+      <div class="section-inner section-inner--closing">
+        <h2 data-i18n="early.title">The first release is nearly ready.</h2>
+        <p data-i18n="early.sub">FairFriends for iOS and Android is in final polish. The app ships in English and Spanish on day one — if you want in early, say hello on GitHub.</p>
+        <div class="early-actions">
+          <a class="btn btn-primary" href="https://github.com/PedroTerriquez/FairFriends" target="_blank" rel="noopener noreferrer" data-i18n="early.repo">FairFriends on GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/jiracipika" target="_blank" rel="noopener noreferrer" data-i18n="early.contact">Talk to us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p><span class="brand-name">Fair<span class="brand-accent">Friends</span></span> — <span data-i18n="footer.tag">split expenses with friends, without the friction.</span></p>
+      <p class="footer-credits"><span data-i18n="footer.built">Built by</span> <a href="https://github.com/PedroTerriquez" target="_blank" rel="noopener noreferrer">Pedro Terriquez</a> &amp; <a href="https://github.com/jiracipika" target="_blank" rel="noopener noreferrer">Rajin Gajadhar</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
