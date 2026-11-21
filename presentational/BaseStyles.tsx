@@ -333,6 +333,9 @@ const baseStyles = StyleSheet.create({
     inputError: {
         borderColor: colors.error,
     },
+    inputFocused: {
+        borderColor: colors.primary,
+    },
 
     // Badges - Using design system tokens
     badge: {

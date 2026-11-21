@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { Text, View, Pressable, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import { useSession } from '../services/authContext';
 import { useToast } from '@/services/ToastContext';
 import baseStyles from "@/presentational/BaseStyles";
 import { useTranslation } from "react-i18next";
+import { colors } from '@/theme';
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -35,9 +36,9 @@ export default function SignUp() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={baseStyles.viewContainerFull}>
           <View style={baseStyles.center}>
-            <Ionicons name="people" size={80} color="#2F66FF" />
+            <Ionicons name="people" size={80} color={colors.primary} />
             <Text style={[baseStyles.title32, baseStyles.blueLogo]}>FairFriends</Text>
-            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>Split expenses with friends</Text>
+            <Text style={[baseStyles.label17, baseStyles.graySubtitle]}>{ t('signup.split_expenses_with_friends') }</Text>
           </View>
 
           <View style={baseStyles.center}>
@@ -46,7 +47,7 @@ export default function SignUp() {
                 testID="signup-first-name"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.first_name')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={firstName}
                 onChangeText={setFirstName}
                 autoCapitalize="words"
@@ -55,7 +56,7 @@ export default function SignUp() {
                 testID="signup-last-name"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.last_name')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={lastName}
                 onChangeText={setLastName}
                 autoCapitalize="words"
@@ -64,7 +65,7 @@ export default function SignUp() {
                 testID="signup-email"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.email')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
@@ -75,7 +76,7 @@ export default function SignUp() {
                 testID="signup-phone-number"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.phone_number')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 keyboardType="phone-pad"
@@ -88,7 +89,7 @@ export default function SignUp() {
                 testID="signup-password"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.password')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -98,28 +99,35 @@ export default function SignUp() {
                 testID="signup-confirm-password"
                 style={baseStyles.grayInput}
                 placeholder={t('signup.confirm_password')}
-                placeholderTextColor="#666"
+                placeholderTextColor={colors.text.secondary}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 secureTextEntry
                 autoComplete="password-new"
               />
             </View>
-            <TouchableOpacity
+            <Pressable
               testID="signup-submit"
-              style={baseStyles.loginButton}
+              style={({ pressed }) => [
+                baseStyles.loginButton,
+                pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
+              ]}
               onPress={handleSignUp}
             >
               <Ionicons name="person-add" size={24} color="white" />
               <Text style={[baseStyles.textWhite, baseStyles.title17]}>{t('signup.signup_button')}</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={[baseStyles.alignItemsCenter, { marginBottom: 20 }]}>
             <Text style={[baseStyles.label14, baseStyles.graySubtitle]}>{t('signup.have_account')}</Text>
-            <TouchableOpacity testID="signup-go-to-login" onPress={() => router.push('/login')}>
+            <Pressable
+              testID="signup-go-to-login"
+              onPress={() => router.push('/login')}
+              style={({ pressed }) => [pressed && { opacity: 0.7 }]}
+            >
               <Text style={[baseStyles.link, baseStyles.boldText]}>{t('signup.login')}</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

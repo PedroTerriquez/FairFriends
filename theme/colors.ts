@@ -30,6 +30,10 @@ export const colors = {
     // Orange for pending/warnings only
     warning: '#F59E0B',
     warningLight: '#FEF3C7',
+    // Alias for pending states — same hue as warning; several components
+    // read `financial.pending`, which did not exist before this line.
+    pending: '#F59E0B',
+    pendingLight: '#FEF3C7',
   },
 
   // Background Colors - Clean and minimal
